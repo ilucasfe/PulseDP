@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sistema ERP DP — Folha, Férias, 13º e Rescisão</title>
+<style>
+:root{
+  --topbar:#3c8dbc;--topbar-dark:#367fa9;--sidebar:#222d32;--sidebar-hover:#1e282c;--sidebar-sub:#2c3b41;
+  --bg:#ecf0f5;--card:#ffffff;--line:#d2d6de;--text:#333333;--muted:#777777;
+  --primary:#3c8dbc;--success:#00a65a;--danger:#dd4b39;--warning:#f39c12;--info:#00c0ef;
+}
+*{box-sizing:border-box}
+body{margin:0;font:13.5px "Source Sans Pro","Segoe UI",Helvetica,Arial,sans-serif;color:var(--text);background:var(--bg)}
+
+/* TOPBAR ESTILO ADMINLTE / COMPRASNET */
+header{
+  background:var(--topbar);color:#fff;height:50px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:40;box-shadow:0 1px 4px rgba(0,0,0,.15)
+}
+.brand{
+  width:235px;height:50px;background:var(--topbar-dark);display:flex;align-items:center;
+  padding:0 16px;font-size:17px;font-weight:700;letter-spacing:.3px;gap:8px;flex-shrink:0
+}
+.header-right{display:flex;align-items:center;gap:14px;padding:0 18px;font-size:13px}
+.header-pill{background:rgba(0,0,0,.15);padding:5px 11px;border-radius:3px}
+
+/* LAYOUT */
+.app{display:grid;grid-template-columns:235px 1fr;min-height:calc(100vh - 50px)}
+aside{background:var(--sidebar);color:#b8c7ce;display:flex;flex-direction:column}
+.user-box{padding:14px 15px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #2c3b41;color:#fff}
+.avatar{width:36px;height:36px;border-radius:50%;background:#3c8dbc;display:flex;align-items:center;justify-content:center;font-weight:700}
+.nav-header{background:#1a2226;color:#4b646f;font-size:11px;padding:9px 15px;text-transform:uppercase;font-weight:700}
+aside button{
+  width:100%;text-align:left;border:0;background:transparent;color:#b8c7ce;
+  padding:11px 15px;cursor:pointer;font-size:13.5px;border-left:3px solid transparent;
+  display:flex;align-items:center;gap:9px;transition:.12s
+}
+aside button:hover{background:var(--sidebar-hover);color:#fff}
+aside button.active{background:var(--sidebar-hover);color:#fff;border-left-color:var(--topbar);font-weight:600}
+
+main{padding:18px 22px;max-width:1500px;width:100%;margin:0 auto}
+.panel{display:none}.panel.active{display:block}
+
+/* BREADCRUMB & TÍTULO */
+.page-header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.page-header h1{margin:0;font-size:21px;font-weight:500;color:#222}
+.page-header h1 small{font-size:13px;color:var(--muted);margin-left:6px;font-weight:400}
+.breadcrumb{font-size:12px;color:var(--muted)}
+
+/* BOXES ESTILO ERP */
+.box{
+  background:var(--card);border-top:3px solid var(--line);border-radius:3px;
+  box-shadow:0 1px 1px rgba(0,0,0,.08);margin-bottom:16px
+}
+.box.box-primary{border-top-color:var(--primary)}
+.box.box-success{border-top-color:var(--success)}
+.box.box-warning{border-top-color:var(--warning)}
+.box.box-info{border-top-color:var(--info)}
+.box-header{
+  padding:11px 15px;border-bottom:1px solid #f4f4f4;display:flex;
+  justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px
+}
+.box-title{margin:0;font-size:15.5px;font-weight:600;color:#333}
+.box-body{padding:15px}
+.box-footer{padding:11px 15px;background:#f9fafc;border-top:1px solid #f4f4f4;display:flex;gap:8px;flex-wrap:wrap}
+
+/* GRIDS & FORMULÁRIOS */
+.grid{display:grid;grid-template-columns:repeat(4,minmax(140px,1fr));gap:12px}
+.grid.two{grid-template-columns:repeat(2,minmax(180px,1fr))}
+.grid.three{grid-template-columns:repeat(3,minmax(160px,1fr))}
+.grid.five{grid-template-columns:repeat(5,minmax(120px,1fr))}
+.grid.six{grid-template-columns:repeat(6,minmax(100px,1fr))}
+
+label{display:block;font-weight:700;font-size:12px;color:#444;margin-bottom:4px}
+label .req{color:var(--danger)}
+input,select{
+  width:100%;height:34px;padding:5px 10px;font-size:13.5px;color:#333;
+  background:#fff;border:1px solid var(--line);border-radius:2px
+}
+input:focus,select:focus{outline:none;border-color:var(--primary)}
+input[type=checkbox]{width:auto;height:auto}
+
+/* BOTÕES ERP */
+.btn{
+  display:inline-flex;align-items:center;gap:5px;padding:6px 12px;font-size:13px;
+  font-weight:600;border-radius:3px;border:1px solid transparent;cursor:pointer;color:#fff
+}
+.btn:hover{filter:brightness(.93)}
+.btn-primary{background:var(--primary);border-color:var(--topbar-dark)}
+.btn-success{background:var(--success);border-color:#008d4c}
+.btn-danger{background:var(--danger);border-color:#d73925}
+.btn-warning{background:var(--warning);border-color:#e08e0b}
+.btn-default{background:#f4f4f4;color:#444;border-color:#ddd}
+.btn-xs{padding:3px 7px;font-size:12px}
+
+/* BARRA DE FERRAMENTAS DE TABELA (DATATABLES STYLE) */
+.dt-toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+.dt-buttons{display:flex;gap:4px;flex-wrap:wrap}
+.dt-search{display:flex;align-items:center;gap:6px}
+.dt-search input{width:220px;height:30px}
+
+.tablewrap{overflow:auto;border:1px solid #e4e7ed}
+table{width:100%;border-collapse:collapse;min-width:750px;background:#fff}
+th,td{padding:8px 10px;border-bottom:1px solid #e4e7ed;text-align:left;font-size:13px}
+th{background:#f9fafc;color:#333;font-weight:700;white-space:nowrap;border-bottom:2px solid #d2d6de}
+tbody tr:nth-child(even){background:#fcfcfd}
+tbody tr:hover{background:#f0f6fb}
+td input{height:28px;padding:3px 6px}
+
+.badge{display:inline-block;padding:3px 7px;font-size:11px;font-weight:700;border-radius:3px;color:#fff}
+.bg-green{background:var(--success)}.bg-red{background:var(--danger)}.bg-blue{background:var(--primary)}.bg-gray{background:#777}.bg-yellow{background:var(--warning)}
+
+.checklist{display:flex;gap:14px;flex-wrap:wrap;padding:6px 0}
+.checklist label{display:flex;align-items:center;gap:6px;margin:0;font-weight:600;cursor:pointer}
+
+/* CARDS DE RESUMO */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+.kpi{
+  background:#fff;border:1px solid #e2e8f0;border-left:4px solid var(--primary);
+  padding:11px 14px;border-radius:3px
+}
+.kpi.green{border-left-color:var(--success);background:#f6fffa}
+.kpi.red{border-left-color:var(--danger)}
+.kpi.yellow{border-left-color:var(--warning)}
+.kpi small{display:block;color:var(--muted);font-size:11.5px;text-transform:uppercase;font-weight:700}
+.kpi strong{display:block;font-size:18px;margin-top:3px;color:#222}
+
+/* MODAL */
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:60;align-items:center;justify-content:center;padding:15px}
+.modal-backdrop.open{display:flex}
+.modal{background:#fff;border-radius:4px;max-width:850px;width:100%;max-height:90vh;overflow:auto;padding:18px;border-top:4px solid var(--primary)}
+.payslip{border:1px solid #333;padding:14px;font-family:"Consolas","Courier New",monospace;font-size:12px}
+.payslip-top{display:flex;justify-content:space-between;border-bottom:1px solid #333;padding-bottom:8px;margin-bottom:8px;flex-wrap:wrap;gap:8px}
+.payslip table{min-width:auto;margin:8px 0}
+.payslip th,.payslip td{border:1px solid #bbb;padding:5px 7px;font-size:12px}
+
+@media print{
+  body *{visibility:hidden}
+  #printArea,#printArea *{visibility:visible}
+  #printArea{position:fixed;left:0;top:0;width:100%}
+}
+@media(max-width:950px){
+  .app{grid-template-columns:1fr}
+  .brand{width:auto}
+  aside{flex-direction:row;overflow:auto}
+  .user-box,.nav-header{display:none}
+  aside button{min-width:160px;border-left:0;border-bottom:3px solid transparent}
+  aside button.active{border-bottom-color:var(--topbar)}
+  .grid,.grid.three,.grid.five,.grid.six,.kpi-row{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  main{padding:12px}
+  .grid,.grid.two,.grid.three,.grid.five,.grid.six,.kpi-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">🏢 DP & Folha <span style="font-weight:300">ERP</span></div>
+  <div class="header-right">
+    <div class="header-pill">Competência Ativa: <b id="topComp">11/2026</b></div>
+    <div class="header-pill">Colaboradores: <b id="topEmpCount">0</b></div>
+  </div>
+</header>
+
+<div class="app">
+  <aside>
+    <div class="user-box">
+      <div class="avatar">DP</div>
+      <div>
+        <div style="font-weight:700;font-size:13px">Departamento Pessoal</div>
+        <div style="font-size:11px;color:#8aa4af">● Sistema Online / Local</div>
+      </div>
+    </div>
+    <div class="nav-header">Cálculos & Processamento</div>
+    <button class="active" data-panel="payroll">🧮 Cálculo & Manutenção Folha</button>
+    <button data-panel="vacation">🏖️ Cálculo de Férias</button>
+    <button data-panel="thirteenth">🎄 Cálculo de 13º Salário</button>
+    <button data-panel="termination">🚪 Cálculo de Desligamento</button>
+    <button data-panel="history">🧾 Holerites & Recibos Salvos</button>
+
+    <div class="nav-header">Cadastros & Parametrização</div>
+    <button data-panel="rubrics">📋 RH - Rubricas</button>
+    <button data-panel="employees">👥 Colaboradores</button>
+    <button data-panel="tables">📊 Tabelas Legais (INSS/IRRF)</button>
+  </aside>
+
+  <main>
+    <!-- ===================================================================
+         1. TELA DE CRIAÇÃO DE CÁLCULO E MANUTENÇÃO MANUAL DA FOLHA
+    ==================================================================== -->
+    <section id="payroll" class="panel active">
+      <div class="page-header">
+        <h1>Folha de Pagamento <small>Criação de Cálculo e Manutenção Manual de Rubricas</small></h1>
+        <div class="breadcrumb">DP & Folha &gt; Processamento &gt; Manutenção Manual</div>
+      </div>
+
+      <div class="box box-primary">
+        <div class="box-header">
+          <h3 class="box-title">1. Cabeçalho do Cálculo</h3>
+          <div>
+            <button class="btn btn-primary" onclick="generateBasePayroll()">⚡ Gerar Cálculo Automático</button>
+            <button class="btn btn-success" onclick="saveCurrentPayroll()">💾 Gravar Folha Calculada</button>
+            <button class="btn btn-default" onclick="previewCurrentPayslip()">🖨️ Visualizar Holerite</button>
+          </div>
+        </div>
+        <div class="box-body">
+          <div class="grid six">
+            <div>
+              <label>Competência <span class="req">*</span></label>
+              <input type="month" id="pComp" value="2026-11" onchange="loadOrInitPayroll()">
+            </div>
+            <div style="grid-column:span 2">
+              <label>Colaborador <span class="req">*</span></label>
+              <select id="pEmployee" onchange="loadOrInitPayroll()"></select>
+            </div>
+            <div>
+              <label>Tipo de Folha</label>
+              <select id="pType">
+                <option value="Mensal">Folha Mensal Normal</option>
+                <option value="Complementar">Folha Complementar</option>
+                <option value="Adiantamento">Adiantamento Quinzenal</option>
+              </select>
+            </div>
+            <div>
+              <label>Salário Base (R$)</label>
+              <input type="number" step=".01" id="pSalary" value="3000" onchange="recalcManualGrid()">
+            </div>
+            <div>
+              <label>Dep. IRRF / Horas Mês</label>
+              <div style="display:flex;gap:5px">
+                <input type="number" id="pDeps" value="0" min="0" onchange="recalcManualGrid()" title="Dependentes IRRF">
+                <input type="number" id="pHours" value="220" min="1" onchange="recalcManualGrid()" title="Horas Mensais">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INCLUSÃO MANUAL DE RUBRICAS NO CÁLCULO -->
+      <div class="box box-info">
+        <div class="box-header">
+          <h3 class="box-title">2. Manutenção Manual — Incluir ou Retirar Rubricas do Cálculo</h3>
+          <span style="font-size:12px;color:#666">Adicione eventos avulsos, altere referências/valores ou remova rubricas livremente</span>
+        </div>
+        <div class="box-body">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;background:#f4f8fb;padding:10px;border:1px solid #d9e6f2;border-radius:3px;margin-bottom:12px">
+            <div style="flex:2;min-width:240px">
+              <label>Selecionar Rubrica para Inserir no Cálculo</label>
+              <select id="pAddRubricSelect"></select>
+            </div>
+            <div style="width:110px">
+              <label>Referência / Qtd</label>
+              <input type="number" step=".01" id="pAddQty" value="1">
+            </div>
+            <div style="width:140px">
+              <label>Valor / % / Unit. (Opcional)</label>
+              <input type="number" step=".01" id="pAddVal" placeholder="Usar padrão">
+            </div>
+            <div>
+              <button class="btn btn-success" onclick="insertRubricIntoCalc()">➕ Incluir Rubrica no Cálculo</button>
+              <button class="btn btn-warning" onclick="recalculateTaxesAuto()">🔄 Recalcular INSS / IRRF / FGTS</button>
+            </div>
+          </div>
+
+          <div class="tablewrap">
+            <table id="pGridTable">
+              <thead>
+                <tr>
+                  <th>Cód.</th>
+                  <th>Descrição da Rubrica</th>
+                  <th>Tipo</th>
+                  <th>Origem</th>
+                  <th style="width:110px">Ref. / Qtd</th>
+                  <th style="width:130px">Parâmetro (R$ / %)</th>
+                  <th style="width:140px">Valor Calculado (R$)</th>
+                  <th>Incidências</th>
+                  <th style="width:85px">Retirar</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="kpi-row">
+            <div class="kpi green"><small>Total Proventos</small><strong id="kGross">R$ 0,00</strong></div>
+            <div class="kpi red"><small>Total Descontos (c/ INSS e IRRF)</small><strong id="kDiscounts">R$ 0,00</strong></div>
+            <div class="kpi yellow"><small>Bases (INSS / IRRF / FGTS)</small><strong id="kBases" style="font-size:13.5px">R$ 0,00 / R$ 0,00 / R$ 0,00</strong></div>
+            <div class="kpi green"><small>Valor Líquido da Folha</small><strong id="kNet" style="color:var(--success)">R$ 0,00</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         2. CÁLCULO DE FÉRIAS
+    ==================================================================== -->
+    <section id="vacation" class="panel">
+      <div class="page-header">
+        <h1>Cálculo de Férias <small>Programação, Abono Pecuniário, 1/3 Constitucional e Encargos</small></h1>
+        <div class="breadcrumb">DP & Folha &gt; Processamento &gt; Férias</div>
+      </div>
+
+      <div class="box box-primary">
+        <div class="box-header">
+          <h3 class="box-title">Parâmetros das Férias</h3>
+          <div>
+            <button class="btn btn-primary" onclick="calcVacation()">⚡ Calcular Férias</button>
+            <button class="btn btn-success" onclick="saveSpecialReceipt('Férias')">💾 Salvar Recibo de Férias</button>
+          </div>
+        </div>
+        <div class="box-body">
+          <div class="grid four">
+            <div>
+              <label>Colaborador</label>
+              <select id="vEmployee" onchange="fillVacationEmp()"></select>
+            </div>
+            <div>
+              <label>Início do Gozo</label>
+              <input type="date" id="vStart" value="2026-12-01">
+            </div>
+            <div>
+              <label>Dias de Gozo de Férias</label>
+              <select id="vDays" onchange="calcVacation()">
+                <option value="30">30 dias</option>
+                <option value="20">20 dias (c/ 10 dias abono)</option>
+                <option value="15">15 dias (fracionado)</option>
+                <option value="14">14 dias (fracionado)</option>
+                <option value="10">10 dias (fracionado)</option>
+              </select>
+            </div>
+            <div>
+              <label>Vender 1/3 (Abono Pecuniário)?</label>
+              <select id="vAbono" onchange="calcVacation()">
+                <option value="0">Não vender abono</option>
+                <option value="10">Sim — 10 dias de Abono + 1/3</option>
+              </select>
+            </div>
+            <div>
+              <label>Salário Base (R$)</label>
+              <input type="number" step=".01" id="vSalary" value="3000" onchange="calcVacation()">
+            </div>
+            <div>
+              <label>Média de Horas Extras / Adicionais (R$)</label>
+              <input type="number" step=".01" id="vAvg" value="0" onchange="calcVacation()">
+            </div>
+            <div>
+              <label>Adiantar 1ª Parcela do 13º?</label>
+              <select id="vAdv13" onchange="calcVacation()">
+                <option value="0">Não</option>
+                <option value="1">Sim (50% do salário)</option>
+              </select>
+            </div>
+            <div>
+              <label>Dependentes IRRF</label>
+              <input type="number" id="vDeps" value="0" min="0" onchange="calcVacation()">
+            </div>
+          </div>
+
+          <div class="tablewrap" style="margin-top:15px">
+            <table id="vTable">
+              <thead><tr><th>Cód.</th><th>Evento de Férias</th><th>Tipo</th><th>Referência</th><th>Valor (R$)</th><th>Incidência</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="kpi-row">
+            <div class="kpi green"><small>Bruto Férias + 1/3 + Abono</small><strong id="vGross">R$ 0,00</strong></div>
+            <div class="kpi red"><small>INSS Férias</small><strong id="vInss">R$ 0,00</strong></div>
+            <div class="kpi red"><small>IRRF Férias</small><strong id="vIrrf">R$ 0,00</strong></div>
+            <div class="kpi green"><small>Líquido de Férias a Pagar</small><strong id="vNet" style="color:var(--success)">R$ 0,00</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         3. CÁLCULO DE 13º SALÁRIO
+    ==================================================================== -->
+    <section id="thirteenth" class="panel">
+      <div class="page-header">
+        <h1>Cálculo de 13º Salário <small>1ª Parcela, 2ª Parcela ou Parcela Única por Avos Trabalhados</small></h1>
+        <div class="breadcrumb">DP & Folha &gt; Processamento &gt; 13º Salário</div>
+      </div>
+
+      <div class="box box-primary">
+        <div class="box-header">
+          <h3 class="box-title">Parâmetros do 13º Salário</h3>
+          <div>
+            <button class="btn btn-primary" onclick="calc13th()">⚡ Calcular 13º Salário</button>
+            <button class="btn btn-success" onclick="saveSpecialReceipt('13º Salário')">💾 Salvar Recibo 13º</button>
+          </div>
+        </div>
+        <div class="box-body">
+          <div class="grid four">
+            <div>
+              <label>Colaborador</label>
+              <select id="tEmployee" onchange="fill13thEmp()"></select>
+            </div>
+            <div>
+              <label>Parcela</label>
+              <select id="tInstallment" onchange="calc13th()">
+                <option value="1">1ª Parcela (Adiantamento até 30/11)</option>
+                <option value="2" selected>2ª Parcela (Quitação até 20/12)</option>
+                <option value="U">Parcela Única</option>
+              </select>
+            </div>
+            <div>
+              <label>Avos Adquiridos no Ano (1 a 12)</label>
+              <input type="number" id="tAvos" min="1" max="12" value="12" onchange="calc13th()">
+            </div>
+            <div>
+              <label>Salário Base (R$)</label>
+              <input type="number" step=".01" id="tSalary" value="3000" onchange="calc13th()">
+            </div>
+            <div>
+              <label>Médias Variáveis (HE / Comissões)</label>
+              <input type="number" step=".01" id="tAvg" value="0" onchange="calc13th()">
+            </div>
+            <div>
+              <label>1ª Parcela já Paga (Descontar na 2ª)</label>
+              <input type="number" step=".01" id="tPaid1" value="1500" onchange="calc13th()">
+            </div>
+            <div>
+              <label>Dependentes IRRF</label>
+              <input type="number" id="tDeps" value="0" min="0" onchange="calc13th()">
+            </div>
+            <div>
+              <label>Ano de Referência</label>
+              <input type="number" id="tYear" value="2026">
+            </div>
+          </div>
+
+          <div class="tablewrap" style="margin-top:15px">
+            <table id="tTable">
+              <thead><tr><th>Cód.</th><th>Evento 13º Salário</th><th>Tipo</th><th>Referência</th><th>Valor (R$)</th><th>Incidência</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="kpi-row">
+            <div class="kpi green"><small>13º Bruto Proporcional</small><strong id="tGross">R$ 0,00</strong></div>
+            <div class="kpi red"><small>INSS 13º (Tributação Exclusiva)</small><strong id="tInss">R$ 0,00</strong></div>
+            <div class="kpi red"><small>IRRF 13º (Tributação Exclusiva)</small><strong id="tIrrf">R$ 0,00</strong></div>
+            <div class="kpi green"><small>Líquido a Receber</small><strong id="tNet" style="color:var(--success)">R$ 0,00</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         4. CÁLCULO DE DESLIGAMENTO (RESCISÃO TRCT)
+    ==================================================================== -->
+    <section id="termination" class="panel">
+      <div class="page-header">
+        <h1>Cálculo de Desligamento (Rescisão) <small>Simulação de Verbas Rescisórias, Aviso Prévio, Férias, 13º e Multa FGTS</small></h1>
+        <div class="breadcrumb">DP & Folha &gt; Processamento &gt; Rescisão</div>
+      </div>
+
+      <div class="box box-primary">
+        <div class="box-header">
+          <h3 class="box-title">Dados da Rescisão Contratual</h3>
+          <div>
+            <button class="btn btn-primary" onclick="calcTermination()">⚡ Calcular Rescisão</button>
+            <button class="btn btn-success" onclick="saveSpecialReceipt('Rescisão')">💾 Salvar Termo Rescisório</button>
+          </div>
+        </div>
+        <div class="box-body">
+          <div class="grid four">
+            <div>
+              <label>Colaborador</label>
+              <select id="rEmployee" onchange="fillTermEmp()"></select>
+            </div>
+            <div>
+              <label>Motivo do Desligamento</label>
+              <select id="rReason" onchange="calcTermination()">
+                <option value="sem_justa_causa">Dispensa sem Justa Causa (Empregador)</option>
+                <option value="pedido_demissao">Pedido de Demissão (Empregado)</option>
+                <option value="acordo_484a">Acordo Trabalhista (Art. 484-A CLT)</option>
+                <option value="justa_causa">Dispensa por Justa Causa</option>
+              </select>
+            </div>
+            <div>
+              <label>Aviso Prévio</label>
+              <select id="rNotice" onchange="calcTermination()">
+                <option value="indenizado">Indenizado</option>
+                <option value="trabalhado">Trabalhado</option>
+                <option value="dispensado">Dispensado / Não Cumprido</option>
+              </select>
+            </div>
+            <div>
+              <label>Data do Desligamento</label>
+              <input type="date" id="rDate" value="2026-11-20" onchange="calcTermination()">
+            </div>
+            <div>
+              <label>Salário Base (R$)</label>
+              <input type="number" step=".01" id="rSalary" value="3000" onchange="calcTermination()">
+            </div>
+            <div>
+              <label>Dias Trabalhados no Mês (Saldo)</label>
+              <input type="number" id="rWorkedDays" min="0" max="31" value="20" onchange="calcTermination()">
+            </div>
+            <div>
+              <label>Avos 13º / Avos Férias Prop.</label>
+              <div style="display:flex;gap:5px">
+                <input type="number" id="rAvos13" min="0" max="12" value="11" onchange="calcTermination()" title="Avos 13º">
+                <input type="number" id="rAvosVac" min="0" max="12" value="8" onchange="calcTermination()" title="Avos Férias Proporcionais">
+              </div>
+            </div>
+            <div>
+              <label>Férias Vencidas (Dias) / Saldo FGTS</label>
+              <div style="display:flex;gap:5px">
+                <input type="number" id="rExpiredVacDays" min="0" max="30" value="0" onchange="calcTermination()" title="Dias de Férias Vencidas">
+                <input type="number" step=".01" id="rFgtsBalance" value="5000" onchange="calcTermination()" title="Saldo FGTS para Multa">
+              </div>
+            </div>
+          </div>
+
+          <div class="tablewrap" style="margin-top:15px">
+            <table id="termTable">
+              <thead><tr><th>Cód.</th><th>Verba Rescisória</th><th>Tipo</th><th>Referência</th><th>Valor (R$)</th><th>Incidência</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="kpi-row">
+            <div class="kpi green"><small>Total Verbas Rescisórias (Bruto)</small><strong id="termGross">R$ 0,00</strong></div>
+            <div class="kpi red"><small>Descontos (INSS + IRRF + Aviso)</small><strong id="termDesc">R$ 0,00</strong></div>
+            <div class="kpi yellow"><small>Multa Rescisória FGTS (40% / 20%)</small><strong id="termFine">R$ 0,00</strong></div>
+            <div class="kpi green"><small>Líquido Rescisório a Pagar</small><strong id="termNet" style="color:var(--success)">R$ 0,00</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         5. HOLERITES & RECIBOS SALVOS
+    ==================================================================== -->
+    <section id="history" class="panel">
+      <div class="page-header">
+        <h1>Holerites & Recibos Processados <small>Folha Mensal, Férias, 13º Salário e Rescisões</small></h1>
+        <div class="breadcrumb">DP & Folha &gt; Arquivos &gt; Recibos</div>
+      </div>
+
+      <div class="box box-primary">
+        <div class="box-body">
+          <div class="dt-toolbar">
+            <div class="dt-buttons">
+              <button class="btn btn-success" onclick="exportAllCSV()">📊 Exportar Excel (CSV)</button>
+              <button class="btn btn-default" onclick="exportBackup()">💾 Backup JSON</button>
+              <button class="btn btn-default" onclick="document.getElementById('importFile').click()">📂 Restaurar Backup</button>
+              <input type="file" id="importFile" accept=".json" style="display:none" onchange="importBackup(event)">
+            </div>
+            <div class="dt-search">
+              <label style="margin:0">Pesquisar:</label>
+              <input type="text" id="histSearch" placeholder="Nome, tipo ou competência..." oninput="renderHistory()">
+            </div>
+          </div>
+
+          <div class="tablewrap">
+            <table id="histTable">
+              <thead>
+                <tr>
+                  <th>Tipo de Cálculo</th>
+                  <th>Competência</th>
+                  <th>Colaborador</th>
+                  <th>Bruto</th>
+                  <th>INSS</th>
+                  <th>IRRF</th>
+                  <th>Outros Desc.</th>
+                  <th>Líquido</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         6. RH - RUBRICAS (MODELO BASEADO NAS IMAGENS ENVIADAS)
+    ==================================================================== -->
+    <section id="rubrics" class="panel">
+      <div class="page-header">
+        <h1>RH - Rubricas <small id="rubricSubTitle">Lista e Cadastro de Rubricas</small></h1>
+        <div class="breadcrumb">Gestão Financeira &gt; Cadastro &gt; Rubrica</div>
+      </div>
+
+      <!-- FORMULÁRIO DE ADIÇÃO / EDIÇÃO (ESTILO IMAGEM 2) -->
+      <div class="box box-primary" id="rubricFormBox" style="display:none">
+        <div class="box-header">
+          <h3 class="box-title" id="rubricFormTitle">Adicionar RH - Rubrica</h3>
+          <button class="btn btn-default btn-xs" onclick="closeRubricForm()">« Voltar para todos RH - Rubricas</button>
+        </div>
+        <div class="box-body">
+          <div class="grid three">
+            <div>
+              <label>Código <span class="req">*</span></label>
+              <input id="rCode" placeholder="Ex.: 00003">
+            </div>
+            <div style="grid-column:span 2">
+              <label>Descrição <span class="req">*</span></label>
+              <input id="rName" placeholder="Ex.: SALARIO - CLT">
+            </div>
+            <div>
+              <label>Criação (MM/AAAA) <span class="req">*</span></label>
+              <input id="rCreated" placeholder="11/2026" value="11/2026">
+            </div>
+            <div>
+              <label>Tipo <span class="req">*</span></label>
+              <select id="rType">
+                <option value="Provento">PROVENTO</option>
+                <option value="Desconto">DESCONTO</option>
+                <option value="Ambas">AMBAS (PROVENTO / DESCONTO)</option>
+                <option value="Base">BASE DE CÁLCULO</option>
+              </select>
+            </div>
+            <div>
+              <label>Situação <span class="req">*</span></label>
+              <select id="rStatus">
+                <option value="ATIVA">ATIVA</option>
+                <option value="INATIVA">INATIVA</option>
+              </select>
+            </div>
+            <div>
+              <label>Fórmula / Modo de Cálculo</label>
+              <select id="rMode">
+                <option value="fixed">Valor Fixo (R$)</option>
+                <option value="percent">Percentual sobre Salário (%)</option>
+                <option value="quantity">Quantidade × Valor Unitário</option>
+                <option value="hourly">Horas × Valor Hora (Salário/220)</option>
+              </select>
+            </div>
+            <div>
+              <label>Parâmetro Padrão (R$ ou %)</label>
+              <input type="number" step=".01" id="rVal" value="0">
+            </div>
+            <div>
+              <label>Incidências Tributárias</label>
+              <div class="checklist">
+                <label><input type="checkbox" id="rInss" checked> INSS</label>
+                <label><input type="checkbox" id="rIrrf" checked> IRRF</label>
+                <label><input type="checkbox" id="rFgts" checked> FGTS</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="box-footer">
+          <button class="btn btn-success" onclick="saveRubric()">💾 Salvar e voltar</button>
+          <button class="btn btn-default" onclick="closeRubricForm()">🚫 Cancelar</button>
+        </div>
+      </div>
+
+      <!-- LISTAGEM DATATABLE (ESTILO IMAGEM 1) -->
+      <div class="box box-primary" id="rubricListBox">
+        <div class="box-body">
+          <div class="dt-toolbar">
+            <div class="dt-buttons">
+              <button class="btn btn-primary" onclick="openRubricForm()">➕ Adicionar RH - Rubrica</button>
+              <button class="btn btn-default" onclick="exportRubricsCSV()">Excel / CSV</button>
+              <button class="btn btn-default" onclick="window.print()">Imprimir</button>
+            </div>
+            <div class="dt-search">
+              <label style="margin:0">Pesquisar:</label>
+              <input type="text" id="rubricSearch" placeholder="Código ou descrição..." oninput="renderRubrics()">
+            </div>
+          </div>
+
+          <div class="tablewrap">
+            <table id="rubricTable">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Descrição</th>
+                  <th>Criação</th>
+                  <th>Tipo</th>
+                  <th>Modo / Padrão</th>
+                  <th>Incidências</th>
+                  <th>Situação</th>
+                  <th style="width:120px">Ações</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div style="margin-top:8px;font-size:12px;color:#666" id="rubricCountLabel">Exibindo 0 registros</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         7. COLABORADORES
+    ==================================================================== -->
+    <section id="employees" class="panel">
+      <div class="page-header">
+        <h1>Cadastro de Colaboradores <small>Quadro de Pessoal</small></h1>
+        <div class="breadcrumb">DP & Folha &gt; Cadastros &gt; Colaboradores</div>
+      </div>
+
+      <div class="box box-primary">
+        <div class="box-header"><h3 class="box-title">Dados do Colaborador</h3></div>
+        <div class="box-body">
+          <div class="grid four">
+            <div><label>Nome Completo <span class="req">*</span></label><input id="eName"></div>
+            <div><label>CPF <span class="req">*</span></label><input id="eCpf" placeholder="000.000.000-00"></div>
+            <div><label>Cargo</label><input id="eRole"></div>
+            <div><label>Departamento</label><input id="eDept"></div>
+            <div><label>Admissão</label><input type="date" id="eAdm" value="2025-01-10"></div>
+            <div><label>Salário Base (R$)</label><input type="number" step=".01" id="eSal" value="3000"></div>
+            <div><label>Dependentes IRRF</label><input type="number" id="eDeps" value="0" min="0"></div>
+            <div><label>Horas Mensais</label><input type="number" id="eHrs" value="220" min="1"></div>
+          </div>
+        </div>
+        <div class="box-footer">
+          <button class="btn btn-success" onclick="saveEmployee()">💾 Salvar Colaborador</button>
+          <button class="btn btn-default" onclick="clearEmployeeForm()">Limpar</button>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-body">
+          <div class="tablewrap">
+            <table id="empTable">
+              <thead><tr><th>Nome</th><th>CPF</th><th>Cargo</th><th>Depto</th><th>Admissão</th><th>Salário</th><th>Dep.</th><th>Horas</th><th>Ações</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         8. TABELAS LEGAIS
+    ==================================================================== -->
+    <section id="tables" class="panel">
+      <div class="page-header">
+        <h1>Tabelas Legais (INSS / IRRF / FGTS) <small>Parâmetros Vigentes 2026</small></h1>
+        <div class="breadcrumb">DP & Folha &gt; Parametrização &gt; Tabelas</div>
+      </div>
+
+      <div class="box box-primary">
+        <div class="box-header"><h3 class="box-title">Tabela Progressiva INSS</h3></div>
+        <div class="box-body">
+          <div class="grid two" style="margin-bottom:10px">
+            <div><label>Teto Previdenciário INSS (R$)</label><input type="number" step=".01" id="tInssCeil" value="8157.41"></div>
+            <div><label>Alíquota FGTS (%)</label><input type="number" step=".01" id="tFgtsRate" value="8.00"></div>
+          </div>
+          <div class="tablewrap">
+            <table id="inssTable"><thead><tr><th>Até (R$)</th><th>Alíquota (%)</th><th>Dedução (R$)</th><th></th></tr></thead><tbody></tbody></table>
+          </div>
+          <div style="margin-top:8px"><button class="btn btn-default btn-xs" onclick="addBand('inss')">+ Faixa INSS</button></div>
+        </div>
+      </div>
+
+      <div class="box box-primary">
+        <div class="box-header"><h3 class="box-title">Tabela Progressiva IRRF</h3></div>
+        <div class="box-body">
+          <div class="grid two" style="margin-bottom:10px">
+            <div><label>Dedução por Dependente (R$)</label><input type="number" step=".01" id="tDepDed" value="189.59"></div>
+            <div><label>Desconto Simplificado Mensal (R$)</label><input type="number" step=".01" id="tSimpDed" value="607.20"></div>
+          </div>
+          <div class="tablewrap">
+            <table id="irTable"><thead><tr><th>Até (R$)</th><th>Alíquota (%)</th><th>Dedução (R$)</th><th></th></tr></thead><tbody></tbody></table>
+          </div>
+          <div style="margin-top:8px"><button class="btn btn-default btn-xs" onclick="addBand('ir')">+ Faixa IRRF</button></div>
+        </div>
+        <div class="box-footer">
+          <button class="btn btn-success" onclick="saveTables()">💾 Salvar Tabelas Legais</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- MODAL DEMONSTRATIVO / RECIBO -->
+<div class="modal-backdrop" id="modalReceipt">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <h3 style="margin:0">Demonstrativo de Pagamento</h3>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir / PDF</button>
+        <button class="btn btn-default" onclick="document.getElementById('modalReceipt').classList.remove('open')">Fechar</button>
+      </div>
+    </div>
+    <div id="printArea"><div class="payslip" id="receiptBody"></div></div>
+  </div>
+</div>
+
+<script>
+const money = v => Number(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+const initEmployees = [
+  { id: 'e1', name: 'HELES RESENDE SILVA', cpf: '111.222.333-44', role: 'Analista Administrativo', dept: 'Gestão Financeira', adm: '2021-05-10', salary: 4800.00, deps: 1, hours: 220 },
+  { id: 'e2', name: 'MARIANA COSTA OLIVEIRA', cpf: '222.333.444-55', role: 'Assistente de RH', dept: 'Recursos Humanos', adm: '2024-02-01', salary: 2850.00, deps: 0, hours: 220 }
+];
+
+const initRubrics = [
+  { code: '00003', name: 'SALARIO - CLT', created: '12/1989', type: 'Provento', status: 'ATIVA', mode: 'fixed', val: 0, inss: true, irrf: true, fgts: true },
+  { code: '00110', name: 'HORAS EXTRAS 50%', created: '01/2020', type: 'Provento', status: 'ATIVA', mode: 'hourly', val: 1.5, inss: true, irrf: true, fgts: true },
+  { code: '00120', name: 'HORAS EXTRAS 100%', created: '01/2020', type: 'Provento', status: 'ATIVA', mode: 'hourly', val: 2.0, inss: true, irrf: true, fgts: true },
+  { code: '00210', name: 'ADICIONAL NOTURNO 20%', created: '01/2020', type: 'Provento', status: 'ATIVA', mode: 'percent', val: 20, inss: true, irrf: true, fgts: true },
+  { code: '00310', name: 'GRATIFICACAO / COMISSAO', created: '03/2021', type: 'Provento', status: 'ATIVA', mode: 'fixed', val: 500, inss: true, irrf: true, fgts: true },
+  { code: '00510', name: 'VALE-TRANSPORTE (6%)', created: '01/2020', type: 'Desconto', status: 'ATIVA', mode: 'percent', val: 6, inss: false, irrf: false, fgts: false },
+  { code: '00610', name: 'ADIANTAMENTO SALARIAL', created: '01/2020', type: 'Desconto', status: 'ATIVA', mode: 'fixed', val: 0, inss: false, irrf: false, fgts: false },
+  { code: '00710', name: 'FALTAS E ATRASOS', created: '01/2020', type: 'Desconto', status: 'ATIVA', mode: 'hourly', val: 1.0, inss: true, irrf: true, fgts: true },
+  { code: '00901', name: 'INSS SOBRE SALARIO', created: '01/2020', type: 'Desconto', status: 'ATIVA', mode: 'fixed', val: 0, inss: false, irrf: false, fgts: false },
+  { code: '00902', name: 'IRRF RETIDO NA FONTE', created: '01/2020', type: 'Desconto', status: 'ATIVA', mode: 'fixed', val: 0, inss: false, irrf: false, fgts: false }
+];
+
+const initTables = {
+  inssCeiling: 8157.41, fgtsRate: 8.0, depDeduction: 189.59, simplified: 607.20,
+  inss: [
+    { limit: 1621.00, value: 7.5, ded: 0.00 },
+    { limit: 2902.84, value: 9.0, ded: 24.32 },
+    { limit: 4354.27, value: 12.0, ded: 111.40 },
+    { limit: 8157.41, value: 14.0, ded: 198.49 }
+  ],
+  ir: [
+    { limit: 2428.80, value: 0.0, ded: 0.00 },
+    { limit: 2826.65, value: 7.5, ded: 182.16 },
+    { limit: 3751.05, value: 15.0, ded: 394.16 },
+    { limit: 4664.68, value: 22.5, ded: 675.49 },
+    { limit: 999999999, value: 27.5, ded: 908.73 }
+  ]
+};
+
+let employees = JSON.parse(localStorage.getItem('erp_dp_emps') || 'null') || structuredClone(initEmployees);
+let rubrics = JSON.parse(localStorage.getItem('erp_dp_rubs') || 'null') || structuredClone(initRubrics);
+let tables = JSON.parse(localStorage.getItem('erp_dp_tabs') || 'null') || structuredClone(initTables);
+let savedReceipts = JSON.parse(localStorage.getItem('erp_dp_receipts') || '[]');
+
+// Estado da grade manual de cálculo atual
+let currentCalcLines = [];
+let editEmpId = null;
+let editRubCode = null;
+let lastVacReceipt = null;
+let last13Receipt = null;
+let lastTermReceipt = null;
+
+function saveAll() {
+  localStorage.setItem('erp_dp_emps', JSON.stringify(employees));
+  localStorage.setItem('erp_dp_rubs', JSON.stringify(rubrics));
+  localStorage.setItem('erp_dp_tabs', JSON.stringify(tables));
+  localStorage.setItem('erp_dp_receipts', JSON.stringify(savedReceipts));
+}
+
+function calcProgressive(base, bands) {
+  base = Math.max(0, Number(base) || 0);
+  for (const b of bands) {
+    if (base <= Number(b.limit)) return Math.max(0, base * (Number(b.value) / 100) - Number(b.ded));
+  }
+  const last = bands[bands.length - 1];
+  return last ? Math.max(0, base * (Number(last.value) / 100) - Number(last.ded)) : 0;
+}
+
+function calcIRRFNet(taxableBase, inssVal, deps) {
+  if (taxableBase <= 0) return { base: 0, irrf: 0 };
+  const legal = Number(inssVal) + (Number(deps) * Number(tables.depDeduction));
+  const simp = Number(tables.simplified);
+  const base = Math.max(0, taxableBase - Math.max(legal, simp));
+  return { base: Math.round(base * 100) / 100, irrf: Math.round(calcProgressive(base, tables.ir) * 100) / 100 };
+}
+
+// =========================================================================
+// 1. CRIAÇÃO DE CÁLCULO & MANUTENÇÃO MANUAL DE RUBRICAS
+// =========================================================================
+function loadOrInitPayroll() {
+  const comp = document.getElementById('pComp').value;
+  document.getElementById('topComp').textContent = comp.split('-').reverse().join('/');
+  const emp = employees.find(e => e.id === document.getElementById('pEmployee').value);
+  if (!emp) return;
+
+  document.getElementById('pSalary').value = emp.salary;
+  document.getElementById('pDeps').value = emp.deps;
+  document.getElementById('pHours').value = emp.hours;
+
+  // Verifica se já existe folha salva para esta competência + colaborador
+  const existing = savedReceipts.find(r => r.kind === 'Folha Mensal' && r.comp === comp && r.empId === emp.id);
+  if (existing) {
+    currentCalcLines = structuredClone(existing.lines);
+    renderManualGrid();
+  } else {
+    generateBasePayroll();
+  }
+}
+
+function generateBasePayroll() {
+  const salary = Number(document.getElementById('pSalary').value) || 0;
+  currentCalcLines = [
+    { uid: uid(), code: '00003', name: 'SALARIO - CLT', type: 'Provento', origin: 'Automático', mode: 'fixed', qty: 1, param: salary, amount: salary, inss: true, irrf: true, fgts: true },
+    { uid: uid(), code: '00510', name: 'VALE-TRANSPORTE (6%)', type: 'Desconto', origin: 'Automático', mode: 'percent', qty: 1, param: 6, amount: Math.round(salary * 0.06 * 100) / 100, inss: false, irrf: false, fgts: false }
+  ];
+  recalculateTaxesAuto();
+}
+
+function uid() { return 'ln_' + Math.random().toString(36).slice(2, 9); }
+
+function insertRubricIntoCalc() {
+  const code = document.getElementById('pAddRubricSelect').value;
+  const r = rubrics.find(x => x.code === code);
+  if (!r) return;
+
+  const qty = Number(document.getElementById('pAddQty').value) || 1;
+  const customParam = document.getElementById('pAddVal').value;
+  const salary = Number(document.getElementById('pSalary').value) || 0;
+  const hours = Number(document.getElementById('pHours').value) || 220;
+
+  let param = customParam !== '' ? Number(customParam) : (r.code === '00003' ? salary : Number(r.val));
+  let lineType = r.type === 'Ambas' ? 'Provento' : r.type;
+  let amount = computeLineAmount(r.mode, qty, param, salary, hours);
+
+  currentCalcLines.push({
+    uid: uid(),
+    code: r.code,
+    name: r.name,
+    type: lineType,
+    origin: 'Manual',
+    mode: r.mode,
+    qty,
+    param,
+    amount,
+    inss: r.inss,
+    irrf: r.irrf,
+    fgts: r.fgts
+  });
+
+  document.getElementById('pAddVal').value = '';
+  recalculateTaxesAuto();
+}
+
+function computeLineAmount(mode, qty, param, salary, hours) {
+  let val = 0;
+  if (mode === 'fixed') val = param * qty;
+  else if (mode === 'percent') val = salary * (param / 100) * qty;
+  else if (mode === 'quantity') val = param * qty;
+  else if (mode === 'hourly') val = (salary / hours) * param * qty;
+  return Math.round(val * 100) / 100;
+}
+
+function removeCalcLine(lineUid) {
+  currentCalcLines = currentCalcLines.filter(l => l.uid !== lineUid);
+  renderManualGrid();
+}
+
+function updateLineField(lineUid, field, value) {
+  const line = currentCalcLines.find(l => l.uid === lineUid);
+  if (!line) return;
+  const salary = Number(document.getElementById('pSalary').value) || 0;
+  const hours = Number(document.getElementById('pHours').value) || 220;
+
+  if (field === 'qty') {
+    line.qty = Number(value) || 0;
+    line.amount = computeLineAmount(line.mode, line.qty, line.param, salary, hours);
+    line.origin = 'Manual';
+  } else if (field === 'param') {
+    line.param = Number(value) || 0;
+    line.amount = computeLineAmount(line.mode, line.qty, line.param, salary, hours);
+    line.origin = 'Manual';
+  } else if (field === 'amount') {
+    // Permite edição direta do valor final calculado na manutenção manual!
+    line.amount = Math.round((Number(value) || 0) * 100) / 100;
+    line.origin = 'Manual (Direto)';
+  }
+  renderManualGrid();
+}
+
+function recalcManualGrid() {
+  const salary = Number(document.getElementById('pSalary').value) || 0;
+  const hours = Number(document.getElementById('pHours').value) || 220;
+  currentCalcLines.forEach(l => {
+    if (l.code === '00003' && l.origin === 'Automático') l.param = salary;
+    if (l.origin !== 'Manual (Direto)') {
+      l.amount = computeLineAmount(l.mode, l.qty, l.param, salary, hours);
+    }
+  });
+  recalculateTaxesAuto();
+}
+
+function recalculateTaxesAuto() {
+  // Remove linhas automáticas anteriores de INSS e IRRF para recalcular limpo
+  currentCalcLines = currentCalcLines.filter(l => l.code !== '00901' && l.code !== '00902');
+
+  const deps = Number(document.getElementById('pDeps').value) || 0;
+  let bInss = 0, bIrrf = 0;
+
+  currentCalcLines.forEach(l => {
+    const sign = l.type === 'Provento' ? 1 : (l.type === 'Desconto' ? -1 : 0);
+    if (l.inss) bInss += sign * l.amount;
+    if (l.irrf) bIrrf += sign * l.amount;
+  });
+
+  const baseInss = Math.min(Math.max(0, bInss), Number(tables.inssCeiling));
+  const inssVal = Math.round(calcProgressive(baseInss, tables.inss) * 100) / 100;
+  const { irrf: irrfVal } = calcIRRFNet(bIrrf, inssVal, deps);
+
+  if (inssVal > 0) {
+    currentCalcLines.push({
+      uid: uid(), code: '00901', name: 'INSS SOBRE SALARIO', type: 'Desconto',
+      origin: 'Tributo Auto', mode: 'fixed', qty: 1, param: inssVal, amount: inssVal,
+      inss: false, irrf: false, fgts: false
+    });
+  }
+  if (irrfVal > 0) {
+    currentCalcLines.push({
+      uid: uid(), code: '00902', name: 'IRRF RETIDO NA FONTE', type: 'Desconto',
+      origin: 'Tributo Auto', mode: 'fixed', qty: 1, param: irrfVal, amount: irrfVal,
+      inss: false, irrf: false, fgts: false
+    });
+  }
+  renderManualGrid();
+}
+
+function renderManualGrid() {
+  const tb = document.querySelector('#pGridTable tbody');
+  tb.innerHTML = '';
+
+  let gross = 0, discounts = 0, bInss = 0, bIrrf = 0, bFgts = 0;
+
+  currentCalcLines.forEach(l => {
+    if (l.type === 'Provento') gross += l.amount;
+    if (l.type === 'Desconto') discounts += l.amount;
+
+    const sign = l.type === 'Provento' ? 1 : (l.type === 'Desconto' ? -1 : 0);
+    if (l.inss) bInss += sign * l.amount;
+    if (l.irrf) bIrrf += sign * l.amount;
+    if (l.fgts) bFgts += sign * l.amount;
+
+    const inc = [l.inss ? 'INSS' : '', l.irrf ? 'IRRF' : '', l.fgts ? 'FGTS' : ''].filter(Boolean).join(', ') || '—';
+    const badgeCls = l.type === 'Provento' ? 'bg-green' : (l.type === 'Desconto' ? 'bg-red' : 'bg-blue');
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><b>${esc(l.code)}</b></td>
+      <td>${esc(l.name)}</td>
+      <td><span class="badge ${badgeCls}">${l.type}</span></td>
+      <td><span class="badge bg-gray">${esc(l.origin)}</span></td>
+      <td><input type="number" step=".01" value="${l.qty}" onchange="updateLineField('${l.uid}','qty',this.value)"></td>
+      <td><input type="number" step=".01" value="${l.param}" onchange="updateLineField('${l.uid}','param',this.value)"></td>
+      <td><input type="number" step=".01" value="${l.amount.toFixed(2)}" style="font-weight:700" onchange="updateLineField('${l.uid}','amount',this.value)"></td>
+      <td>${inc}</td>
+      <td><button class="btn btn-danger btn-xs" onclick="removeCalcLine('${l.uid}')" title="Retirar rubrica do cálculo">🗑️ Tirar</button></td>`;
+    tb.appendChild(tr);
+  });
+
+  const net = Math.round((gross - discounts) * 100) / 100;
+  document.getElementById('kGross').textContent = money(gross);
+  document.getElementById('kDiscounts').textContent = money(discounts);
+  document.getElementById('kBases').textContent = `${money(Math.max(0, bInss))} / ${money(Math.max(0, bIrrf))} / ${money(Math.max(0, bFgts))}`;
+  document.getElementById('kNet').textContent = money(net);
+}
+
+function buildPayrollObject() {
+  const comp = document.getElementById('pComp').value;
+  const emp = employees.find(e => e.id === document.getElementById('pEmployee').value) || { id: '0', name: 'Colaborador', cpf: '', role: '', dept: '' };
+  let gross = 0, inss = 0, irrf = 0, otherDesc = 0;
+
+  currentCalcLines.forEach(l => {
+    if (l.type === 'Provento') gross += l.amount;
+    else if (l.code === '00901') inss += l.amount;
+    else if (l.code === '00902') irrf += l.amount;
+    else if (l.type === 'Desconto') otherDesc += l.amount;
+  });
+
+  return {
+    id: `Folha_${comp}_${emp.id}`,
+    kind: 'Folha Mensal',
+    comp,
+    empId: emp.id,
+    empName: emp.name,
+    empCpf: emp.cpf,
+    empRole: emp.role,
+    gross: Math.round(gross * 100) / 100,
+    inss: Math.round(inss * 100) / 100,
+    irrf: Math.round(irrf * 100) / 100,
+    otherDesc: Math.round(otherDesc * 100) / 100,
+    net: Math.round((gross - inss - irrf - otherDesc) * 100) / 100,
+    lines: structuredClone(currentCalcLines)
+  };
+}
+
+function saveCurrentPayroll() {
+  const rec = buildPayrollObject();
+  savedReceipts = savedReceipts.filter(r => r.id !== rec.id);
+  savedReceipts.unshift(rec);
+  saveAll();
+  renderHistory();
+  alert(`Folha de ${rec.empName} (${rec.comp}) gravada com sucesso!`);
+}
+
+function previewCurrentPayslip() {
+  showReceiptModal(buildPayrollObject());
+}
+
+// =========================================================================
+// 2. CÁLCULO DE FÉRIAS
+// =========================================================================
+function fillVacationEmp() {
+  const emp = employees.find(e => e.id === document.getElementById('vEmployee').value);
+  if (!emp) return;
+  document.getElementById('vSalary').value = emp.salary;
+  document.getElementById('vDeps').value = emp.deps;
+  calcVacation();
+}
+
+function calcVacation() {
+  const emp = employees.find(e => e.id === document.getElementById('vEmployee').value) || { id: '0', name: 'Colaborador', cpf: '', role: '' };
+  const sal = Number(document.getElementById('vSalary').value) || 0;
+  const avg = Number(document.getElementById('vAvg').value) || 0;
+  const days = Number(document.getElementById('vDays').value) || 30;
+  const abonoDays = Number(document.getElementById('vAbono').value) || 0;
+  const adv13 = Number(document.getElementById('vAdv13').value) || 0;
+  const deps = Number(document.getElementById('vDeps').value) || 0;
+
+  const baseRem = sal + avg;
+  const valFerias = Math.round((baseRem / 30) * days * 100) / 100;
+  const tercoFerias = Math.round((valFerias / 3) * 100) / 100;
+  const valAbono = Math.round((baseRem / 30) * abonoDays * 100) / 100;
+  const tercoAbono = Math.round((valAbono / 3) * 100) / 100;
+  const valAdv13 = adv13 ? Math.round((baseRem * 0.5) * 100) / 100 : 0;
+
+  // Base INSS/IRRF nas férias: Férias + 1/3 Constitucional (Abono pecuniário é isento!)
+  const taxableFerias = valFerias + tercoFerias;
+  const inss = Math.round(calcProgressive(Math.min(taxableFerias, Number(tables.inssCeiling)), tables.inss) * 100) / 100;
+  const { irrf } = calcIRRFNet(taxableFerias, inss, deps);
+
+  const lines = [
+    { code: 'F01', name: `FÉRIAS GOZADAS (${days} DIAS)`, type: 'Provento', qty: days, amount: valFerias, inc: 'INSS, IRRF, FGTS' },
+    { code: 'F02', name: '1/3 CONSTITUCIONAL DE FÉRIAS', type: 'Provento', qty: 1, amount: tercoFerias, inc: 'INSS, IRRF, FGTS' }
+  ];
+  if (valAbono > 0) {
+    lines.push({ code: 'F03', name: `ABONO PECUNIÁRIO (${abonoDays} DIAS)`, type: 'Provento', qty: abonoDays, amount: valAbono, inc: 'Isento' });
+    lines.push({ code: 'F04', name: '1/3 S/ ABONO PECUNIÁRIO', type: 'Provento', qty: 1, amount: tercoAbono, inc: 'Isento' });
+  }
+  if (valAdv13 > 0) {
+    lines.push({ code: 'F05', name: 'ADIANTAMENTO 1ª PARCELA 13º NAS FÉRIAS', type: 'Provento', qty: 1, amount: valAdv13, inc: 'FGTS' });
+  }
+  if (inss > 0) lines.push({ code: '00901', name: 'INSS SOBRE FÉRIAS', type: 'Desconto', qty: 1, amount: inss, inc: '—' });
+  if (irrf > 0) lines.push({ code: '00902', name: 'IRRF SOBRE FÉRIAS', type: 'Desconto', qty: 1, amount: irrf, inc: '—' });
+
+  const gross = Math.round((valFerias + tercoFerias + valAbono + tercoAbono + valAdv13) * 100) / 100;
+  const net = Math.round((gross - inss - irrf) * 100) / 100;
+
+  const tb = document.querySelector('#vTable tbody');
+  tb.innerHTML = lines.map(l => `
+    <tr>
+      <td><b>${l.code}</b></td><td>${l.name}</td>
+      <td><span class="badge ${l.type === 'Provento' ? 'bg-green' : 'bg-red'}">${l.type}</span></td>
+      <td>${l.qty}</td><td><b>${money(l.amount)}</b></td><td>${l.inc}</td>
+    </tr>`).join('');
+
+  document.getElementById('vGross').textContent = money(gross);
+  document.getElementById('vInss').textContent = money(inss);
+  document.getElementById('vIrrf').textContent = money(irrf);
+  document.getElementById('vNet').textContent = money(net);
+
+  const comp = document.getElementById('vStart').value.slice(0, 7) || '2026-12';
+  lastVacReceipt = {
+    id: `Ferias_${comp}_${emp.id}`, kind: 'Férias', comp, empId: emp.id,
+    empName: emp.name, empCpf: emp.cpf, empRole: emp.role,
+    gross, inss, irrf, otherDesc: 0, net, lines
+  };
+}
+
+// =========================================================================
+// 3. CÁLCULO DE 13º SALÁRIO
+// =========================================================================
+function fill13thEmp() {
+  const emp = employees.find(e => e.id === document.getElementById('tEmployee').value);
+  if (!emp) return;
+  document.getElementById('tSalary').value = emp.salary;
+  document.getElementById('tDeps').value = emp.deps;
+  document.getElementById('tPaid1').value = (emp.salary / 2).toFixed(2);
+  calc13th();
+}
+
+function calc13th() {
+  const emp = employees.find(e => e.id === document.getElementById('tEmployee').value) || { id: '0', name: 'Colaborador', cpf: '', role: '' };
+  const inst = document.getElementById('tInstallment').value;
+  const avos = Number(document.getElementById('tAvos').value) || 12;
+  const sal = Number(document.getElementById('tSalary').value) || 0;
+  const avg = Number(document.getElementById('tAvg').value) || 0;
+  const paid1 = Number(document.getElementById('tPaid1').value) || 0;
+  const deps = Number(document.getElementById('tDeps').value) || 0;
+  const year = document.getElementById('tYear').value || '2026';
+
+  const prop13 = Math.round(((sal + avg) / 12) * avos * 100) / 100;
+  const lines = [];
+  let gross = 0, inss = 0, irrf = 0, otherDesc = 0;
+
+  if (inst === '1') {
+    gross = Math.round((prop13 / 2) * 100) / 100;
+    lines.push({ code: '131', name: `13º SALÁRIO - 1ª PARCELA (${avos}/12 AVOS)`, type: 'Provento', qty: avos, amount: gross, inc: 'FGTS (Sem INSS/IRRF)' });
+  } else if (inst === '2') {
+    gross = prop13;
+    inss = Math.round(calcProgressive(Math.min(gross, Number(tables.inssCeiling)), tables.inss) * 100) / 100;
+    irrf = calcIRRFNet(gross, inss, deps).irrf;
+    otherDesc = paid1;
+
+    lines.push({ code: '132', name: `13º SALÁRIO INTEGRAL (${avos}/12 AVOS)`, type: 'Provento', qty: avos, amount: gross, inc: 'INSS, IRRF, FGTS' });
+    if (otherDesc > 0) lines.push({ code: '135', name: 'DESCONTO ADIANTAMENTO 1ª PARCELA 13º', type: 'Desconto', qty: 1, amount: otherDesc, inc: '—' });
+    if (inss > 0) lines.push({ code: '00901', name: 'INSS SOBRE 13º SALÁRIO', type: 'Desconto', qty: 1, amount: inss, inc: '—' });
+    if (irrf > 0) lines.push({ code: '00902', name: 'IRRF SOBRE 13º SALÁRIO', type: 'Desconto', qty: 1, amount: irrf, inc: '—' });
+  } else {
+    gross = prop13;
+    inss = Math.round(calcProgressive(Math.min(gross, Number(tables.inssCeiling)), tables.inss) * 100) / 100;
+    irrf = calcIRRFNet(gross, inss, deps).irrf;
+    lines.push({ code: '130', name: `13º SALÁRIO PARCELA ÚNICA (${avos}/12 AVOS)`, type: 'Provento', qty: avos, amount: gross, inc: 'INSS, IRRF, FGTS' });
+    if (inss > 0) lines.push({ code: '00901', name: 'INSS SOBRE 13º SALÁRIO', type: 'Desconto', qty: 1, amount: inss, inc: '—' });
+    if (irrf > 0) lines.push({ code: '00902', name: 'IRRF SOBRE 13º SALÁRIO', type: 'Desconto', qty: 1, amount: irrf, inc: '—' });
+  }
+
+  const net = Math.round((gross - inss - irrf - otherDesc) * 100) / 100;
+  document.querySelector('#tTable tbody').innerHTML = lines.map(l => `
+    <tr>
+      <td><b>${l.code}</b></td><td>${l.name}</td>
+      <td><span class="badge ${l.type === 'Provento' ? 'bg-green' : 'bg-red'}">${l.type}</span></td>
+      <td>${l.qty}</td><td><b>${money(l.amount)}</b></td><td>${l.inc}</td>
+    </tr>`).join('');
+
+  document.getElementById('tGross').textContent = money(gross);
+  document.getElementById('tInss').textContent = money(inss);
+  document.getElementById('tIrrf').textContent = money(irrf);
+  document.getElementById('tNet').textContent = money(net);
+
+  const comp = `${year}-${inst === '1' ? '11' : '12'}`;
+  last13Receipt = {
+    id: `13_${inst}_${comp}_${emp.id}`, kind: `13º Salário (${inst}ª)`, comp, empId: emp.id,
+    empName: emp.name, empCpf: emp.cpf, empRole: emp.role,
+    gross, inss, irrf, otherDesc, net, lines
+  };
+}
+
+// =========================================================================
+// 4. CÁLCULO DE DESLIGAMENTO (RESCISÃO)
+// =========================================================================
+function fillTermEmp() {
+  const emp = employees.find(e => e.id === document.getElementById('rEmployee').value);
+  if (!emp) return;
+  document.getElementById('rSalary').value = emp.salary;
+  calcTermination();
+}
+
+function calcTermination() {
+  const emp = employees.find(e => e.id === document.getElementById('rEmployee').value) || { id: '0', name: 'Colaborador', cpf: '', role: '', deps: 0 };
+  const reason = document.getElementById('rReason').value;
+  const notice = document.getElementById('rNotice').value;
+  const sal = Number(document.getElementById('rSalary').value) || 0;
+  const workedDays = Number(document.getElementById('rWorkedDays').value) || 0;
+  const avos13 = Number(document.getElementById('rAvos13').value) || 0;
+  const avosVac = Number(document.getElementById('rAvosVac').value) || 0;
+  const expVacDays = Number(document.getElementById('rExpiredVacDays').value) || 0;
+  const fgtsBal = Number(document.getElementById('rFgtsBalance').value) || 0;
+
+  const lines = [];
+  let gross = 0, otherDesc = 0, bInss = 0, bIrrf = 0;
+
+  // 1. Saldo de Salário
+  const saldoSal = Math.round((sal / 30) * workedDays * 100) / 100;
+  if (saldoSal > 0) {
+    lines.push({ code: 'R01', name: `SALDO DE SALÁRIO (${workedDays} DIAS)`, type: 'Provento', qty: workedDays, amount: saldoSal, inc: 'INSS, IRRF, FGTS' });
+    gross += saldoSal; bInss += saldoSal; bIrrf += saldoSal;
+  }
+
+  // 2. Aviso Prévio
+  if (reason === 'sem_justa_causa' && notice === 'indenizado') {
+    lines.push({ code: 'R02', name: 'AVISO PRÉVIO INDENIZADO (30 DIAS)', type: 'Provento', qty: 30, amount: sal, inc: 'FGTS (Isento IRRF)' });
+    gross += sal;
+  } else if (reason === 'acordo_484a' && notice === 'indenizado') {
+    const halfNotice = Math.round(sal * 0.5 * 100) / 100;
+    lines.push({ code: 'R02', name: 'AVISO PRÉVIO INDENIZADO ACORDO (50%)', type: 'Provento', qty: 15, amount: halfNotice, inc: 'FGTS' });
+    gross += halfNotice;
+  } else if (reason === 'pedido_demissao' && notice === 'dispensado') {
+    lines.push({ code: 'R90', name: 'DESCONTO AVISO PRÉVIO NÃO CUMPRIDO', type: 'Desconto', qty: 30, amount: sal, inc: '—' });
+    otherDesc += sal;
+  }
+
+  // 3. 13º Salário Proporcional (exceto Justa Causa)
+  let val13Prop = 0;
+  if (reason !== 'justa_causa' && avos13 > 0) {
+    val13Prop = Math.round((sal / 12) * avos13 * 100) / 100;
+    lines.push({ code: 'R03', name: `13º SALÁRIO PROPORCIONAL (${avos13}/12 AVOS)`, type: 'Provento', qty: avos13, amount: val13Prop, inc: 'INSS, IRRF, FGTS' });
+    gross += val13Prop;
+  }
+
+  // 4. Férias Vencidas + 1/3
+  if (expVacDays > 0) {
+    const vExp = Math.round((sal / 30) * expVacDays * 100) / 100;
+    const tExp = Math.round((vExp / 3) * 100) / 100;
+    lines.push({ code: 'R04', name: `FÉRIAS VENCIDAS (${expVacDays} DIAS)`, type: 'Provento', qty: expVacDays, amount: vExp, inc: 'Isento' });
+    lines.push({ code: 'R05', name: '1/3 CONSTITUCIONAL FÉRIAS VENCIDAS', type: 'Provento', qty: 1, amount: tExp, inc: 'Isento' });
+    gross += vExp + tExp;
+  }
+
+  // 5. Férias Proporcionais + 1/3 (exceto Justa Causa)
+  if (reason !== 'justa_causa' && avosVac > 0) {
+    const vProp = Math.round((sal / 12) * avosVac * 100) / 100;
+    const tProp = Math.round((vProp / 3) * 100) / 100;
+    lines.push({ code: 'R06', name: `FÉRIAS PROPORCIONAIS (${avosVac}/12 AVOS)`, type: 'Provento', qty: avosVac, amount: vProp, inc: 'Isento' });
+    lines.push({ code: 'R07', name: '1/3 CONSTITUCIONAL FÉRIAS PROPORCIONAIS', type: 'Provento', qty: 1, amount: tProp, inc: 'Isento' });
+    gross += vProp + tProp;
+  }
+
+  // INSS & IRRF (Saldo salário separado do 13º proporcional)
+  const inssSal = calcProgressive(Math.min(bInss, Number(tables.inssCeiling)), tables.inss);
+  const inss13 = calcProgressive(Math.min(val13Prop, Number(tables.inssCeiling)), tables.inss);
+  const totalInss = Math.round((inssSal + inss13) * 100) / 100;
+
+  const irrfSal = calcIRRFNet(bIrrf, inssSal, emp.deps || 0).irrf;
+  const irrf13 = calcIRRFNet(val13Prop, inss13, emp.deps || 0).irrf;
+  const totalIrrf = Math.round((irrfSal + irrf13) * 100) / 100;
+
+  if (totalInss > 0) lines.push({ code: '00901', name: 'INSS RESCISÃO (SALÁRIO + 13º)', type: 'Desconto', qty: 1, amount: totalInss, inc: '—' });
+  if (totalIrrf > 0) lines.push({ code: '00902', name: 'IRRF RESCISÃO (SALÁRIO + 13º)', type: 'Desconto', qty: 1, amount: totalIrrf, inc: '—' });
+
+  // Multa FGTS
+  const fineRate = reason === 'sem_justa_causa' ? 0.40 : (reason === 'acordo_484a' ? 0.20 : 0);
+  const fgtsFine = Math.round(fgtsBal * fineRate * 100) / 100;
+
+  const totalDesc = Math.round((otherDesc + totalInss + totalIrrf) * 100) / 100;
+  const net = Math.round((gross - totalDesc) * 100) / 100;
+
+  document.querySelector('#termTable tbody').innerHTML = lines.map(l => `
+    <tr>
+      <td><b>${l.code}</b></td><td>${l.name}</td>
+      <td><span class="badge ${l.type === 'Provento' ? 'bg-green' : 'bg-red'}">${l.type}</span></td>
+      <td>${l.qty}</td><td><b>${money(l.amount)}</b></td><td>${l.inc}</td>
+    </tr>`).join('');
+
+  document.getElementById('termGross').textContent = money(gross);
+  document.getElementById('termDesc').textContent = money(totalDesc);
+  document.getElementById('termFine').textContent = money(fgtsFine);
+  document.getElementById('termNet').textContent = money(net);
+
+  const comp = document.getElementById('rDate').value.slice(0, 7) || '2026-11';
+  lastTermReceipt = {
+    id: `Rescisao_${comp}_${emp.id}`, kind: 'Rescisão (TRCT)', comp, empId: emp.id,
+    empName: emp.name, empCpf: emp.cpf, empRole: emp.role,
+    gross, inss: totalInss, irrf: totalIrrf, otherDesc, net, lines
+  };
+}
+
+function saveSpecialReceipt(type) {
+  const map = { 'Férias': lastVacReceipt, '13º Salário': last13Receipt, 'Rescisão': lastTermReceipt };
+  const rec = map[type];
+  if (!rec) return;
+  savedReceipts = savedReceipts.filter(r => r.id !== rec.id);
+  savedReceipts.unshift(structuredClone(rec));
+  saveAll();
+  renderHistory();
+  alert(`Recibo de ${type} de ${rec.empName} salvo em "Holerites & Recibos Salvos"!`);
+}
+
+// =========================================================================
+// 5. HISTÓRICO & MODAL RECIBO
+// =========================================================================
+function renderHistory() {
+  const q = (document.getElementById('histSearch').value || '').toLowerCase();
+  const tb = document.querySelector('#histTable tbody');
+  const filtered = savedReceipts.filter(r =>
+    r.empName.toLowerCase().includes(q) || r.kind.toLowerCase().includes(q) || r.comp.includes(q)
+  );
+
+  if (!filtered.length) {
+    tb.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#777;padding:16px">Nenhum demonstrativo gravado até o momento.</td></tr>';
+    return;
+  }
+
+  tb.innerHTML = filtered.map(r => `
+    <tr>
+      <td><span class="badge bg-blue">${esc(r.kind)}</span></td>
+      <td><b>${r.comp.split('-').reverse().join('/')}</b></td>
+      <td>${esc(r.empName)}</td>
+      <td style="color:var(--success);font-weight:700">${money(r.gross)}</td>
+      <td>${money(r.inss)}</td>
+      <td>${money(r.irrf)}</td>
+      <td>${money(r.otherDesc)}</td>
+      <td style="color:var(--success);font-weight:700">${money(r.net)}</td>
+      <td>
+        <button class="btn btn-primary btn-xs" onclick="openReceiptById('${r.id}')">👁️ Recibo</button>
+        <button class="btn btn-danger btn-xs" onclick="deleteReceipt('${r.id}')">🗑️</button>
+      </td>
+    </tr>`).join('');
+}
+
+function deleteReceipt(id) {
+  if (confirm('Excluir este demonstrativo salvo?')) {
+    savedReceipts = savedReceipts.filter(r => r.id !== id);
+    saveAll();
+    renderHistory();
+  }
+}
+
+function openReceiptById(id) {
+  const rec = savedReceipts.find(r => r.id === id);
+  if (rec) showReceiptModal(rec);
+}
+
+function showReceiptModal(r) {
+  const rows = r.lines.map(l => `
+    <tr>
+      <td>${esc(l.code)}</td>
+      <td>${esc(l.name)}</td>
+      <td style="text-align:right">${Number(l.qty).toFixed(2)}</td>
+      <td style="text-align:right">${l.type === 'Provento' ? money(l.amount) : ''}</td>
+      <td style="text-align:right">${l.type === 'Desconto' ? money(l.amount) : ''}</td>
+    </tr>`).join('');
+
+  document.getElementById('receiptBody').innerHTML = `
+    <div class="payslip-top">
+      <div>
+        <strong style="font-size:14px">DEMONSTRATIVO DE PAGAMENTO — ${esc(r.kind.toUpperCase())}</strong><br>
+        Colaborador: <b>${esc(r.empName)}</b> | CPF: ${esc(r.empCpf)}<br>
+        Cargo: ${esc(r.empRole || '')}
+      </div>
+      <div style="text-align:right">
+        Competência: <b>${r.comp.split('-').reverse().join('/')}</b><br>
+        Emissão: ${new Date().toLocaleDateString('pt-BR')}
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>Cód.</th><th>Descrição do Evento</th><th style="text-align:right">Ref.</th><th style="text-align:right">Proventos</th><th style="text-align:right">Descontos</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:8px;margin-top:8px;font-size:13px">
+      <span>Total Proventos: <b>${money(r.gross)}</b></span>
+      <span>Total Descontos: <b>${money(r.inss + r.irrf + r.otherDesc)}</b></span>
+      <span style="font-size:15px">LÍQUIDO A RECEBER: <b style="color:#00a65a">${money(r.net)}</b></span>
+    </div>`;
+  document.getElementById('modalReceipt').classList.add('open');
+}
+
+// =========================================================================
+// 6. RH - RUBRICAS (ESTILO COMPRASNET / ERP)
+// =========================================================================
+function openRubricForm(code = null) {
+  document.getElementById('rubricListBox').style.display = 'none';
+  document.getElementById('rubricFormBox').style.display = 'block';
+  if (code) {
+    const r = rubrics.find(x => x.code === code);
+    editRubCode = code;
+    document.getElementById('rubricFormTitle').textContent = `Editar RH - Rubrica (${r.code})`;
+    document.getElementById('rubricSubTitle').textContent = 'Editar RH - Rubrica.';
+    document.getElementById('rCode').value = r.code;
+    document.getElementById('rCode').disabled = true;
+    document.getElementById('rName').value = r.name;
+    document.getElementById('rCreated').value = r.created || '11/2026';
+    document.getElementById('rType').value = r.type;
+    document.getElementById('rStatus').value = r.status;
+    document.getElementById('rMode').value = r.mode;
+    document.getElementById('rVal').value = r.val;
+    document.getElementById('rInss').checked = r.inss;
+    document.getElementById('rIrrf').checked = r.irrf;
+    document.getElementById('rFgts').checked = r.fgts;
+  } else {
+    editRubCode = null;
+    document.getElementById('rubricFormTitle').textContent = 'Adicionar RH - Rubrica';
+    document.getElementById('rubricSubTitle').textContent = 'Adicionar RH - Rubrica.';
+    document.getElementById('rCode').value = '';
+    document.getElementById('rCode').disabled = false;
+    document.getElementById('rName').value = '';
+    document.getElementById('rCreated').value = '11/2026';
+    document.getElementById('rType').value = 'Provento';
+    document.getElementById('rStatus').value = 'ATIVA';
+    document.getElementById('rMode').value = 'fixed';
+    document.getElementById('rVal').value = 0;
+    document.getElementById('rInss').checked = true;
+    document.getElementById('rIrrf').checked = true;
+    document.getElementById('rFgts').checked = true;
+  }
+}
+
+function closeRubricForm() {
+  document.getElementById('rubricFormBox').style.display = 'none';
+  document.getElementById('rubricListBox').style.display = 'block';
+  document.getElementById('rubricSubTitle').textContent = 'Lista e Cadastro de Rubricas';
+}
+
+function saveRubric() {
+  const code = document.getElementById('rCode').value.trim();
+  const name = document.getElementById('rName').value.trim().toUpperCase();
+  const created = document.getElementById('rCreated').value.trim();
+  if (!code || !name || !created) { alert('Preencha todos os campos obrigatórios (*).'); return; }
+
+  const obj = {
+    code, name, created,
+    type: document.getElementById('rType').value,
+    status: document.getElementById('rStatus').value,
+    mode: document.getElementById('rMode').value,
+    val: Number(document.getElementById('rVal').value) || 0,
+    inss: document.getElementById('rInss').checked,
+    irrf: document.getElementById('rIrrf').checked,
+    fgts: document.getElementById('rFgts').checked
+  };
+
+  if (editRubCode) {
+    rubrics = rubrics.map(r => r.code === editRubCode ? obj : r);
+  } else {
+    if (rubrics.some(r => r.code === code)) { alert('Código de rubrica já cadastrado.'); return; }
+    rubrics.push(obj);
+  }
+  saveAll();
+  renderRubrics();
+  populateSelects();
+  closeRubricForm();
+}
+
+function deleteRubric(code) {
+  if (confirm(`Deseja excluir a rubrica ${code}?`)) {
+    rubrics = rubrics.filter(r => r.code !== code);
+    saveAll();
+    renderRubrics();
+    populateSelects();
+  }
+}
+
+function renderRubrics() {
+  const q = (document.getElementById('rubricSearch').value || '').toLowerCase();
+  const list = rubrics.filter(r => r.code.toLowerCase().includes(q) || r.name.toLowerCase().includes(q));
+  const tb = document.querySelector('#rubricTable tbody');
+
+  tb.innerHTML = list.map(r => {
+    const inc = [r.inss ? 'INSS' : '', r.irrf ? 'IRRF' : '', r.fgts ? 'FGTS' : ''].filter(Boolean).join(', ') || '—';
+    const modeTxt = { fixed: 'Fixo', percent: '% Salário', quantity: 'Qtd × Unit.', hourly: 'Horas' }[r.mode];
+    return `
+      <tr>
+        <td><b>${esc(r.code)}</b></td>
+        <td>${esc(r.name)}</td>
+        <td>${esc(r.created || '—')}</td>
+        <td>${esc(r.type.toUpperCase())}</td>
+        <td>${modeTxt} (${r.val})</td>
+        <td>${inc}</td>
+        <td><span class="badge ${r.status === 'ATIVA' ? 'bg-green' : 'bg-gray'}">${r.status}</span></td>
+        <td>
+          <button class="btn btn-default btn-xs" onclick="openRubricForm('${r.code}')" title="Editar">✏️</button>
+          <button class="btn btn-danger btn-xs" onclick="deleteRubric('${r.code}')" title="Excluir">🗑️</button>
+        </td>
+      </tr>`;
+  }).join('');
+  document.getElementById('rubricCountLabel').textContent = `Exibindo 1 a ${list.length} de ${list.length} registros (total cadastrado: ${rubrics.length})`;
+}
+
+// =========================================================================
+// 7. COLABORADORES & TABELAS LEGAIS
+// =========================================================================
+function saveEmployee() {
+  const name = document.getElementById('eName').value.trim().toUpperCase();
+  const cpf = document.getElementById('eCpf').value.trim();
+  if (!name || !cpf) { alert('Nome e CPF são obrigatórios.'); return; }
+
+  const obj = {
+    id: editEmpId || 'emp_' + Date.now(),
+    name, cpf,
+    role: document.getElementById('eRole').value.trim() || 'Colaborador',
+    dept: document.getElementById('eDept').value.trim() || 'Geral',
+    adm: document.getElementById('eAdm').value || '2025-01-01',
+    salary: Number(document.getElementById('eSal').value) || 0,
+    deps: Number(document.getElementById('eDeps').value) || 0,
+    hours: Number(document.getElementById('eHrs').value) || 220
+  };
+  if (editEmpId) employees = employees.map(e => e.id === editEmpId ? obj : e);
+  else employees.push(obj);
+  saveAll();
+  clearEmployeeForm();
+  renderEmployees();
+  populateSelects();
+}
+
+function editEmployee(id) {
+  const e = employees.find(x => x.id === id);
+  if (!e) return;
+  editEmpId = id;
+  document.getElementById('eName').value = e.name;
+  document.getElementById('eCpf').value = e.cpf;
+  document.getElementById('eRole').value = e.role;
+  document.getElementById('eDept').value = e.dept;
+  document.getElementById('eAdm').value = e.adm;
+  document.getElementById('eSal').value = e.salary;
+  document.getElementById('eDeps').value = e.deps;
+  document.getElementById('eHrs').value = e.hours;
+}
+
+function deleteEmployee(id) {
+  if (employees.length <= 1) { alert('Mantenha pelo menos 1 colaborador.'); return; }
+  if (confirm('Excluir colaborador?')) {
+    employees = employees.filter(e => e.id !== id);
+    saveAll();
+    renderEmployees();
+    populateSelects();
+  }
+}
+
+function clearEmployeeForm() {
+  editEmpId = null;
+  ['eName', 'eCpf', 'eRole', 'eDept'].forEach(i => document.getElementById(i).value = '');
+  document.getElementById('eSal').value = 3000;
+  document.getElementById('eDeps').value = 0;
+  document.getElementById('eHrs').value = 220;
+}
+
+function renderEmployees() {
+  document.getElementById('topEmpCount').textContent = employees.length;
+  document.querySelector('#empTable tbody').innerHTML = employees.map(e => `
+    <tr>
+      <td><b>${esc(e.name)}</b></td><td>${esc(e.cpf)}</td><td>${esc(e.role)}</td><td>${esc(e.dept)}</td>
+      <td>${esc(e.adm)}</td><td>${money(e.salary)}</td><td>${e.deps}</td><td>${e.hours}h</td>
+      <td>
+        <button class="btn btn-default btn-xs" onclick="editEmployee('${e.id}')">✏️</button>
+        <button class="btn btn-danger btn-xs" onclick="deleteEmployee('${e.id}')">🗑️</button>
+      </td>
+    </tr>`).join('');
+}
+
+function renderTables() {
+  document.querySelector('#inssTable tbody').innerHTML = tables.inss.map((b, i) => `
+    <tr>
+      <td><input type="number" step=".01" value="${b.limit}" class="ib" data-i="${i}" data-k="limit"></td>
+      <td><input type="number" step=".01" value="${b.value}" class="ib" data-i="${i}" data-k="value"></td>
+      <td><input type="number" step=".01" value="${b.ded}" class="ib" data-i="${i}" data-k="ded"></td>
+      <td><button class="btn btn-danger btn-xs" onclick="tables.inss.splice(${i},1);renderTables()">X</button></td>
+    </tr>`).join('');
+
+  document.querySelector('#irTable tbody').innerHTML = tables.ir.map((b, i) => `
+    <tr>
+      <td><input type="number" step=".01" value="${b.limit}" class="rb" data-i="${i}" data-k="limit"></td>
+      <td><input type="number" step=".01" value="${b.value}" class="rb" data-i="${i}" data-k="value"></td>
+      <td><input type="number" step=".01" value="${b.ded}" class="rb" data-i="${i}" data-k="ded"></td>
+      <td><button class="btn btn-danger btn-xs" onclick="tables.ir.splice(${i},1);renderTables()">X</button></td>
+    </tr>`).join('');
+
+  document.getElementById('tInssCeil').value = tables.inssCeiling;
+  document.getElementById('tFgtsRate').value = tables.fgtsRate;
+  document.getElementById('tDepDed').value = tables.depDeduction;
+  document.getElementById('tSimpDed').value = tables.simplified;
+}
+
+function addBand(t) { tables[t].push({ limit: 0, value: 0, ded: 0 }); renderTables(); }
+
+function saveTables() {
+  document.querySelectorAll('.ib').forEach(el => tables.inss[el.dataset.i][el.dataset.k] = Number(el.value));
+  document.querySelectorAll('.rb').forEach(el => tables.ir[el.dataset.i][el.dataset.k] = Number(el.value));
+  tables.inssCeiling = Number(document.getElementById('tInssCeil').value);
+  tables.fgtsRate = Number(document.getElementById('tFgtsRate').value);
+  tables.depDeduction = Number(document.getElementById('tDepDed').value);
+  tables.simplified = Number(document.getElementById('tSimpDed').value);
+  saveAll();
+  alert('Tabelas legais atualizadas!');
+}
+
+// EXPORTAÇÕES & BACKUP
+function exportAllCSV() {
+  if (!savedReceipts.length) { alert('Nenhum recibo salvo para exportar.'); return; }
+  const rows = [['Tipo', 'Competencia', 'Colaborador', 'CPF', 'Bruto', 'INSS', 'IRRF', 'Outros_Desc', 'Liquido'].join(';')];
+  savedReceipts.forEach(r => rows.push([r.kind, r.comp, `"${r.empName}"`, r.empCpf, r.gross.toFixed(2), r.inss.toFixed(2), r.irrf.toFixed(2), r.otherDesc.toFixed(2), r.net.toFixed(2)].join(';')));
+  downloadBlob('\uFEFF' + rows.join('\n'), 'relatorio_dp_completo.csv', 'text/csv;charset=utf-8;');
+}
+
+function exportRubricsCSV() {
+  const rows = [['Codigo', 'Descricao', 'Criacao', 'Tipo', 'Situacao'].join(';')];
+  rubrics.forEach(r => rows.push([r.code, `"${r.name}"`, r.created, r.type, r.status].join(';')));
+  downloadBlob('\uFEFF' + rows.join('\n'), 'rh_rubricas.csv', 'text/csv;charset=utf-8;');
+}
+
+function exportBackup() {
+  downloadBlob(JSON.stringify({ employees, rubrics, tables, savedReceipts }, null, 2), 'backup_erp_dp.json', 'application/json');
+}
+
+function importBackup(ev) {
+  const f = ev.target.files[0];
+  if (!f) return;
+  const rd = new FileReader();
+  rd.onload = e => {
+    try {
+      const d = JSON.parse(e.target.result);
+      if (d.employees) employees = d.employees;
+      if (d.rubrics) rubrics = d.rubrics;
+      if (d.tables) tables = d.tables;
+      if (d.savedReceipts) savedReceipts = d.savedReceipts;
+      saveAll();
+      boot();
+      alert('Backup restaurado com sucesso!');
+    } catch { alert('Arquivo inválido.'); }
+  };
+  rd.readAsText(f);
+}
+
+function downloadBlob(content, filename, mime) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type: mime }));
+  a.download = filename;
+  a.click();
+}
+
+function populateSelects() {
+  const empOpts = employees.map(e => `<option value="${e.id}">${esc(e.name)} — ${esc(e.role)} (${money(e.salary)})</option>`).join('');
+  ['pEmployee', 'vEmployee', 'tEmployee', 'rEmployee'].forEach(id => {
+    const el = document.getElementById(id);
+    const cur = el.value;
+    el.innerHTML = empOpts;
+    if (employees.some(e => e.id === cur)) el.value = cur;
+  });
+
+  const activeRubs = rubrics.filter(r => r.status === 'ATIVA' && r.code !== '00901' && r.code !== '00902');
+  document.getElementById('pAddRubricSelect').innerHTML = activeRubs.map(r =>
+    `<option value="${r.code}">${esc(r.code)} - ${esc(r.name)} (${r.type})</option>`
+  ).join('');
+}
+
+// NAVEGAÇÃO
+document.querySelectorAll('aside button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('aside button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.panel).classList.add('active');
+  });
+});
+
+function boot() {
+  renderEmployees();
+  renderRubrics();
+  renderTables();
+  populateSelects();
+  loadOrInitPayroll();
+  fillVacationEmp();
+  fill13thEmp();
+  fillTermEmp();
+  renderHistory();
+}
+
+boot();
+</script>
+</body>
+</html>
