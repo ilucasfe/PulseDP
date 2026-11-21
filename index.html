@@ -268,7 +268,7 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
 .dc-sign-line{border-top:1px solid #000;padding-top:4px;text-align:center;font-size:10px}
 .dc-via-cut{border-top:1.5px dashed #64748b;margin:18px 0;text-align:center;font-size:9px;color:#64748b;padding-top:3px}
 
-#printArea{display:none}
+#printArea{display:block;width:100%}
 
 @media print{
   @page{size:A4 portrait;margin:10mm}
@@ -844,10 +844,10 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
           </div>
 
           <div class="grid three">
-            <div><label>Código Rubrica (codRubr) <span class="req">*</span></label><input id="rCode" placeholder="Ex.: 00003"></div>
-            <div style="grid-column:span 2"><label>Descrição (dscRubr) <span class="req">*</span></label><input id="rName" placeholder="Ex.: SALARIO - CLT"></div>
+            <div><label>Código Rubrica <span class="req">*</span></label><input id="rCode" placeholder="Ex.: 00003"></div>
+            <div style="grid-column:span 2"><label>Descrição <span class="req">*</span></label><input id="rName" placeholder="Ex.: SALARIO - CLT"></div>
             <div style="grid-column:span 3">
-              <label>Natureza da Rubrica — eSocial Tabela 03 (natRubr) <span class="req">*</span></label>
+              <label>Natureza da Rubrica <span class="req">*</span></label>
               <select id="rNatRubr">
                 <option value="1000">1000 - Salário, vencimento, soldo</option>
                 <option value="1001">1001 - Subsídio</option>
@@ -1016,11 +1016,16 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
             <div class="toolbar">
               <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
                 <input type="text" id="empSearch" class="search-input" placeholder="🔍 Consultar por nome, CPF, matrícula ou cargo..." oninput="renderEmployees()">
+                <select id="empEventFilter" style="width:auto;min-width:190px" onchange="renderEmployees()">
+                  <option value="TODOS">Todos os Tipos (S-2200 + S-2300)</option>
+                  <option value="S-2200">Com Vínculo (S-2200)</option>
+                  <option value="S-2300">Sem Vínculo — TSVE (S-2300)</option>
+                </select>
                 <select id="empStatusFilter" style="width:auto;min-width:175px" onchange="renderEmployees()">
                   <option value="TODOS">Todos os Status</option>
                   <option value="ATIVO">Somente Ativos</option>
                   <option value="AFASTADO">Em Afastamento (S-2230)</option>
-                  <option value="INATIVO">Somente Inativos (S-2299)</option>
+                  <option value="INATIVO">Somente Inativos (S-2299 / S-2399)</option>
                   <option value="PENDENTE">Com Férias Pendentes</option>
                 </select>
               </div>
@@ -1028,7 +1033,7 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
             </div>
             <div class="tablewrap">
               <table id="empTable">
-                <thead><tr><th>Matrícula</th><th>Nome</th><th>Status</th><th>CPF</th><th>Categ. (Tab.01)</th><th>Cargo / CBO</th><th>Férias Pend.</th><th>Salário</th><th style="width:130px">Ações</th></tr></thead>
+                <thead><tr><th>Matrícula</th><th>Nome</th><th>Evento eSocial</th><th>Status</th><th>CPF</th><th>Categ. (Tab.01)</th><th>Cargo / CBO</th><th>Férias Pend.</th><th>Salário / Pró-Labore</th><th style="width:130px">Ações</th></tr></thead>
                 <tbody></tbody>
               </table>
             </div>
@@ -1040,7 +1045,7 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
           <div class="card" style="margin-bottom:14px">
             <div class="card-header">
               <div>
-                <h3 class="card-title">Lançamento de Afastamento Temporário — eSocial S-2230 (Tabela 18)</h3>
+                <h3 class="card-title">Lançamento de Afastamento Temporário</h3>
                 <span class="card-sub">Ao registrar um afastamento ativo (sem data de fim ou data fim futura), o colaborador passa automaticamente para o status <b>AFASTADO</b>.</span>
               </div>
               <button type="button" class="btn btn-ghost btn-sm" onclick="closeLeaveHistoryView()">← Voltar para Colaboradores</button>
@@ -1052,7 +1057,7 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
                 <select id="lEmployee"></select>
               </div>
               <div style="grid-column:span 2">
-                <label>Motivo do Afastamento — eSocial Tabela 18 (codMotAfast) <span class="req">*</span></label>
+                <label>Motivo do Afastamento <span class="req">*</span></label>
                 <select id="lMotAfast" onchange="syncLeaveCategory()">
                   <option value="03|DOENCA">03 - Acidente/Doença não relacionada ao trabalho (Auxílio Doença)</option>
                   <option value="01|DOENCA">01 - Acidente/Doença do trabalho (CAT / Auxílio Acidente)</option>
@@ -1064,11 +1069,11 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
                 </select>
               </div>
               <div>
-                <label>Data Início do Afastamento (dtIniAfast) <span class="req">*</span></label>
+                <label>Data Início do Afastamento <span class="req">*</span></label>
                 <input type="date" id="lStartDate" value="2026-11-20">
               </div>
               <div>
-                <label>Data Fim / Término (dtFimAfast)</label>
+                <label>Data Fim / Término</label>
                 <input type="date" id="lEndDate">
               </div>
               <div style="grid-column:span 2">
@@ -1083,7 +1088,7 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
 
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Histórico de Afastamentos Registrados (Evento S-2230)</h3>
+              <h3 class="card-title">Histórico de Afastamentos Registrados</h3>
               <span class="card-sub">Encerrar um afastamento (informando dtFimAfast ou encerrando o vínculo) retorna o colaborador para <b>ATIVO</b>.</span>
             </div>
             <div class="tablewrap">
@@ -1105,25 +1110,44 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
           </div>
         </div>
 
-        <!-- TELA 2: FORMULÁRIO DE CADASTRO / EDIÇÃO -->
+        <!-- TELA 2: FORMULÁRIO DE CADASTRO / EDIÇÃO (eSocial S-2200 Com Vínculo vs S-2300 TSVE Sem Vínculo) -->
         <div class="card" id="empFormView" style="display:none">
           <div class="card-header">
-            <h3 class="card-title" id="empFormHeaderTitle">Incluir Colaborador — Identificação e Dados Pessoais (Trabalhador)</h3>
+            <h3 class="card-title" id="empFormHeaderTitle">Incluir Colaborador — eSocial S-2200 / S-2300</h3>
             <button type="button" class="btn btn-ghost btn-sm" onclick="closeEmployeeForm()">← Voltar para Consulta</button>
           </div>
+
+          <!-- SELETOR DO EVENTO / REGIME ESOCIAL -->
+          <div style="background:var(--primary-soft);border:1px solid var(--primary-border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+              <div>
+                <strong style="font-size:13.5px;color:var(--text)">Enquadramento eSocial (Tipo de Admissão / Início) <span class="req">*</span></strong>
+                <span id="esocialEventHint" style="display:block;font-size:12px;color:var(--text-secondary);margin-top:2px">
+                  <b>S-2200 (Com Vínculo Empregatício):</b> Empregados CLT, Aprendiz, Doméstico, Temporário, Intermitente e Estatutário (Categorias 1xx / 3xx).
+                </span>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button type="button" id="btnModeS2200" class="btn btn-primary btn-sm" onclick="switchEsocialEventMode('S-2200')">📄 Com Vínculo (S-2200)</button>
+                <button type="button" id="btnModeS2300" class="btn btn-ghost btn-sm" onclick="switchEsocialEventMode('S-2300')">🤝 Sem Vínculo — TSVE (S-2300)</button>
+              </div>
+            </div>
+            <input type="hidden" id="eEventType" value="S-2200">
+          </div>
+
+          <div class="card-header" style="margin-top:4px"><h3 class="card-title">1. Identificação do Trabalhador</h3></div>
           <div class="grid">
-            <div><label>Nome Completo (nmTrab) <span class="req">*</span></label><input id="eName"></div>
-            <div><label>CPF (cpfTrab) <span class="req">*</span></label><input id="eCpf" placeholder="000.000.000-00"></div>
-            <div><label>Data de Nascimento (dtNascto)</label><input type="date" id="eBirth" value="1992-04-15"></div>
+            <div><label>Nome Completo <span class="req">*</span></label><input id="eName" placeholder="Nome civil conforme RFB"></div>
+            <div><label>CPF <span class="req">*</span></label><input id="eCpf" placeholder="000.000.000-00"></div>
+            <div><label>Data de Nascimento <span class="req">*</span></label><input type="date" id="eBirth" value="1992-04-15"></div>
             <div>
-              <label>Sexo (sexo)</label>
+              <label>Sexo <span class="req">*</span></label>
               <select id="eSex">
                 <option value="M">M - Masculino</option>
                 <option value="F">F - Feminino</option>
               </select>
             </div>
             <div>
-              <label>Raça / Cor (racaCor)</label>
+              <label>Raça / Cor <span class="req">*</span></label>
               <select id="eRace">
                 <option value="1">1 - Branca</option>
                 <option value="2">2 - Preta</option>
@@ -1134,18 +1158,46 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
               </select>
             </div>
             <div>
-              <label>Grau de Instrução (grauInstr)</label>
+              <label>Grau de Instrução <span class="req">*</span></label>
               <select id="eEdu">
-                <option value="07">07 - Ensino médio completo</option>
+                <option value="01">01 - Analfabeto</option>
+                <option value="02">02 - Até o 5º ano incompleto do EF</option>
+                <option value="03">03 - 5º ano completo do EF</option>
+                <option value="04">04 - Do 6º ao 9º ano do EF</option>
                 <option value="05">05 - Ensino fundamental completo</option>
+                <option value="06">06 - Ensino médio incompleto</option>
+                <option value="07" selected>07 - Ensino médio completo</option>
                 <option value="08">08 - Educação superior incompleta</option>
                 <option value="09">09 - Educação superior completa</option>
                 <option value="10">10 - Pós-graduação completa</option>
+                <option value="11">11 - Mestrado completo</option>
+                <option value="12">12 - Doutorado completo</option>
+              </select>
+            </div>
+            <div>
+              <label>Estado Civil</label>
+              <select id="eEstCiv">
+                <option value="1">1 - Solteiro</option>
+                <option value="2">2 - Casado</option>
+                <option value="3">3 - Divorciado</option>
+                <option value="4">4 - Separado</option>
+                <option value="5">5 - Viúvo</option>
+              </select>
+            </div>
+            <div>
+              <label>País de Nascimento / Nacionalidade</label>
+              <select id="ePaisNac">
+                <option value="105" selected>105 - Brasil</option>
+                <option value="063">063 - Argentina</option>
+                <option value="586">586 - Paraguai</option>
+                <option value="607">607 - Portugal</option>
+                <option value="249">249 - Estados Unidos</option>
+                <option value="999">999 - Outros</option>
               </select>
             </div>
             <div><label>NIS / PIS / PASEP</label><input id="ePis" placeholder="000.00000.00-0"></div>
-            <div><label>CTPS / Série</label><input id="eCtps" placeholder="0000000 / 001-PR"></div>
-            <div style="grid-column:span 2"><label>Endereço Completo (Logradouro, Nº, Bairro, UF, CEP)</label><input id="eAddr" placeholder="Rua, Nº, Bairro, Cidade - UF, CEP"></div>
+            <div id="wrapCtps"><label>CTPS / Série (Digital = CPF)</label><input id="eCtps" placeholder="0000000 / 001-PR"></div>
+            <div style="grid-column:span 2"><label>Endereço Residencial Brasil (Logradouro, Nº, Bairro, UF, CEP) <span class="req">*</span></label><input id="eAddr" placeholder="Rua, Nº, Bairro, Cidade - UF, CEP"></div>
             <div>
               <label>Situação do Colaborador <span class="req">*</span></label>
               <select id="eStatus">
@@ -1153,87 +1205,251 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
                 <option value="INATIVO">INATIVO</option>
               </select>
             </div>
-
-            <div><label>Períodos de Férias Pendentes</label><input type="number" id="eVacPending" value="0" min="0" max="5"></div>
-            <div><label>Período Aquisitivo de Referência</label><input id="eVacAcqRef" placeholder="Ex.: 10/05/2025 a 09/05/2026"></div>
-            <div><label>Dependentes IRRF (qtDepIRRF)</label><input type="number" id="eDeps" value="0" min="0"></div>
+            <div><label>Dependentes IRRF</label><input type="number" id="eDeps" value="0" min="0"></div>
             <div><label>Dependentes Sal. Família</label><input type="number" id="eDepsSf" value="0" min="0"></div>
+            <div id="wrapVacPending"><label>Períodos de Férias Pendentes</label><input type="number" id="eVacPending" value="0" min="0" max="5"></div>
+            <div id="wrapVacAcqRef"><label>Período Aquisitivo de Referência</label><input id="eVacAcqRef" placeholder="Ex.: 10/05/2025 a 09/05/2026"></div>
           </div>
 
-          <div class="card-header" style="margin-top:16px"><h3 class="card-title">Vínculo, Contrato e Regime Previdenciário (S-2200 / S-2300)</h3></div>
-          <div class="grid">
-            <div><label>Matrícula (matricula)</label><input id="eMat" placeholder="Ex.: 000101"></div>
-            <div>
-              <label>Categoria (Tabela 01 - codCateg) <span class="req">*</span></label>
-              <select id="eCodCateg">
-                <option value="101" selected>101 - Empregado - Geral (CLT)</option>
-                <option value="102">102 - Trabalhador rural por pequeno prazo</option>
-                <option value="103">103 - Aprendiz</option>
-                <option value="104">104 - Doméstico</option>
-                <option value="105">105 - Contrato a termo (Lei 9.601/1998)</option>
-                <option value="106">106 - Trabalhador temporário (Lei 6.019/1974)</option>
-                <option value="111">111 - Contrato de trabalho intermitente</option>
-                <option value="201">201 - Trabalhador avulso portuário</option>
-                <option value="202">202 - Trabalhador avulso não portuário</option>
-                <option value="301">301 - Servidor público titular de cargo efetivo</option>
-                <option value="302">302 - Servidor público cargo exclusivo em comissão</option>
-                <option value="701">701 - Contribuinte individual - Autônomo em geral</option>
-                <option value="721">721 - Contribuinte individual - Diretor não empregado c/ FGTS</option>
-                <option value="722">722 - Contribuinte individual - Diretor não empregado s/ FGTS</option>
-                <option value="723">723 - Contribuinte individual - Empresário / Sócio</option>
-                <option value="901">901 - Estagiário</option>
-                <option value="902">902 - Médico residente / área de saúde</option>
-              </select>
+          <!-- BLOCO ESPECÍFICO: COM VÍNCULO (S-2200 - evtAdmissao) -->
+          <div id="blockS2200">
+            <div class="card-header" style="margin-top:16px">
+              <div>
+                <h3 class="card-title">2. Dados do Vínculo e Contrato de Trabalho</h3>
+                <span class="card-sub">Regras S-2200: Matrícula obrigatória, Categoria Tabela 01 (grupos 1xx/3xx), Regime Trabalhista/Previdenciário, Contrato e Remuneração.</span>
+              </div>
             </div>
-            <div><label>Data de Admissão / Início (dtAdm)</label><input type="date" id="eAdm" value="2025-01-10"></div>
-            <div>
-              <label>Tipo de Regime Trab. (tpRegTrab)</label>
-              <select id="eTpRegTrab">
-                <option value="1">1 - CLT (Celetista)</option>
-                <option value="2">2 - Estatutário</option>
-              </select>
+            <div class="grid">
+              <div><label>Matrícula <span class="req">*</span></label><input id="eMat" placeholder="Ex.: 000101"></div>
+              <div>
+                <label>Categoria do Trabalhador <span class="req">*</span></label>
+                <select id="eCodCategS2200" onchange="onChangeS2200Categ()">
+                  <option value="101" selected>101 - Empregado - Geral (CLT)</option>
+                  <option value="102">102 - Empregado - Trabalhador rural por pequeno prazo</option>
+                  <option value="103">103 - Empregado - Aprendiz</option>
+                  <option value="104">104 - Empregado - Doméstico</option>
+                  <option value="105">105 - Empregado - Contrato a termo (Lei 9.601/1998)</option>
+                  <option value="106">106 - Trabalhador temporário (Lei 6.019/1974)</option>
+                  <option value="107">107 - Empregado - Contrato de trabalho Verde e Amarelo</option>
+                  <option value="111">111 - Empregado - Contrato de trabalho intermitente</option>
+                  <option value="301">301 - Servidor público titular de cargo efetivo</option>
+                  <option value="302">302 - Servidor público ocupante de cargo exclusivo em comissão</option>
+                  <option value="303">303 - Exercente de mandato eletivo</option>
+                  <option value="306">306 - Servidor público contrato temporário</option>
+                </select>
+              </div>
+              <div><label>Data de Admissão <span class="req">*</span></label><input type="date" id="eAdm" value="2025-01-10"></div>
+              <div>
+                <label>Tipo de Admissão <span class="req">*</span></label>
+                <select id="eTpAdmissao">
+                  <option value="1" selected>1 - Admissão</option>
+                  <option value="2">2 - Transferência de empresa do mesmo grupo econômico</option>
+                  <option value="3">3 - Transferência de empresa consorciada ou de consórcio</option>
+                  <option value="4">4 - Transferência por motivo de sucessão, incorporação, cisão ou fusão</option>
+                  <option value="5">5 - Transferência do empregado doméstico para outro representante da mesma unidade familiar</option>
+                  <option value="6">6 - Mudança de CPF</option>
+                </select>
+              </div>
+              <div>
+                <label>Indicativo de Admissão <span class="req">*</span></label>
+                <select id="eIndAdmissao">
+                  <option value="1" selected>1 - Normal</option>
+                  <option value="2">2 - Decorrente de ação fiscal</option>
+                  <option value="3">3 - Decorrente de decisão judicial</option>
+                </select>
+              </div>
+              <div>
+                <label>Tipo de Regime Trabalhista <span class="req">*</span></label>
+                <select id="eTpRegTrab">
+                  <option value="1" selected>1 - CLT (Consolidação das Leis de Trabalho)</option>
+                  <option value="2">2 - Estatutário / Legislações específicas</option>
+                </select>
+              </div>
+              <div>
+                <label>Tipo de Regime Previdenciário <span class="req">*</span></label>
+                <select id="eTpRegPrev">
+                  <option value="1" selected>1 - RGPS (Regime Geral de Previdência Social)</option>
+                  <option value="2">2 - RPPS (Regime Próprio de Previdência Social)</option>
+                  <option value="3">3 - Regime de Previdência Social no exterior</option>
+                </select>
+              </div>
+              <div>
+                <label>Tipo de Contrato <span class="req">*</span></label>
+                <select id="eTpContr" onchange="toggleTermContractDate()">
+                  <option value="1" selected>1 - Prazo indeterminado</option>
+                  <option value="2">2 - Prazo determinado, definido em dias</option>
+                  <option value="3">3 - Prazo determinado, vinculado à ocorrência de um fato</option>
+                </select>
+              </div>
+              <div id="wrapDtTerm" style="display:none"><label>Data Término do Contrato <span class="req">*</span></label><input type="date" id="eDtTerm"></div>
+              <div><label>Cargo / Função <span class="req">*</span></label><input id="eRole" placeholder="Ex.: Analista Administrativo"></div>
+              <div><label>CBO (6 dígitos) <span class="req">*</span></label><input id="eCbo" value="252105" maxlength="6" placeholder="252105"></div>
+              <div><label>Departamento / Lotação</label><input id="eDept" placeholder="Ex.: Administrativo"></div>
+              <div><label>Salário Base (R$) <span class="req">*</span></label><input type="number" step=".01" id="eSal" value="3000"></div>
+              <div>
+                <label>Unidade de Pagamento <span class="req">*</span></label>
+                <select id="eUndSal">
+                  <option value="5" selected>5 - Por mês</option>
+                  <option value="1">1 - Por hora</option>
+                  <option value="2">2 - Por dia</option>
+                  <option value="3">3 - Por semana</option>
+                  <option value="4">4 - Por quinzena</option>
+                  <option value="6">6 - Por tarefa</option>
+                  <option value="7">7 - Não aplicável (exclusivamente variável)</option>
+                </select>
+              </div>
+              <div><label>Jornada Mensal (horas) <span class="req">*</span></label><input type="number" id="eHrs" value="220" min="1"></div>
+              <div>
+                <label>Tipo de Jornada</label>
+                <select id="eTpJornada">
+                  <option value="2" selected>2 - Jornada 12 x 36</option>
+                  <option value="3">3 - Jornada com horário diário fixo e folga variável</option>
+                  <option value="4">4 - Jornada com horário diário fixo e folga fixa (no domingo)</option>
+                  <option value="5">5 - Jornada com horário diário fixo e folga fixa (exceto domingo)</option>
+                  <option value="6">6 - Jornada com horário diário fixo e folga fixa (outro dia)</option>
+                  <option value="7">7 - Turno ininterrupto de revezamento</option>
+                  <option value="9">9 - Demais tipos de jornada</option>
+                </select>
+              </div>
+              <div>
+                <label>Regime de Jornada</label>
+                <select id="eTmpParc">
+                  <option value="0" selected>0 - Não é contrato em tempo parcial</option>
+                  <option value="1">1 - Limitado a 25 horas semanais</option>
+                  <option value="2">2 - Limitado a 30 horas semanais</option>
+                  <option value="3">3 - Limitado a 26 horas semanais</option>
+                </select>
+              </div>
+              <div><label>CNPJ Sindicato Laboral</label><input id="eCnpjSind" placeholder="00.000.000/0001-00"></div>
+              <div><label>Data Opção FGTS</label><input type="date" id="eDtOpcFgts" value="2025-01-10"></div>
+              <div>
+                <label>Aposentadoria Especial</label>
+                <select id="eAposEsp">
+                  <option value="1" selected>1 - Não ensejador de aposentadoria especial</option>
+                  <option value="2">2 - FAE15_12% (15 anos - 12%)</option>
+                  <option value="3">3 - FAE20_09% (20 anos - 9%)</option>
+                  <option value="4">4 - FAE25_06% (25 anos - 6%)</option>
+                </select>
+              </div>
             </div>
-            <div>
-              <label>Tipo de Regime Prev. (tpRegPrev)</label>
-              <select id="eTpRegPrev">
-                <option value="1">1 - RGPS (INSS)</option>
-                <option value="2">2 - RPPS (Regime Próprio)</option>
-                <option value="3">3 - Regime no exterior</option>
-              </select>
+          </div>
+
+          <!-- BLOCO ESPECÍFICO: SEM VÍNCULO EMPREGATÍCIO — TSVE (S-2300 - evtTSVInicio) -->
+          <div id="blockS2300" style="display:none">
+            <div class="card-header" style="margin-top:16px">
+              <div>
+                <h3 class="card-title">2. Trabalhador Sem Vínculo de Emprego (TSVE)</h3>
+                <span class="card-sub">Regras S-2300: Categorias 2xx, 4xx, 7xx, 9xx. Matrícula opcional (obrigatória apenas se informada), Data de Início, Natureza da Atividade e grupos específicos (Estagiário / Dirigente / Cooperado).</span>
+              </div>
             </div>
-            <div>
-              <label>Tipo de Contrato (tpContr)</label>
-              <select id="eTpContr">
-                <option value="1">1 - Prazo indeterminado</option>
-                <option value="2">2 - Prazo determinado c/ dias</option>
-                <option value="3">3 - Prazo determinado c/ data</option>
-              </select>
+            <div class="grid">
+              <div>
+                <label>Categoria Sem Vínculo (TSVE) <span class="req">*</span></label>
+                <select id="eCodCategS2300" onchange="onChangeS2300Categ()">
+                  <option value="721">721 - Contribuinte individual - Diretor não empregado, com FGTS</option>
+                  <option value="722">722 - Contribuinte individual - Diretor não empregado, sem FGTS</option>
+                  <option value="723" selected>723 - Contribuinte individual - Empresário, sócio e membro de conselho de administração ou fiscal</option>
+                  <option value="701">701 - Contribuinte individual - Autônomo em geral, exceto se enquadrado em uma das demais categorias de contribuinte individual</option>
+                  <option value="711">711 - Contribuinte individual - Transportador autônomo de passageiros</option>
+                  <option value="712">712 - Contribuinte individual - Transportador autônomo de carga</option>
+                  <option value="731">731 - Contribuinte individual - Cooperado que presta serviços por intermédio de Cooperativa de Trabalho</option>
+                  <option value="734">734 - Contribuinte individual - Transportador Cooperado</option>
+                  <option value="738">738 - Contribuinte individual - Cooperado filiado a Cooperativa de Produção</option>
+                  <option value="741">741 - Contribuinte individual - Microempreendedor Individual (MEI)</option>
+                  <option value="751">751 - Contribuinte individual - Magistrado classista temporário da Justiça do Trabalho ou da Justiça Eleitoral</option>
+                  <option value="761">761 - Contribuinte individual - Associado eleito para direção de Cooperativa, associação ou entidade de classe</option>
+                  <option value="771">771 - Contribuinte individual - Membro de conselho tutelar</option>
+                  <option value="781">781 - Ministro de confissão religiosa ou membro de vida consagrada</option>
+                  <option value="201">201 - Trabalhador avulso portuário</option>
+                  <option value="202">202 - Trabalhador avulso não portuário</option>
+                  <option value="401">401 - Dirigente sindical - Informação prestada pelo Sindicato</option>
+                  <option value="410">410 - Trabalhador cedido/exercício em outro órgão/juiz auxiliar</option>
+                  <option value="901">901 - Estagiário</option>
+                  <option value="902">902 - Médico residente ou residente em área profissional de saúde</option>
+                  <option value="903">903 - Bolsista (Lei 8.958/1994)</option>
+                  <option value="904">904 - Participante de curso de formação (etapa de concurso público)</option>
+                </select>
+              </div>
+              <div><label>Matrícula TSVE (Opcional)</label><input id="eMatTsv" placeholder="Opcional no S-2300 (Ex.: TSV001)"></div>
+              <div><label>Data de Início <span class="req">*</span></label><input type="date" id="eDtInicioTsv" value="2025-01-10"></div>
+              <div>
+                <label>Cadastro Inicial <span class="req">*</span></label>
+                <select id="eCadIni">
+                  <option value="N" selected>N - Não (Início posterior à obrigatoriedade)</option>
+                  <option value="S">S - Sim (Trabalhador já ativo na implantação)</option>
+                </select>
+              </div>
+              <div>
+                <label>Natureza da Atividade</label>
+                <select id="eNatAtividadeTsv">
+                  <option value="1" selected>1 - Trabalho urbano</option>
+                  <option value="2">2 - Trabalho rural</option>
+                </select>
+              </div>
+              <div><label>Cargo / Função / Atividade <span class="req">*</span></label><input id="eRoleTsv" placeholder="Ex.: Sócio Administrador / Estagiário"></div>
+              <div><label>CBO (6 dígitos) <span class="req">*</span></label><input id="eCboTsv" value="121010" maxlength="6" placeholder="121010"></div>
+              <div><label>Departamento / Lotação</label><input id="eDeptTsv" placeholder="Ex.: Diretoria / Projetos"></div>
+              <div><label>Pró-Labore / Bolsa / Remuneração Base (R$)</label><input type="number" step=".01" id="eSalTsv" value="3000"></div>
+              <div>
+                <label>Unidade de Pagamento</label>
+                <select id="eUndSalTsv">
+                  <option value="5" selected>5 - Por mês</option>
+                  <option value="1">1 - Por hora</option>
+                  <option value="2">2 - Por dia</option>
+                  <option value="6">6 - Por tarefa</option>
+                  <option value="7">7 - Não aplicável (variável / sem remuneração fixa)</option>
+                </select>
+              </div>
+              <div><label>Carga Horária Mensal</label><input type="number" id="eHrsTsv" value="220" min="1"></div>
+              <div id="wrapDtOpcFgtsTsv" style="display:none"><label>Data Opção FGTS Diretor</label><input type="date" id="eDtOpcFgtsTsv"></div>
             </div>
-            <div><label>Cargo / Função (nmCargo)</label><input id="eRole" placeholder="Ex.: Analista Administrativo"></div>
-            <div><label>CBO (codCBO - 6 dígitos)</label><input id="eCbo" value="252105" placeholder="252105"></div>
-            <div><label>Departamento / Lotação</label><input id="eDept"></div>
-            <div><label>Salário Base (vrSalFx - R$)</label><input type="number" step=".01" id="eSal" value="3000"></div>
-            <div>
-              <label>Unidade de Pagamento (undSalFixo)</label>
-              <select id="eUndSal">
-                <option value="5">5 - Por mês</option>
-                <option value="1">1 - Por hora</option>
-                <option value="2">2 - Por dia</option>
-                <option value="3">3 - Por semana</option>
-                <option value="4">4 - Por quinzena</option>
-                <option value="6">6 - Por tarefa</option>
-                <option value="7">7 - Não aplicável (exclusivamente variável)</option>
-              </select>
+
+            <!-- SUBGRUPO ESPECÍFICO ESTAGIÁRIO (infoEstagiario - Categ. 901) -->
+            <div id="subEstagiarioS2300" style="display:none;margin-top:12px;padding:12px;border:1px dashed var(--primary-border);border-radius:var(--radius-sm);background:var(--surface-2)">
+              <strong style="display:block;font-size:12.5px;margin-bottom:8px;color:var(--primary)">Dados do Estágio (Lei 11.788/2008)</strong>
+              <div class="grid">
+                <div>
+                  <label>Natureza do Estágio <span class="req">*</span></label>
+                  <select id="eNatEstagio">
+                    <option value="O">O - Obrigatório</option>
+                    <option value="N" selected>N - Não obrigatório</option>
+                  </select>
+                </div>
+                <div>
+                  <label>Nível do Estágio <span class="req">*</span></label>
+                  <select id="eNivEstagio">
+                    <option value="1">1 - Fundamental</option>
+                    <option value="2">2 - Médio</option>
+                    <option value="3">3 - Formação Profissional</option>
+                    <option value="4" selected>4 - Superior</option>
+                    <option value="8">8 - Especial</option>
+                    <option value="9">9 - Mãe social (Lei 7.644/1987)</option>
+                  </select>
+                </div>
+                <div><label>Área de Atuação</label><input id="eAreaEstagio" placeholder="Ex.: Administração / TI"></div>
+                <div><label>Nº Apólice Seguro</label><input id="eApolEstagio" placeholder="Ex.: 987654321"></div>
+                <div><label>Data Prevista Término Estágio <span class="req">*</span></label><input type="date" id="eDtPrevTermEstagio"></div>
+                <div><label>CNPJ Instituição de Ensino <span class="req">*</span></label><input id="eCnpjInstEnsino" placeholder="00.000.000/0001-00"></div>
+                <div><label>CNPJ Agente de Integração</label><input id="eCnpjAgntInteg" placeholder="Ex.: CIEE / IEL (Opcional)"></div>
+                <div><label>CPF Supervisor de Estágio <span class="req">*</span></label><input id="eCpfSupervisor" placeholder="000.000.000-00"></div>
+              </div>
             </div>
-            <div><label>Jornada Semanal / Mensal (hrs)</label><input type="number" id="eHrs" value="220" min="1"></div>
-            <div>
-              <label>Aposentadoria Especial (Tab. 02)</label>
-              <select id="eAposEsp">
-                <option value="1">1 - Não ensejador de aposentadoria especial</option>
-                <option value="2">2 - FAE15_12% (15 anos - 12%)</option>
-                <option value="3">3 - FAE20_09% (20 anos - 9%)</option>
-                <option value="4">4 - FAE25_06% (25 anos - 6%)</option>
-              </select>
+
+            <!-- SUBGRUPO ESPECÍFICO DIRIGENTE SINDICAL / CEDIDO (Categ. 401 / 410) -->
+            <div id="subDirigenteS2300" style="display:none;margin-top:12px;padding:12px;border:1px dashed var(--primary-border);border-radius:var(--radius-sm);background:var(--surface-2)">
+              <strong style="display:block;font-size:12.5px;margin-bottom:8px;color:var(--primary)">Dados de Dirigente Sindical / Trabalhador Cedido</strong>
+              <div class="grid three">
+                <div><label>CNPJ Empresa/Órgão de Origem <span class="req">*</span></label><input id="eCnpjOrigem" placeholder="00.000.000/0001-00"></div>
+                <div>
+                  <label>Categoria na Origem <span class="req">*</span></label>
+                  <select id="eCategOrig">
+                    <option value="101" selected>101 - Empregado Geral</option>
+                    <option value="301">301 - Servidor Público Efetivo</option>
+                    <option value="201">201 - Trabalhador Avulso</option>
+                  </select>
+                </div>
+                <div><label>Data Admissão na Origem</label><input type="date" id="eDtAdmOrig"></div>
+              </div>
             </div>
           </div>
 
@@ -1250,17 +1466,17 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
       <section id="company" class="panel">
         <div class="page-head">
           <div>
-            <h1>Dados do Empregador (eSocial S-1000)</h1>
+            <h1>Dados do Empregador</h1>
             <p>Campos oficiais de identificação do empregador, classificação tributária (Tabela 08), FPAS/Terceiros (Tabela 04) e RAT/FAP.</p>
           </div>
           <button class="btn btn-primary" onclick="saveCompany()">💾 Salvar Empresa</button>
         </div>
 
         <div class="card">
-          <div class="card-header"><h3 class="card-title">Identificação e Enquadramento Tributário (S-1000)</h3></div>
+          <div class="card-header"><h3 class="card-title">Identificação e Enquadramento Tributário</h3></div>
           <div class="grid three">
             <div>
-              <label>Tipo de Inscrição (Tab. 05) <span class="req">*</span></label>
+              <label>Tipo de Inscrição <span class="req">*</span></label>
               <select id="cTpInsc">
                 <option value="1">1 - CNPJ</option>
                 <option value="2">2 - CPF</option>
@@ -1271,7 +1487,7 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
             <div><label>Nº Inscrição (CNPJ/CPF) <span class="req">*</span></label><input id="cCnpj" placeholder="00.000.000/0001-00"></div>
             <div><label>Razão Social / Nome <span class="req">*</span></label><input id="cName"></div>
             <div>
-              <label>Classificação Tributária (Tab. 08) <span class="req">*</span></label>
+              <label>Classificação Tributária <span class="req">*</span></label>
               <select id="cClassTrib">
                 <option value="01">01 - Empresa Enquadrada no Regime de Tributação Simples Nacional com Tributação Previdenciária Substituída</option>
                 <option value="02">02 - Empresa Enquadrada no Regime de Tributação Simples Nacional com Tributação Previdenciária Não Substituída</option>
@@ -1290,8 +1506,8 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
               </select>
             </div>
             <div><label>CNAE Principal (7 dígitos)</label><input id="cCnae" placeholder="6201501"></div>
-            <div><label>Código FPAS (Tab. 04)</label><input id="cFpas" value="515" placeholder="Ex.: 515"></div>
-            <div><label>Código de Terceiros (Tab. 04)</label><input id="cTerceiros" value="0079" placeholder="Ex.: 0079"></div>
+            <div><label>Código FPAS</label><input id="cFpas" value="515" placeholder="Ex.: 515"></div>
+            <div><label>Código de Terceiros</label><input id="cTerceiros" value="0079" placeholder="Ex.: 0079"></div>
             <div><label>Alíquota RAT Original (%)</label><input type="number" step=".01" id="cRat" value="2.00" min="1" max="3"></div>
             <div><label>FAP (0,5000 a 2,0000)</label><input type="number" step=".0001" id="cFap" value="1.0000" min="0.5" max="2"></div>
             <div>
@@ -1302,7 +1518,7 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
               </select>
             </div>
             <div>
-              <label>Ind. Escrituração (eSocial)</label>
+              <label>Indicativo de Escrituração</label>
               <select id="cIndEscr">
                 <option value="1">1 - Obrigatória</option>
                 <option value="0">0 - Sem obrigação de escrituração</option>
@@ -2221,9 +2437,11 @@ document.addEventListener('click', (ev) => {
 function showReceiptModal(r) {
   if (!r) return;
   const container = document.getElementById('receiptBody');
+  const printArea = document.getElementById('printArea');
   if (r.docType === 'TRCT') container.innerHTML = renderTRCTContabil(r);
   else if (r.docType === 'RECIBO_FERIAS') container.innerHTML = renderFeriasContabil(r);
   else container.innerHTML = renderHoleriteContabil(r);
+  if (printArea) printArea.style.display = 'block';
   document.getElementById('modalReceipt').classList.add('open');
 }
 
@@ -2632,6 +2850,81 @@ function renderRubrics() {
 }
 
 // 7. COLABORADORES, EMPRESA & TABELAS
+const S2300_CATEGORIES = new Set(['201','202','401','410','701','711','712','721','722','723','731','734','738','741','751','761','771','781','901','902','903','904']);
+
+function inferEsocialEventType(emp) {
+  if (!emp) return 'S-2200';
+  if (emp.eventType === 'S-2300' || emp.eventType === 'S-2200') return emp.eventType;
+  return S2300_CATEGORIES.has(String(emp.codCateg || '101')) ? 'S-2300' : 'S-2200';
+}
+
+function switchEsocialEventMode(mode) {
+  const isTsv = mode === 'S-2300';
+  document.getElementById('eEventType').value = isTsv ? 'S-2300' : 'S-2200';
+
+  const b22 = document.getElementById('btnModeS2200');
+  const b23 = document.getElementById('btnModeS2300');
+  if (b22 && b23) {
+    b22.className = !isTsv ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm';
+    b23.className = isTsv ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm';
+  }
+
+  document.getElementById('blockS2200').style.display = isTsv ? 'none' : 'block';
+  document.getElementById('blockS2300').style.display = isTsv ? 'block' : 'none';
+
+  // Férias CLT e CTPS são exclusivas de vínculo empregatício (S-2200)
+  document.getElementById('wrapCtps').style.display = isTsv ? 'none' : 'block';
+  document.getElementById('wrapVacPending').style.display = isTsv ? 'none' : 'block';
+  document.getElementById('wrapVacAcqRef').style.display = isTsv ? 'none' : 'block';
+
+  const hint = document.getElementById('esocialEventHint');
+  if (hint) {
+    hint.innerHTML = isTsv
+      ? '<b>S-2300 (TSVE — Trabalhador Sem Vínculo de Emprego/Estatutário):</b> Sócios/Pró-Labore (723), Diretores (721/722), Autônomos (701), Estagiários (901), Avulsos (2xx) e Dirigentes Sindicais (401).'
+      : '<b>S-2200 (Com Vínculo Empregatício / Estatutário):</b> Empregados CLT (101), Aprendiz (103), Doméstico (104), Temporário (106), Intermitente (111) e Estatutários (3xx).';
+  }
+
+  if (isTsv) {
+    onChangeS2300Categ();
+  } else {
+    onChangeS2200Categ();
+  }
+}
+
+function onChangeS2200Categ() {
+  const categ = document.getElementById('eCodCategS2200')?.value || '101';
+  const tpRegTrab = document.getElementById('eTpRegTrab');
+  const tpRegPrev = document.getElementById('eTpRegPrev');
+  const tpContr = document.getElementById('eTpContr');
+  if (['301', '302', '303', '306'].includes(categ)) {
+    if (tpRegTrab) tpRegTrab.value = '2';
+    if (tpRegPrev && categ === '301') tpRegPrev.value = '2';
+  } else {
+    if (tpRegTrab) tpRegTrab.value = '1';
+    if (tpRegPrev) tpRegPrev.value = '1';
+  }
+  if (['103', '105', '106'].includes(categ) && tpContr && tpContr.value === '1') {
+    tpContr.value = '2';
+  }
+  toggleTermContractDate();
+}
+
+function toggleTermContractDate() {
+  const tpContr = document.getElementById('eTpContr')?.value || '1';
+  const wrap = document.getElementById('wrapDtTerm');
+  if (wrap) wrap.style.display = tpContr !== '1' ? 'block' : 'none';
+}
+
+function onChangeS2300Categ() {
+  const categ = document.getElementById('eCodCategS2300')?.value || '723';
+  const subEst = document.getElementById('subEstagiarioS2300');
+  const subDir = document.getElementById('subDirigenteS2300');
+  const wrapFgts = document.getElementById('wrapDtOpcFgtsTsv');
+  if (subEst) subEst.style.display = (categ === '901' || categ === '902') ? 'block' : 'none';
+  if (subDir) subDir.style.display = (categ === '401' || categ === '410') ? 'block' : 'none';
+  if (wrapFgts) wrapFgts.style.display = categ === '721' ? 'block' : 'none';
+}
+
 function openEmployeeForm(id = null) {
   document.getElementById('empManagerView').style.display = 'none';
   document.getElementById('empLeaveHistoryView').style.display = 'none';
@@ -2642,12 +2935,16 @@ function openEmployeeForm(id = null) {
     const e = employees.find(x => x.id === id);
     if (!e) return;
     editEmpId = id;
+    const evType = inferEsocialEventType(e);
     document.getElementById('empPageTitle').textContent = `Editar Colaborador — ${e.name}`;
-    document.getElementById('empPageSub').textContent = 'Altere os dados cadastrais, contratuais, situação e férias do colaborador.';
-    document.getElementById('empFormHeaderTitle').textContent = `Editar Colaborador (${e.mat || e.cpf})`;
+    document.getElementById('empPageSub').textContent = evType === 'S-2300'
+      ? 'Cadastro Sem Vínculo Empregatício (TSVE — Evento eSocial S-2300).'
+      : 'Cadastro Com Vínculo Empregatício / Estatutário (Admissão — Evento eSocial S-2200).';
+    document.getElementById('empFormHeaderTitle').textContent = `Editar Colaborador (${evType} — ${e.mat || e.cpf})`;
+
+    // Dados comuns do trabalhador
     document.getElementById('eName').value = e.name;
     document.getElementById('eCpf').value = e.cpf;
-    document.getElementById('eMat').value = e.mat || '';
     document.getElementById('eStatus').value = e.status === 'INATIVO' ? 'INATIVO' : 'ATIVO';
     document.getElementById('eVacPending').value = e.vacPendingPeriods ?? 0;
     document.getElementById('eVacAcqRef').value = e.vacAcqRef || '';
@@ -2655,28 +2952,71 @@ function openEmployeeForm(id = null) {
     document.getElementById('eSex').value = e.sex || 'M';
     document.getElementById('eRace').value = e.race || '6';
     document.getElementById('eEdu').value = e.edu || '07';
+    document.getElementById('eEstCiv').value = e.estCiv || '1';
+    document.getElementById('ePaisNac').value = e.paisNac || '105';
     document.getElementById('ePis').value = e.pis || '';
     document.getElementById('eCtps').value = e.ctps || '';
-    document.getElementById('eCodCateg').value = e.codCateg || '101';
-    document.getElementById('eTpRegTrab').value = e.tpRegTrab || '1';
-    document.getElementById('eTpRegPrev').value = e.tpRegPrev || '1';
-    document.getElementById('eTpContr').value = e.tpContr || '1';
-    document.getElementById('eRole').value = e.role;
-    document.getElementById('eCbo').value = e.cbo || '252105';
-    document.getElementById('eDept').value = e.dept;
-    document.getElementById('eAdm').value = e.adm;
-    document.getElementById('eSal').value = e.salary;
-    document.getElementById('eUndSal').value = e.undSal || '5';
     document.getElementById('eDeps').value = e.deps;
     document.getElementById('eDepsSf').value = e.depsSf || 0;
-    document.getElementById('eHrs').value = e.hours;
-    document.getElementById('eAposEsp').value = e.aposEsp || '1';
     document.getElementById('eAddr').value = e.addr || '';
+
+    if (evType === 'S-2300') {
+      document.getElementById('eCodCategS2300').value = S2300_CATEGORIES.has(String(e.codCateg)) ? String(e.codCateg) : '723';
+      document.getElementById('eMatTsv').value = e.mat || '';
+      document.getElementById('eDtInicioTsv').value = e.adm || '2025-01-10';
+      document.getElementById('eCadIni').value = e.cadIni || 'N';
+      document.getElementById('eNatAtividadeTsv').value = e.natAtividade || '1';
+      document.getElementById('eRoleTsv').value = e.role || '';
+      document.getElementById('eCboTsv').value = e.cbo || '121010';
+      document.getElementById('eDeptTsv').value = e.dept || '';
+      document.getElementById('eSalTsv').value = e.salary ?? 0;
+      document.getElementById('eUndSalTsv').value = e.undSal || '5';
+      document.getElementById('eHrsTsv').value = e.hours || 220;
+      document.getElementById('eDtOpcFgtsTsv').value = e.dtOpcFgts || '';
+
+      const est = e.estagiario || {};
+      document.getElementById('eNatEstagio').value = est.natEstagio || 'N';
+      document.getElementById('eNivEstagio').value = est.nivEstagio || '4';
+      document.getElementById('eAreaEstagio').value = est.areaAtuacao || '';
+      document.getElementById('eApolEstagio').value = est.nrApol || '';
+      document.getElementById('eDtPrevTermEstagio').value = est.dtPrevTerm || '';
+      document.getElementById('eCnpjInstEnsino').value = est.cnpjInstEnsino || '';
+      document.getElementById('eCnpjAgntInteg').value = est.cnpjAgntInteg || '';
+      document.getElementById('eCpfSupervisor').value = est.cpfSupervisor || '';
+
+      const dir = e.dirigente || {};
+      document.getElementById('eCnpjOrigem').value = dir.cnpjOrigem || '';
+      document.getElementById('eCategOrig').value = dir.categOrig || '101';
+      document.getElementById('eDtAdmOrig').value = dir.dtAdmOrig || '';
+    } else {
+      document.getElementById('eMat').value = e.mat || '';
+      document.getElementById('eCodCategS2200').value = !S2300_CATEGORIES.has(String(e.codCateg)) ? String(e.codCateg || '101') : '101';
+      document.getElementById('eAdm').value = e.adm || '2025-01-10';
+      document.getElementById('eTpAdmissao').value = e.tpAdmissao || '1';
+      document.getElementById('eIndAdmissao').value = e.indAdmissao || '1';
+      document.getElementById('eTpRegTrab').value = e.tpRegTrab || '1';
+      document.getElementById('eTpRegPrev').value = e.tpRegPrev || '1';
+      document.getElementById('eTpContr').value = e.tpContr || '1';
+      document.getElementById('eDtTerm').value = e.dtTerm || '';
+      document.getElementById('eRole').value = e.role || '';
+      document.getElementById('eCbo').value = e.cbo || '252105';
+      document.getElementById('eDept').value = e.dept || '';
+      document.getElementById('eSal').value = e.salary ?? 3000;
+      document.getElementById('eUndSal').value = e.undSal || '5';
+      document.getElementById('eHrs').value = e.hours || 220;
+      document.getElementById('eTpJornada').value = e.tpJornada || '4';
+      document.getElementById('eTmpParc').value = e.tmpParc || '0';
+      document.getElementById('eCnpjSind').value = e.cnpjSind || '';
+      document.getElementById('eDtOpcFgts').value = e.dtOpcFgts || e.adm || '2025-01-10';
+      document.getElementById('eAposEsp').value = e.aposEsp || '1';
+    }
+
+    switchEsocialEventMode(evType);
   } else {
     clearEmployeeForm();
     document.getElementById('empPageTitle').textContent = 'Cadastro de Colaborador (eSocial S-2200 / S-2300)';
-    document.getElementById('empPageSub').textContent = 'Preencha os campos oficiais do trabalhador, vínculo, situação, férias e remuneração.';
-    document.getElementById('empFormHeaderTitle').textContent = 'Novo Colaborador — Identificação e Dados Pessoais (Trabalhador)';
+    document.getElementById('empPageSub').textContent = 'Selecione Com Vínculo (S-2200) ou Sem Vínculo TSVE (S-2300) conforme os leiautes eSocial v1.3.';
+    document.getElementById('empFormHeaderTitle').textContent = 'Novo Colaborador — eSocial S-2200 / S-2300';
   }
 }
 
@@ -2838,30 +3178,95 @@ function renderLeaveHistory() {
 }
 
 function saveEmployee() {
+  const eventType = document.getElementById('eEventType').value || 'S-2200';
+  const isTsv = eventType === 'S-2300';
+
   const name = document.getElementById('eName').value.trim().toUpperCase();
   const cpf = document.getElementById('eCpf').value.trim();
-  if (!name || !cpf) { alert('Nome e CPF são obrigatórios.'); return; }
+  const birth = document.getElementById('eBirth').value;
+  const addr = document.getElementById('eAddr').value.trim();
 
-  const normalizeDigits = s => String(s || '').replace(/\D/g, '');
-  const cleanCpf = normalizeDigits(cpf);
-  const cleanMat = document.getElementById('eMat').value.trim();
-
-  if (cleanCpf.length > 0 && cleanCpf.length !== 11) {
-    alert('CPF inválido. Informe 11 dígitos.');
+  if (!name || !cpf || !birth) {
+    alert('Regras eSocial (S-2200 / S-2300): Nome Completo, CPF e Data de Nascimento são obrigatórios.');
     return;
   }
 
-  // Evita duplicidade de registro por CPF ou Matrícula (mesmo que editEmpId não tenha sido setado ou ao incluir novo)
+  const normalizeDigits = s => String(s || '').replace(/\D/g, '');
+  const cleanCpf = normalizeDigits(cpf);
+  if (cleanCpf.length !== 11) {
+    alert('Regra eSocial: CPF inválido. Informe exatamente 11 dígitos.');
+    return;
+  }
+
+  const cleanMat = isTsv
+    ? document.getElementById('eMatTsv').value.trim()
+    : document.getElementById('eMat').value.trim();
+
+  // Regras específicas S-2200 vs S-2300
+  if (!isTsv) {
+    const dtAdm = document.getElementById('eAdm').value;
+    const role = document.getElementById('eRole').value.trim();
+    const cbo = normalizeDigits(document.getElementById('eCbo').value);
+    const tpContr = document.getElementById('eTpContr').value;
+    const dtTerm = document.getElementById('eDtTerm').value;
+
+    if (!cleanMat) {
+      alert('Regra eSocial S-2200 (Com Vínculo): O campo Matrícula é obrigatório.');
+      return;
+    }
+    if (!dtAdm) {
+      alert('Regra eSocial S-2200: A Data de Admissão é obrigatória.');
+      return;
+    }
+    if (!role || cbo.length !== 6) {
+      alert('Regra eSocial S-2200: Cargo (nmCargo) e CBO (codCBO com 6 dígitos) são obrigatórios.');
+      return;
+    }
+    if (tpContr !== '1' && !dtTerm) {
+      alert('Regra eSocial S-2200: Para contrato por prazo determinado (tpContr 2 ou 3), informe a Data de Término (dtTerm).');
+      return;
+    }
+  } else {
+    const dtInicio = document.getElementById('eDtInicioTsv').value;
+    const categTsv = document.getElementById('eCodCategS2300').value;
+    const roleTsv = document.getElementById('eRoleTsv').value.trim();
+    const cboTsv = normalizeDigits(document.getElementById('eCboTsv').value);
+
+    if (!dtInicio) {
+      alert('Regra eSocial S-2300 (TSVE): A Data de Início é obrigatória.');
+      return;
+    }
+    if (!roleTsv || cboTsv.length !== 6) {
+      alert('Regra eSocial S-2300: Cargo/Atividade (nmCargo) e CBO (codCBO com 6 dígitos) são obrigatórios.');
+      return;
+    }
+    if (categTsv === '901') {
+      const dtPrev = document.getElementById('eDtPrevTermEstagio').value;
+      const cnpjInst = document.getElementById('eCnpjInstEnsino').value.trim();
+      const cpfSup = document.getElementById('eCpfSupervisor').value.trim();
+      if (!dtPrev || !cnpjInst || !cpfSup) {
+        alert('Regra eSocial S-2300 (Estagiário - Categ. 901): Informe Data Prevista de Término, CNPJ da Instituição de Ensino e CPF do Supervisor.');
+        return;
+      }
+    }
+    if ((categTsv === '401' || categTsv === '410') && !document.getElementById('eCnpjOrigem').value.trim()) {
+      alert('Regra eSocial S-2300 (Categ. 401/410): Informe o CNPJ da Empresa/Órgão de Origem.');
+      return;
+    }
+  }
+
+  // Evita duplicidade por CPF ou Matrícula
   const duplicateByCpf = employees.find(e =>
     e.id !== editEmpId && cleanCpf && normalizeDigits(e.cpf) === cleanCpf
   );
   if (duplicateByCpf) {
     const goEdit = confirm(
-      `Já existe um colaborador cadastrado com este CPF:\n${duplicateByCpf.name} (Matrícula: ${duplicateByCpf.mat || '—'}).\n\nDeseja abrir o cadastro existente para edição em vez de duplicar?`
+      `Já existe um colaborador cadastrado com este CPF:
+${duplicateByCpf.name} (${inferEsocialEventType(duplicateByCpf)} | Matrícula: ${duplicateByCpf.mat || '—'}).
+
+Deseja abrir o cadastro existente para edição em vez de duplicar?`
     );
-    if (goEdit) {
-      openEmployeeForm(duplicateByCpf.id);
-    }
+    if (goEdit) openEmployeeForm(duplicateByCpf.id);
     return;
   }
 
@@ -2880,34 +3285,68 @@ function saveEmployee() {
   const hasActiveLeave = editEmpId ? leaves.some(lv => lv.empId === editEmpId && lv.active) : false;
   const finalStatus = chosenStatus === 'INATIVO' ? 'INATIVO' : (hasActiveLeave && existing?.status === 'AFASTADO' ? 'AFASTADO' : chosenStatus);
 
+  const codCateg = isTsv
+    ? document.getElementById('eCodCategS2300').value
+    : document.getElementById('eCodCategS2200').value;
+
   const obj = {
-    id: editEmpId || 'emp_' + Date.now(), name, cpf,
-    mat: document.getElementById('eMat').value.trim(),
+    id: editEmpId || 'emp_' + Date.now(),
+    eventType,
+    name,
+    cpf,
+    mat: cleanMat,
     status: finalStatus,
-    vacPendingPeriods: Math.max(0, Number(document.getElementById('eVacPending').value) || 0),
-    vacAcqRef: document.getElementById('eVacAcqRef').value.trim() || 'Período vigente',
-    birth: document.getElementById('eBirth').value || '1992-01-01',
+    vacPendingPeriods: isTsv ? 0 : Math.max(0, Number(document.getElementById('eVacPending').value) || 0),
+    vacAcqRef: isTsv ? 'Não se aplica (TSVE S-2300)' : (document.getElementById('eVacAcqRef').value.trim() || 'Período vigente'),
+    birth,
     sex: document.getElementById('eSex').value || 'M',
     race: document.getElementById('eRace').value || '6',
     edu: document.getElementById('eEdu').value || '07',
+    estCiv: document.getElementById('eEstCiv').value || '1',
+    paisNac: document.getElementById('ePaisNac').value || '105',
     pis: document.getElementById('ePis').value.trim(),
-    ctps: document.getElementById('eCtps').value.trim(),
-    codCateg: document.getElementById('eCodCateg').value || '101',
-    tpRegTrab: document.getElementById('eTpRegTrab').value || '1',
-    tpRegPrev: document.getElementById('eTpRegPrev').value || '1',
-    tpContr: document.getElementById('eTpContr').value || '1',
-    role: document.getElementById('eRole').value.trim() || 'Colaborador',
-    cbo: document.getElementById('eCbo').value.trim() || '252105',
-    dept: document.getElementById('eDept').value.trim() || 'Geral',
-    adm: document.getElementById('eAdm').value || '2025-01-01',
-    salary: Number(document.getElementById('eSal').value) || 0,
-    undSal: document.getElementById('eUndSal').value || '5',
+    ctps: isTsv ? '' : document.getElementById('eCtps').value.trim(),
+    codCateg,
+    tpRegTrab: isTsv ? '0' : (document.getElementById('eTpRegTrab').value || '1'),
+    tpRegPrev: isTsv ? (codCateg === '901' ? '0' : '1') : (document.getElementById('eTpRegPrev').value || '1'),
+    tpContr: isTsv ? '0' : (document.getElementById('eTpContr').value || '1'),
+    dtTerm: isTsv ? '' : (document.getElementById('eDtTerm').value || ''),
+    tpAdmissao: isTsv ? '' : (document.getElementById('eTpAdmissao').value || '1'),
+    indAdmissao: isTsv ? '' : (document.getElementById('eIndAdmissao').value || '1'),
+    cadIni: isTsv ? (document.getElementById('eCadIni').value || 'N') : '',
+    natAtividade: isTsv ? (document.getElementById('eNatAtividadeTsv').value || '1') : '1',
+    role: (isTsv ? document.getElementById('eRoleTsv').value.trim() : document.getElementById('eRole').value.trim()) || 'Colaborador',
+    cbo: normalizeDigits(isTsv ? document.getElementById('eCboTsv').value : document.getElementById('eCbo').value) || '252105',
+    dept: (isTsv ? document.getElementById('eDeptTsv').value.trim() : document.getElementById('eDept').value.trim()) || 'Geral',
+    adm: isTsv ? document.getElementById('eDtInicioTsv').value : document.getElementById('eAdm').value,
+    salary: Number(isTsv ? document.getElementById('eSalTsv').value : document.getElementById('eSal').value) || 0,
+    undSal: (isTsv ? document.getElementById('eUndSalTsv').value : document.getElementById('eUndSal').value) || '5',
     deps: Number(document.getElementById('eDeps').value) || 0,
     depsSf: Number(document.getElementById('eDepsSf').value) || 0,
-    hours: Number(document.getElementById('eHrs').value) || 220,
-    aposEsp: document.getElementById('eAposEsp').value || '1',
-    addr: document.getElementById('eAddr').value.trim()
+    hours: Number(isTsv ? document.getElementById('eHrsTsv').value : document.getElementById('eHrs').value) || 220,
+    tpJornada: isTsv ? '' : (document.getElementById('eTpJornada').value || '4'),
+    tmpParc: isTsv ? '0' : (document.getElementById('eTmpParc').value || '0'),
+    cnpjSind: isTsv ? '' : document.getElementById('eCnpjSind').value.trim(),
+    dtOpcFgts: isTsv ? (document.getElementById('eDtOpcFgtsTsv').value || '') : (document.getElementById('eDtOpcFgts').value || ''),
+    aposEsp: isTsv ? '1' : (document.getElementById('eAposEsp').value || '1'),
+    addr,
+    estagiario: isTsv && (codCateg === '901' || codCateg === '902') ? {
+      natEstagio: document.getElementById('eNatEstagio').value,
+      nivEstagio: document.getElementById('eNivEstagio').value,
+      areaAtuacao: document.getElementById('eAreaEstagio').value.trim(),
+      nrApol: document.getElementById('eApolEstagio').value.trim(),
+      dtPrevTerm: document.getElementById('eDtPrevTermEstagio').value,
+      cnpjInstEnsino: document.getElementById('eCnpjInstEnsino').value.trim(),
+      cnpjAgntInteg: document.getElementById('eCnpjAgntInteg').value.trim(),
+      cpfSupervisor: document.getElementById('eCpfSupervisor').value.trim()
+    } : null,
+    dirigente: isTsv && (codCateg === '401' || codCateg === '410') ? {
+      cnpjOrigem: document.getElementById('eCnpjOrigem').value.trim(),
+      categOrig: document.getElementById('eCategOrig').value,
+      dtAdmOrig: document.getElementById('eDtAdmOrig').value
+    } : null
   };
+
   if (editEmpId) {
     employees = employees.map(e => e.id === editEmpId ? obj : e);
   } else {
@@ -2943,20 +3382,33 @@ function deleteEmployee(id) {
 
 function clearEmployeeForm() {
   editEmpId = null;
-  ['eName', 'eCpf', 'eMat', 'ePis', 'eCtps', 'eRole', 'eDept', 'eAddr', 'eVacAcqRef'].forEach(i => document.getElementById(i).value = '');
+  ['eName', 'eCpf', 'eMat', 'eMatTsv', 'ePis', 'eCtps', 'eRole', 'eRoleTsv', 'eDept', 'eDeptTsv', 'eAddr', 'eVacAcqRef', 'eDtTerm', 'eCnpjSind', 'eAreaEstagio', 'eApolEstagio', 'eDtPrevTermEstagio', 'eCnpjInstEnsino', 'eCnpjAgntInteg', 'eCpfSupervisor', 'eCnpjOrigem', 'eDtAdmOrig', 'eDtOpcFgtsTsv'].forEach(i => {
+    const el = document.getElementById(i);
+    if (el) el.value = '';
+  });
   document.getElementById('eStatus').value = 'ATIVO';
   document.getElementById('eVacPending').value = 0;
-  document.getElementById('eCodCateg').value = '101';
+  document.getElementById('eEstCiv').value = '1';
+  document.getElementById('ePaisNac').value = '105';
+  document.getElementById('eCodCategS2200').value = '101';
+  document.getElementById('eCodCategS2300').value = '723';
+  document.getElementById('eTpAdmissao').value = '1';
+  document.getElementById('eIndAdmissao').value = '1';
   document.getElementById('eTpRegTrab').value = '1';
   document.getElementById('eTpRegPrev').value = '1';
   document.getElementById('eTpContr').value = '1';
   document.getElementById('eUndSal').value = '5';
+  document.getElementById('eUndSalTsv').value = '5';
   document.getElementById('eCbo').value = '252105';
+  document.getElementById('eCboTsv').value = '121010';
   document.getElementById('eAposEsp').value = '1';
   document.getElementById('eSal').value = 3000;
+  document.getElementById('eSalTsv').value = 3000;
   document.getElementById('eDeps').value = 0;
   document.getElementById('eDepsSf').value = 0;
   document.getElementById('eHrs').value = 220;
+  document.getElementById('eHrsTsv').value = 220;
+  switchEsocialEventMode('S-2200');
 }
 
 function setEmpStatusFilter(filterVal) {
@@ -2977,8 +3429,9 @@ function renderEmployees() {
   const awayList = employees.filter(e => (e.status || 'ATIVO') === 'AFASTADO');
   const inactiveList = employees.filter(e => (e.status || 'ATIVO') === 'INATIVO');
   const nonInactive = employees.filter(e => (e.status || 'ATIVO') !== 'INATIVO');
-  const pendingPeriodsSum = nonInactive.reduce((acc, e) => acc + (Number(e.vacPendingPeriods) || 0), 0);
-  const pendingEmpsCount = nonInactive.filter(e => (Number(e.vacPendingPeriods) || 0) > 0).length;
+  const cltActiveList = nonInactive.filter(e => inferEsocialEventType(e) === 'S-2200');
+  const pendingPeriodsSum = cltActiveList.reduce((acc, e) => acc + (Number(e.vacPendingPeriods) || 0), 0);
+  const pendingEmpsCount = cltActiveList.filter(e => (Number(e.vacPendingPeriods) || 0) > 0).length;
 
   let cntDoenca = 0, cntFerias = 0, cntMat = 0;
   awayList.forEach(emp => {
@@ -2996,17 +3449,18 @@ function renderEmployees() {
   const dPend = document.getElementById('dashVacPending');
   const dAway = document.getElementById('dashAwayTotal');
   if (dAct) {
-    const pct = employees.length ? Math.round((activeList.length / employees.length) * 100) : 0;
+    const s2200Count = activeList.filter(e => inferEsocialEventType(e) === 'S-2200').length;
+    const s2300Count = activeList.filter(e => inferEsocialEventType(e) === 'S-2300').length;
     dAct.textContent = activeList.length;
-    document.getElementById('dashEmpActiveSub').textContent = `${pct}% de ${employees.length} cadastrados`;
+    document.getElementById('dashEmpActiveSub').textContent = `Vínculo: ${s2200Count} | TSVE: ${s2300Count}`;
   }
   if (dInact) {
     dInact.textContent = inactiveList.length;
-    document.getElementById('dashEmpInactiveSub').textContent = `${inactiveList.length} desligado(s) (S-2299)`;
+    document.getElementById('dashEmpInactiveSub').textContent = `${inactiveList.length} desligado(s) (S-2299/S-2399)`;
   }
   if (dPend) {
     dPend.textContent = `${pendingPeriodsSum} per.`;
-    document.getElementById('dashVacPendingSub').textContent = `${pendingEmpsCount} colaborador(es) com pendência`;
+    document.getElementById('dashVacPendingSub').textContent = `${pendingEmpsCount} vínculo(s) S-2200 pendente(s)`;
   }
   if (dAway) {
     dAway.textContent = awayList.length;
@@ -3015,7 +3469,7 @@ function renderEmployees() {
 
   const vacTb = document.querySelector('#empVacationAnalysisTable tbody');
   if (vacTb) {
-    vacTb.innerHTML = nonInactive.map(e => {
+    vacTb.innerHTML = cltActiveList.map(e => {
       const st = e.status || 'ATIVO';
       const pend = Number(e.vacPendingPeriods) || 0;
       const stBadge = st === 'AFASTADO' ? '<span class="badge b-amber">AFASTADO</span>' : '<span class="badge b-green">ATIVO</span>';
@@ -3037,19 +3491,22 @@ function renderEmployees() {
 
   const q = (document.getElementById('empSearch')?.value || '').toLowerCase();
   const stFilter = document.getElementById('empStatusFilter')?.value || 'TODOS';
+  const evFilter = document.getElementById('empEventFilter')?.value || 'TODOS';
   const list = employees.filter(e => {
     const st = e.status || 'ATIVO';
+    const evType = inferEsocialEventType(e);
     const pend = Number(e.vacPendingPeriods) || 0;
+    const matchEv = evFilter === 'TODOS' || evType === evFilter;
     const matchSt =
       stFilter === 'TODOS' ||
       st === stFilter ||
-      (stFilter === 'PENDENTE' && st !== 'INATIVO' && pend > 0);
+      (stFilter === 'PENDENTE' && st !== 'INATIVO' && evType === 'S-2200' && pend > 0);
     const matchQ =
       e.name.toLowerCase().includes(q) ||
       (e.cpf || '').toLowerCase().includes(q) ||
       (e.mat || '').toLowerCase().includes(q) ||
       (e.role || '').toLowerCase().includes(q);
-    return matchSt && matchQ;
+    return matchEv && matchSt && matchQ;
   });
 
   const lbl = document.getElementById('empCountLabel');
@@ -3057,19 +3514,27 @@ function renderEmployees() {
 
   document.querySelector('#empTable tbody').innerHTML = list.length ? list.map(e => {
     const st = e.status || 'ATIVO';
+    const evType = inferEsocialEventType(e);
+    const evBadge = evType === 'S-2300'
+      ? '<span class="badge b-amber" title="Sem Vínculo Empregatício (TSVE)">Sem Vínculo (S-2300)</span>'
+      : '<span class="badge b-indigo" title="Com Vínculo Empregatício">Com Vínculo (S-2200)</span>';
     const stBadge = st === 'ATIVO'
       ? '<span class="badge b-green">ATIVO</span>'
       : (st === 'AFASTADO' ? '<span class="badge b-amber">AFASTADO</span>' : '<span class="badge b-red">INATIVO</span>');
     const pend = Number(e.vacPendingPeriods) || 0;
+    const vacCell = evType === 'S-2300'
+      ? '<span class="badge b-slate">N/A (TSVE)</span>'
+      : (pend > 0 ? `<span class="badge b-red">${pend} pend.</span>` : '<span class="badge b-slate">0 pend.</span>');
     return `
       <tr>
-        <td><b>${esc(e.mat || '—')}</b></td>
+        <td><b>${esc(e.mat || 'Sem mat.')}</b></td>
         <td><b>${esc(e.name)}</b></td>
+        <td>${evBadge}</td>
         <td>${stBadge}</td>
         <td>${esc(e.cpf)}</td>
-        <td><span class="badge b-indigo">${esc(e.codCateg || '101')}</span></td>
+        <td><span class="badge b-slate">${esc(e.codCateg || '101')}</span></td>
         <td>${esc(e.role)} (${esc(e.cbo || '—')})</td>
-        <td>${pend > 0 ? `<span class="badge b-red">${pend} pend.</span>` : '<span class="badge b-slate">0 pend.</span>'}</td>
+        <td>${vacCell}</td>
         <td>${money(e.salary)}</td>
         <td>
           <div class="actions-cell">
@@ -3079,7 +3544,7 @@ function renderEmployees() {
           </div>
         </td>
       </tr>`;
-  }).join('') : '<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:20px">Nenhum colaborador encontrado.</td></tr>';
+  }).join('') : '<tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:20px">Nenhum colaborador encontrado.</td></tr>';
 }
 
 function renderCompany() {
@@ -3210,7 +3675,7 @@ function downloadBlob(content, filename, mime) {
 }
 
 function populateSelects() {
-  const empOpts = employees.map(e => `<option value="${e.id}">${esc(e.name)} — ${esc(e.role)} (${money(e.salary)})</option>`).join('');
+  const empOpts = employees.map(e => `<option value="${e.id}">[${inferEsocialEventType(e)}] ${esc(e.name)} — ${esc(e.role)} (${money(e.salary)})</option>`).join('');
   ['pEmployee', 'vEmployee', 'tEmployee', 'rEmployee'].forEach(id => {
     const el = document.getElementById(id);
     const cur = el.value;
