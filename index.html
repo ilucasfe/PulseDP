@@ -427,6 +427,8 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
       <div class="header-pills">
         <div class="pill"><span class="dot-live"></span> Competência: <b id="topComp">11/2026</b></div>
         <div class="pill">Equipe: <b id="topEmpCount">0</b> ativos</div>
+        <div class="pill">MongoDB: <b id="topCloudStatus">Local</b></div>
+        <button class="btn btn-ghost btn-sm" type="button" onclick="pullFromVercel(true)" title="Sincronizar com MongoDB Atlas">☁️ Sync</button>
         <button class="btn btn-ghost btn-sm" type="button" id="btnThemeToggle" onclick="toggleThemeMode()" title="Alternar modo claro/escuro">🌙 Escuro</button>
         <button class="btn btn-ghost btn-sm" type="button" onclick="toggleThemePanel()" title="Personalizar cores do sistema">🎨 Cores</button>
         <button class="btn btn-ghost btn-sm" type="button" onclick="logoutSystem()" title="Sair do sistema">Sair</button>
@@ -1448,7 +1450,7 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
                     <option value="201">201 - Trabalhador Avulso</option>
                   </select>
                 </div>
-                <div><label>Data Admissão na Origem</label><input type="date" id="eDtAdmOrig"></div>
+                <div><label>Data Admissão na Origem</label><input id="eDtAdmOrig"></div>
               </div>
             </div>
           </div>
@@ -1652,6 +1654,10 @@ const numBR = v => Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigit
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const fmtDateBR = iso => iso ? iso.split('-').reverse().join('/') : '—';
 
+const CLOUD_API_URL = '/api/state';
+const WORKSPACE_ID = '6b013134917c7ced9de2805f';
+let cloudSyncTimer = null;
+
 const initCompany = {
   tpInsc: '1',
   name: 'EMPRESA MODELO DE SERVIÇOS E TECNOLOGIA LTDA',
@@ -1770,13 +1776,100 @@ let lastVacReceipt = null;
 let last13Receipt = null;
 let lastTermReceipt = null;
 
-function saveAll() {
+function setCloudStatus(text, tone = 'muted') {
+  const el = document.getElementById('topCloudStatus');
+  if (!el) return;
+  el.textContent = text;
+  el.style.color = tone === 'ok' ? 'var(--success-text)' : (tone === 'warn' ? 'var(--warning-text)' : 'var(--text-muted)');
+}
+
+function getCloudSnapshot() {
+  return {
+    company,
+    employees,
+    rubrics,
+    tables,
+    savedReceipts,
+    leaves
+  };
+}
+
+function applyCloudSnapshot(d) {
+  if (!d || typeof d !== 'object') return;
+  if (d.company) company = Object.assign({}, structuredClone(initCompany), d.company);
+  if (Array.isArray(d.employees) && d.employees.length) employees = deduplicateEmployeesList(d.employees);
+  if (Array.isArray(d.rubrics) && d.rubrics.length) rubrics = d.rubrics;
+  if (d.tables) tables = Object.assign({}, structuredClone(initTables), d.tables);
+  if (Array.isArray(d.savedReceipts)) savedReceipts = d.savedReceipts;
+  if (Array.isArray(d.leaves)) leaves = d.leaves;
+}
+
+function saveLocalOnly() {
   localStorage.setItem('erp_dp_company', JSON.stringify(company));
   localStorage.setItem('erp_dp_emps', JSON.stringify(employees));
   localStorage.setItem('erp_dp_rubs', JSON.stringify(rubrics));
   localStorage.setItem('erp_dp_tabs', JSON.stringify(tables));
   localStorage.setItem('erp_dp_receipts', JSON.stringify(savedReceipts));
   localStorage.setItem('erp_dp_leaves', JSON.stringify(leaves));
+}
+
+async function pullFromVercel(notify = false) {
+  setCloudStatus('Sincronizando...');
+  try {
+    const res = await fetch(`${CLOUD_API_URL}?workspace=${encodeURIComponent(WORKSPACE_ID)}`, {
+      headers: { 'x-workspace-id': WORKSPACE_ID }
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    if (json.ok && json.data) {
+      applyCloudSnapshot(json.data);
+      saveLocalOnly();
+      renderCompany();
+      renderEmployees();
+      renderRubrics();
+      renderTables();
+      populateSelects();
+      loadOrInitPayroll();
+      fillVacationEmp();
+      fill13thEmp();
+      fillTermEmp();
+      renderHistory();
+      setCloudStatus('Conectado', 'ok');
+      if (notify) alert('Dados sincronizados com o MongoDB Atlas (atlas-camel-arrow)!');
+    } else {
+      await pushToVercel(notify);
+    }
+  } catch (err) {
+    setCloudStatus('Local', 'warn');
+    if (notify) alert('Não foi possível conectar em /api/state; mantendo dados locais.');
+  }
+}
+
+async function pushToVercel(notify = false) {
+  setCloudStatus('Salvando...');
+  try {
+    const res = await fetch(`${CLOUD_API_URL}?workspace=${encodeURIComponent(WORKSPACE_ID)}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-workspace-id': WORKSPACE_ID
+      },
+      body: JSON.stringify({ data: getCloudSnapshot() })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    setCloudStatus('Conectado', 'ok');
+    if (notify) alert('Dados salvos no MongoDB Atlas!');
+  } catch (err) {
+    setCloudStatus('Salvo local', 'warn');
+  }
+}
+
+function saveAll() {
+  saveLocalOnly();
+  clearTimeout(cloudSyncTimer);
+  cloudSyncTimer = setTimeout(() => {
+    pushToVercel(false);
+  }, 350);
 }
 
 function calcProgressive(base, bands) {
@@ -2872,7 +2965,6 @@ function switchEsocialEventMode(mode) {
   document.getElementById('blockS2200').style.display = isTsv ? 'none' : 'block';
   document.getElementById('blockS2300').style.display = isTsv ? 'block' : 'none';
 
-  // Férias CLT e CTPS são exclusivas de vínculo empregatício (S-2200)
   document.getElementById('wrapCtps').style.display = isTsv ? 'none' : 'block';
   document.getElementById('wrapVacPending').style.display = isTsv ? 'none' : 'block';
   document.getElementById('wrapVacAcqRef').style.display = isTsv ? 'none' : 'block';
@@ -2942,7 +3034,6 @@ function openEmployeeForm(id = null) {
       : 'Cadastro Com Vínculo Empregatício / Estatutário (Admissão — Evento eSocial S-2200).';
     document.getElementById('empFormHeaderTitle').textContent = `Editar Colaborador (${evType} — ${e.mat || e.cpf})`;
 
-    // Dados comuns do trabalhador
     document.getElementById('eName').value = e.name;
     document.getElementById('eCpf').value = e.cpf;
     document.getElementById('eStatus').value = e.status === 'INATIVO' ? 'INATIVO' : 'ATIVO';
@@ -3202,7 +3293,6 @@ function saveEmployee() {
     ? document.getElementById('eMatTsv').value.trim()
     : document.getElementById('eMat').value.trim();
 
-  // Regras específicas S-2200 vs S-2300
   if (!isTsv) {
     const dtAdm = document.getElementById('eAdm').value;
     const role = document.getElementById('eRole').value.trim();
@@ -3255,7 +3345,6 @@ function saveEmployee() {
     }
   }
 
-  // Evita duplicidade por CPF ou Matrícula
   const duplicateByCpf = employees.find(e =>
     e.id !== editEmpId && cleanCpf && normalizeDigits(e.cpf) === cleanCpf
   );
@@ -3650,12 +3739,7 @@ function importBackup(ev) {
   rd.onload = e => {
     try {
       const d = JSON.parse(e.target.result);
-      if (d.company) company = Object.assign({}, structuredClone(initCompany), d.company);
-      if (Array.isArray(d.employees) && d.employees.length) employees = d.employees;
-      if (Array.isArray(d.rubrics) && d.rubrics.length) rubrics = d.rubrics;
-      if (d.tables) tables = Object.assign({}, structuredClone(initTables), d.tables);
-      if (Array.isArray(d.savedReceipts)) savedReceipts = d.savedReceipts;
-      if (Array.isArray(d.leaves)) leaves = d.leaves;
+      applyCloudSnapshot(d);
       saveAll();
       boot();
       alert('Backup restaurado com sucesso!');
@@ -3665,213 +3749,45 @@ function importBackup(ev) {
   rd.readAsText(f);
 }
 
-function downloadBlob(content, filename, mime) {
+function downloadBlob(content, filename, type) {
   const a = document.createElement('a');
-  const url = URL.createObjectURL(new Blob([content], { type: mime }));
-  a.href = url;
+  a.href = URL.createObjectURL(new Blob([content], { type }));
   a.download = filename;
   a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 function populateSelects() {
-  const empOpts = employees.map(e => `<option value="${e.id}">[${inferEsocialEventType(e)}] ${esc(e.name)} — ${esc(e.role)} (${money(e.salary)})</option>`).join('');
-  ['pEmployee', 'vEmployee', 'tEmployee', 'rEmployee'].forEach(id => {
+  const empSelects = ['pEmployee', 'vEmployee', 'tEmployee', 'rEmployee'];
+  const activeEmps = employees.filter(e => (e.status || 'ATIVO') !== 'INATIVO');
+  const poolEmps = activeEmps.length ? activeEmps : employees;
+  const opts = poolEmps.map(e => `<option value="${e.id}">${esc(e.name)} — ${esc(e.role)} (${esc(e.status || 'ATIVO')})</option>`).join('');
+  empSelects.forEach(id => {
     const el = document.getElementById(id);
-    const cur = el.value;
-    el.innerHTML = empOpts;
-    if (employees.some(e => e.id === cur)) el.value = cur;
+    if (!el) return;
+    const prev = el.value;
+    el.innerHTML = opts;
+    if (prev && poolEmps.some(x => x.id === prev)) el.value = prev;
   });
 
-  const activeRubs = rubrics.filter(r => r.status === 'ATIVA' && r.code !== '00901' && r.code !== '00902');
-  document.getElementById('pAddRubricSelect').innerHTML = activeRubs.map(r =>
-    `<option value="${r.code}">${esc(r.code)} - ${esc(r.name)} (${r.type})</option>`
-  ).join('');
+  const activeRubrics = rubrics.filter(r => r.status === 'ATIVA');
+  document.getElementById('pAddRubricSelect').innerHTML = activeRubrics.map(r => `<option value="${r.code}">${esc(r.code)} - ${esc(r.name)} (${r.type})</option>`).join('');
 }
 
-const sectionTitles = {
-  payroll: 'Folha de Pagamento',
-  vacation: 'Cálculo de Férias',
-  thirteenth: 'Cálculo de 13º Salário',
-  termination: 'Cálculo de Desligamento (TRCT)',
-  history: 'Recibos & Holerites Salvos',
-  rubrics: 'RH - Rubricas',
-  employees: 'Gerenciador de Colaboradores',
-  company: 'Dados do Empregador',
-  tables: 'Tabelas Legais (INSS / IRRF / FGTS)'
-};
-
-document.querySelectorAll('aside button').forEach(btn => {
+document.querySelectorAll('aside button[data-panel]').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('aside button').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('aside button[data-panel]').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    const id = btn.dataset.panel;
-    document.getElementById(id).classList.add('active');
-    document.getElementById('headerSectionTitle').textContent = sectionTitles[id] || '';
+    const target = btn.dataset.panel;
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === target));
+    document.getElementById('headerSectionTitle').textContent = btn.textContent.trim();
+    if (target === 'employees') closeEmployeeForm();
   });
 });
 
-const AUTH_USER = 'pulse';
-const AUTH_PASS = '1234';
-const AUTH_KEY = 'pulsedp_auth_ok';
-
-function checkAuthState() {
-  const screen = document.getElementById('loginScreen');
-  if (!screen) return;
-  if (sessionStorage.getItem(AUTH_KEY) === '1') {
-    screen.classList.add('hidden');
-  } else {
-    screen.classList.remove('hidden');
-    setTimeout(() => {
-      const u = document.getElementById('loginUser');
-      if (u) u.focus();
-    }, 50);
-  }
-}
-
-function handleLogin(ev) {
-  if (ev) ev.preventDefault();
-  const u = (document.getElementById('loginUser').value || '').trim();
-  const p = document.getElementById('loginPass').value || '';
-  const err = document.getElementById('loginError');
-
-  if (u === AUTH_USER && p === AUTH_PASS) {
-    if (err) err.classList.remove('show');
-    sessionStorage.setItem(AUTH_KEY, '1');
-    const screen = document.getElementById('loginScreen');
-    if (screen) screen.classList.add('hidden');
-    document.getElementById('loginPass').value = '';
-  } else if (err) {
-    err.classList.add('show');
-  }
-}
-
-function logoutSystem() {
-  sessionStorage.removeItem(AUTH_KEY);
-  document.getElementById('loginUser').value = '';
-  document.getElementById('loginPass').value = '';
-  const err = document.getElementById('loginError');
-  if (err) err.classList.remove('show');
-  checkAuthState();
-}
-
-const THEME_STORAGE_KEY = 'pulsedp_theme_prefs';
-const defaultThemePrefs = { mode: 'light', primary: '#4f46e5', sidebar: '#0f172a', success: '#10b981', bg: '' };
-let themePrefs = Object.assign({}, defaultThemePrefs, safeParse(THEME_STORAGE_KEY, defaultThemePrefs));
-
-function normalizeHex(hex, fallback = '#4f46e5') {
-  if (!hex || typeof hex !== 'string') return fallback;
-  let h = hex.trim().replace('#', '');
-  if (h.length === 3) h = h.split('').map(ch => ch + ch).join('');
-  if (!/^[0-9a-fA-F]{6}$/.test(h)) return fallback;
-  return '#' + h.toLowerCase();
-}
-
-function shadeHex(hex, percent) {
-  const safe = normalizeHex(hex);
-  const num = parseInt(safe.slice(1), 16);
-  const r = Math.min(255, Math.max(0, (num >> 16) + percent));
-  const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + percent));
-  const b = Math.min(255, Math.max(0, (num & 0x0000FF) + percent));
-  return '#' + (0x1000000 + (r << 16) + (g << 8) + b).toString(16).slice(1);
-}
-
-function hexToRgba(hex, alpha) {
-  const safe = normalizeHex(hex);
-  const num = parseInt(safe.slice(1), 16);
-  return `rgba(${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}, ${alpha})`;
-}
-
-function applyThemePrefs() {
-  const root = document.documentElement;
-  root.setAttribute('data-theme', themePrefs.mode);
-
-  const pHex = normalizeHex(themePrefs.primary, defaultThemePrefs.primary);
-  const sHex = normalizeHex(themePrefs.sidebar, defaultThemePrefs.sidebar);
-  const okHex = normalizeHex(themePrefs.success, defaultThemePrefs.success);
-
-  root.style.setProperty('--primary', pHex);
-  root.style.setProperty('--primary-hover', shadeHex(pHex, -18));
-  root.style.setProperty('--primary-soft', hexToRgba(pHex, themePrefs.mode === 'dark' ? 0.2 : 0.1));
-  root.style.setProperty('--primary-border', hexToRgba(pHex, 0.35));
-
-  root.style.setProperty('--sidebar', sHex);
-  root.style.setProperty('--sidebar-hover', shadeHex(sHex, 18));
-
-  root.style.setProperty('--success', okHex);
-  root.style.setProperty('--success-soft', hexToRgba(okHex, themePrefs.mode === 'dark' ? 0.18 : 0.11));
-  root.style.setProperty('--success-border', hexToRgba(okHex, 0.35));
-
-  if (themePrefs.bg) {
-    root.style.setProperty('--bg', normalizeHex(themePrefs.bg, themePrefs.mode === 'dark' ? '#0b1120' : '#f8fafc'));
-  } else {
-    root.style.removeProperty('--bg');
-  }
-
-  const toggleBtn = document.getElementById('btnThemeToggle');
-  if (toggleBtn) toggleBtn.textContent = themePrefs.mode === 'dark' ? '☀️ Claro' : '🌙 Escuro';
-
-  const bL = document.getElementById('btnModeLight');
-  const bD = document.getElementById('btnModeDark');
-  if (bL && bD) {
-    bL.classList.toggle('btn-primary', themePrefs.mode === 'light');
-    bL.classList.toggle('btn-ghost', themePrefs.mode !== 'light');
-    bD.classList.toggle('btn-primary', themePrefs.mode === 'dark');
-    bD.classList.toggle('btn-ghost', themePrefs.mode !== 'dark');
-  }
-
-  const p1 = document.getElementById('pickPrimary');
-  const p2 = document.getElementById('pickSidebar');
-  const p3 = document.getElementById('pickSuccess');
-  const p4 = document.getElementById('pickBg');
-  if (p1) p1.value = pHex;
-  if (p2) p2.value = sHex;
-  if (p3) p3.value = okHex;
-  if (p4) p4.value = normalizeHex(themePrefs.bg, themePrefs.mode === 'dark' ? '#0b1120' : '#f8fafc');
-}
-
-function saveThemePrefs() {
-  localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(themePrefs));
-  applyThemePrefs();
-}
-
-function setThemeMode(mode) {
-  themePrefs.mode = mode;
-  themePrefs.bg = '';
-  saveThemePrefs();
-}
-
-function toggleThemeMode() {
-  setThemeMode(themePrefs.mode === 'dark' ? 'light' : 'dark');
-}
-
-function toggleThemePanel() {
-  const pop = document.getElementById('themePopover');
-  if (pop) pop.classList.toggle('open');
-}
-
-function applyColorPreset(primary, sidebar, success) {
-  themePrefs.primary = primary;
-  themePrefs.sidebar = sidebar;
-  themePrefs.success = success;
-  saveThemePrefs();
-}
-
-function updateCustomColor(key, val) {
-  themePrefs[key] = val;
-  saveThemePrefs();
-}
-
-function resetThemeCustomization() {
-  themePrefs = Object.assign({}, defaultThemePrefs);
-  saveThemePrefs();
-}
-
 function boot() {
-  applyThemePrefs();
   renderCompany();
   renderEmployees();
+  renderLeaveHistory();
   renderRubrics();
   renderTables();
   populateSelects();
@@ -3882,8 +3798,189 @@ function boot() {
   renderHistory();
 }
 
-checkAuthState();
+// =========================================================================
+// AUTENTICAÇÃO DE ACESSO AO SISTEMA
+// =========================================================================
+const AUTH_SESSION_KEY = 'pulsedp_auth_session_v1';
+const AUTH_USERS = [
+  { user: 'admin', pass: '1234', role: 'Administrador DP' },
+  { user: 'rh', pass: 'rh2026', role: 'Analista de RH' }
+];
+
+function checkLoginState() {
+  const screen = document.getElementById('loginScreen');
+  if (!screen) return;
+  try {
+    const raw = sessionStorage.getItem(AUTH_SESSION_KEY) || localStorage.getItem(AUTH_SESSION_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.loggedIn && parsed.user) {
+        screen.classList.add('hidden');
+        return;
+      }
+    }
+  } catch {}
+  screen.classList.remove('hidden');
+}
+
+function handleLogin(event) {
+  event.preventDefault();
+  const u = (document.getElementById('loginUser')?.value || '').trim().toLowerCase();
+  const p = (document.getElementById('loginPass')?.value || '').trim();
+  const errEl = document.getElementById('loginError');
+
+  const found = AUTH_USERS.find(acc => acc.user.toLowerCase() === u && acc.pass === p);
+  if (!found) {
+    if (errEl) errEl.classList.add('show');
+    return;
+  }
+
+  if (errEl) errEl.classList.remove('show');
+  const sessionData = { loggedIn: true, user: found.user, role: found.role, at: Date.now() };
+  try {
+    sessionStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(sessionData));
+    localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(sessionData));
+  } catch {}
+
+  document.getElementById('loginScreen')?.classList.add('hidden');
+  pullFromVercel(false);
+}
+
+function logoutSystem() {
+  try {
+    sessionStorage.removeItem(AUTH_SESSION_KEY);
+    localStorage.removeItem(AUTH_SESSION_KEY);
+  } catch {}
+  const uInput = document.getElementById('loginUser');
+  const pInput = document.getElementById('loginPass');
+  if (uInput) uInput.value = '';
+  if (pInput) pInput.value = '';
+  document.getElementById('loginError')?.classList.remove('show');
+  document.getElementById('loginScreen')?.classList.remove('hidden');
+}
+
+// =========================================================================
+// PERSONALIZADOR DE TEMA CLARO / ESCURO & CORES DO SISTEMA
+// =========================================================================
+const THEME_STORAGE_KEY = 'pulsedp_theme_config_v1';
+
+const defaultThemeConfig = {
+  mode: 'light',
+  primary: '#4f46e5',
+  sidebar: '#0f172a',
+  success: '#10b981',
+  bg: '#f8fafc'
+};
+
+function darkenHex(hex, amt = 16) {
+  const clean = (hex || '').replace('#', '');
+  if (clean.length !== 6) return hex;
+  const num = parseInt(clean, 16);
+  const r = Math.max(0, Math.min(255, ((num >> 16) & 255) - amt));
+  const g = Math.max(0, Math.min(255, ((num >> 8) & 255) - amt));
+  const b = Math.max(0, Math.min(255, (num & 255) - amt));
+  return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
+function hexToRgba(hex, alpha) {
+  const clean = (hex || '').replace('#', '');
+  if (clean.length !== 6) return `rgba(79,70,229,${alpha})`;
+  const num = parseInt(clean, 16);
+  const r = (num >> 16) & 255;
+  const g = (num >> 8) & 255;
+  const b = num & 255;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+let themeConfig = Object.assign({}, defaultThemeConfig, safeParse(THEME_STORAGE_KEY, defaultThemeConfig));
+
+function applyThemeConfig() {
+  const root = document.documentElement;
+  if (themeConfig.mode === 'dark') {
+    root.setAttribute('data-theme', 'dark');
+  } else {
+    root.removeAttribute('data-theme');
+  }
+
+  root.style.setProperty('--primary', themeConfig.primary);
+  root.style.setProperty('--primary-hover', darkenHex(themeConfig.primary, 18));
+  root.style.setProperty('--primary-soft', hexToRgba(themeConfig.primary, themeConfig.mode === 'dark' ? 0.20 : 0.10));
+  root.style.setProperty('--primary-border', hexToRgba(themeConfig.primary, 0.35));
+  root.style.setProperty('--sidebar', themeConfig.sidebar);
+  root.style.setProperty('--sidebar-hover', darkenHex(themeConfig.sidebar, -14));
+  root.style.setProperty('--success', themeConfig.success);
+  if (themeConfig.bg && themeConfig.bg !== defaultThemeConfig.bg) {
+    root.style.setProperty('--bg', themeConfig.bg);
+  } else {
+    root.style.removeProperty('--bg');
+  }
+
+  const p1 = document.getElementById('pickPrimary');
+  const p2 = document.getElementById('pickSidebar');
+  const p3 = document.getElementById('pickSuccess');
+  const p4 = document.getElementById('pickBg');
+  if (p1) p1.value = themeConfig.primary;
+  if (p2) p2.value = themeConfig.sidebar;
+  if (p3) p3.value = themeConfig.success;
+  if (p4) p4.value = themeConfig.bg || (themeConfig.mode === 'dark' ? '#0b1120' : '#f8fafc');
+
+  const btnLight = document.getElementById('btnModeLight');
+  const btnDark = document.getElementById('btnModeDark');
+  if (btnLight && btnDark) {
+    btnLight.className = themeConfig.mode === 'light' ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm';
+    btnDark.className = themeConfig.mode === 'dark' ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm';
+  }
+
+  const btnToggle = document.getElementById('btnThemeToggle');
+  if (btnToggle) {
+    btnToggle.textContent = themeConfig.mode === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+  }
+
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(themeConfig));
+  } catch {}
+}
+
+function toggleThemeMode() {
+  setThemeMode(themeConfig.mode === 'dark' ? 'light' : 'dark');
+}
+
+function toggleThemePanel() {
+  const pop = document.getElementById('themePopover');
+  if (pop) pop.classList.toggle('open');
+}
+
+function setThemeMode(mode) {
+  themeConfig.mode = mode === 'dark' ? 'dark' : 'light';
+  if (mode === 'dark' && themeConfig.bg === '#f8fafc') {
+    themeConfig.bg = '#0b1120';
+  } else if (mode === 'light' && themeConfig.bg === '#0b1120') {
+    themeConfig.bg = '#f8fafc';
+  }
+  applyThemeConfig();
+}
+
+function applyColorPreset(primary, sidebar, success) {
+  themeConfig.primary = primary;
+  themeConfig.sidebar = sidebar;
+  themeConfig.success = success;
+  applyThemeConfig();
+}
+
+function updateCustomColor(key, value) {
+  themeConfig[key] = value;
+  applyThemeConfig();
+}
+
+function resetThemeCustomization() {
+  themeConfig = Object.assign({}, defaultThemeConfig);
+  applyThemeConfig();
+}
+
+applyThemeConfig();
 boot();
+checkLoginState();
+pullFromVercel(false);
 </script>
 </body>
 </html>
