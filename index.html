@@ -1864,12 +1864,20 @@ async function pushToVercel(notify = false) {
   }
 }
 
-function saveAll() {
+async function saveAll(options = {}) {
+  const { syncCloud = true, notifyCloud = false } = options;
   saveLocalOnly();
+  if (!syncCloud) {
+    setCloudStatus('Salvo local', 'warn');
+    return;
+  }
   clearTimeout(cloudSyncTimer);
-  cloudSyncTimer = setTimeout(() => {
-    pushToVercel(false);
-  }, 350);
+  return new Promise((resolve) => {
+    cloudSyncTimer = setTimeout(async () => {
+      await pushToVercel(notifyCloud);
+      resolve();
+    }, 350);
+  });
 }
 
 function calcProgressive(base, bands) {
@@ -3733,18 +3741,25 @@ function exportBackup() {
 }
 
 function importBackup(ev) {
-  const f = ev.target.files[0];
+  const f = ev.target.files?.[0];
   if (!f) return;
   const rd = new FileReader();
-  rd.onload = e => {
+  rd.onload = async e => {
     try {
-      const d = JSON.parse(e.target.result);
-      applyCloudSnapshot(d);
-      saveAll();
+      const parsed = JSON.parse(e.target.result);
+      const snapshot = parsed && typeof parsed === 'object' && parsed.data ? parsed.data : parsed;
+      if (!snapshot || typeof snapshot !== 'object') {
+        throw new Error('Estrutura JSON inválida');
+      }
+      applyCloudSnapshot(snapshot);
       boot();
-      alert('Backup restaurado com sucesso!');
-    } catch { alert('Arquivo inválido.'); }
-    ev.target.value = '';
+      await saveAll({ syncCloud: true, notifyCloud: false });
+      alert('Backup JSON restaurado e sincronizado com o MongoDB!');
+    } catch {
+      alert('Arquivo JSON inválido ou corrompido.');
+    } finally {
+      ev.target.value = '';
+    }
   };
   rd.readAsText(f);
 }
