@@ -427,8 +427,9 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
       <div class="header-pills">
         <div class="pill"><span class="dot-live"></span> Competência: <b id="topComp">11/2026</b></div>
         <div class="pill">Equipe: <b id="topEmpCount">0</b> ativos</div>
-        <div class="pill">MongoDB: <b id="topCloudStatus">Local</b></div>
+        <div class="pill" onclick="showCloudDiagnostics()" style="cursor:pointer" title="Clique para ver detalhes da conexão MongoDB">MongoDB: <b id="topCloudStatus">Local</b></div>
         <button class="btn btn-ghost btn-sm" type="button" onclick="pullFromVercel(true)" title="Sincronizar com MongoDB Atlas">☁️ Sync</button>
+        <button class="btn btn-ghost btn-sm" type="button" onclick="configureCloudEndpoint()" title="Configurar URL da API MongoDB">⚙️ API</button>
         <button class="btn btn-ghost btn-sm" type="button" id="btnThemeToggle" onclick="toggleThemeMode()" title="Alternar modo claro/escuro">🌙 Escuro</button>
         <button class="btn btn-ghost btn-sm" type="button" onclick="toggleThemePanel()" title="Personalizar cores do sistema">🎨 Cores</button>
         <button class="btn btn-ghost btn-sm" type="button" onclick="logoutSystem()" title="Sair do sistema">Sair</button>
@@ -1654,9 +1655,16 @@ const numBR = v => Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigit
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const fmtDateBR = iso => iso ? iso.split('-').reverse().join('/') : '—';
 
-const CLOUD_API_URL = '/api/state';
+const CLOUD_API_STORAGE_KEY = 'pulsedp_cloud_api_url_v1';
+const DEFAULT_CLOUD_API_URL = '/api/state';
+let CLOUD_API_URL = DEFAULT_CLOUD_API_URL;
+try {
+  const savedApi = localStorage.getItem(CLOUD_API_STORAGE_KEY);
+  if (savedApi && savedApi.trim()) CLOUD_API_URL = savedApi.trim();
+} catch {}
 const WORKSPACE_ID = '6b013134917c7ced9de2805f';
 let cloudSyncTimer = null;
+let lastCloudError = '';
 
 const initCompany = {
   tpInsc: '1',
@@ -1813,15 +1821,78 @@ function saveLocalOnly() {
   localStorage.setItem('erp_dp_leaves', JSON.stringify(leaves));
 }
 
+function resolveCloudEndpoint() {
+  const raw = (CLOUD_API_URL || DEFAULT_CLOUD_API_URL).trim();
+  if (window.location.protocol === 'file:' && raw.startsWith('/')) {
+    return { url: '', reason: 'Arquivo aberto via file:// (sem servidor /api/state). Configure a URL completa da API (ex.: https://seu-projeto.vercel.app/api/state).' };
+  }
+  return { url: raw, reason: '' };
+}
+
+function showCloudDiagnostics() {
+  const ep = resolveCloudEndpoint();
+  const status = document.getElementById('topCloudStatus')?.textContent || 'Local';
+  alert(
+    `Diagnóstico de Conexão MongoDB Atlas:\n` +
+    `• Status atual: ${status}\n` +
+    `• Endpoint API configurado: ${ep.url || '(não configurado)'}\n` +
+    `• Workspace ID: ${WORKSPACE_ID}\n` +
+    (lastCloudError ? `• Último erro: ${lastCloudError}\n` : `• Último erro: Nenhum\n`) +
+    `\nLembrete: A MONGODB_URI deve estar salva em Settings > Environment Variables na Vercel, com a rota /api/state publicada.`
+  );
+}
+
+function configureCloudEndpoint() {
+  const current = CLOUD_API_URL || DEFAULT_CLOUD_API_URL;
+  const originHint = window.location.origin && window.location.origin !== 'null'
+    ? window.location.origin + '/api/state'
+    : 'https://seu-projeto.vercel.app/api/state';
+  const typed = prompt(
+    'Informe a URL da rota da API no servidor/Vercel (NÃO cole a string mongodb+srv:// aqui; a MONGODB_URI fica nas variáveis de ambiente da Vercel):\n\nExemplo: ' + originHint,
+    current
+  );
+  if (typed === null) return;
+  const clean = typed.trim() || DEFAULT_CLOUD_API_URL;
+  if (clean.startsWith('mongodb://') || clean.startsWith('mongodb+srv://')) {
+    alert(
+      'A string mongodb+srv:// não pode ser usada direto no navegador.\n\n' +
+      '1) Cadastre a variável MONGODB_URI nas Environment Variables da Vercel.\n' +
+      '2) Aqui no botão ⚙️ API, mantenha /api/state (ou https://seu-projeto.vercel.app/api/state).'
+    );
+    return;
+  }
+  CLOUD_API_URL = clean;
+  try {
+    localStorage.setItem(CLOUD_API_STORAGE_KEY, clean);
+  } catch {}
+  pullFromVercel(true);
+}
+
 async function pullFromVercel(notify = false) {
+  const ep = resolveCloudEndpoint();
+  if (!ep.url) {
+    lastCloudError = ep.reason;
+    setCloudStatus('Sem servidor API', 'warn');
+    if (notify) {
+      alert(ep.reason + '\n\nClique em "⚙️ API" no topo para informar a URL da API.');
+    }
+    return;
+  }
+
   setCloudStatus('Sincronizando...');
   try {
-    const res = await fetch(`${CLOUD_API_URL}?workspace=${encodeURIComponent(WORKSPACE_ID)}`, {
+    const sep = ep.url.includes('?') ? '&' : '?';
+    const res = await fetch(`${ep.url}${sep}workspace=${encodeURIComponent(WORKSPACE_ID)}`, {
       headers: { 'x-workspace-id': WORKSPACE_ID }
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
-    if (json.ok && json.data) {
+    const text = await res.text();
+    let json = null;
+    try { json = JSON.parse(text); } catch {}
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}${json && json.error ? ' - ' + json.error : ''}`);
+    }
+    if (json && json.ok && json.data) {
+      lastCloudError = '';
       applyCloudSnapshot(json.data);
       saveLocalOnly();
       renderCompany();
@@ -1835,20 +1906,35 @@ async function pullFromVercel(notify = false) {
       fillTermEmp();
       renderHistory();
       setCloudStatus('Conectado', 'ok');
-      if (notify) alert('Dados sincronizados com o MongoDB Atlas (atlas-camel-arrow)!');
+      if (notify) alert('Dados sincronizados com o MongoDB Atlas!');
     } else {
       await pushToVercel(notify);
     }
   } catch (err) {
-    setCloudStatus('Local', 'warn');
-    if (notify) alert('Não foi possível conectar em /api/state; mantendo dados locais.');
+    lastCloudError = err && err.message ? err.message : String(err);
+    setCloudStatus('Erro Mongo', 'warn');
+    if (notify) {
+      alert(
+        `Falha ao conectar no MongoDB (${ep.url}):\n${lastCloudError}\n\n` +
+        `Verifique se a rota /api/state existe no seu servidor/Vercel e se a variável MONGODB_URI está configurada no ambiente.`
+      );
+    }
   }
 }
 
 async function pushToVercel(notify = false) {
+  const ep = resolveCloudEndpoint();
+  if (!ep.url) {
+    lastCloudError = ep.reason;
+    setCloudStatus('Salvo local', 'warn');
+    if (notify) alert(ep.reason);
+    return;
+  }
+
   setCloudStatus('Salvando...');
   try {
-    const res = await fetch(`${CLOUD_API_URL}?workspace=${encodeURIComponent(WORKSPACE_ID)}`, {
+    const sep = ep.url.includes('?') ? '&' : '?';
+    const res = await fetch(`${ep.url}${sep}workspace=${encodeURIComponent(WORKSPACE_ID)}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1856,11 +1942,24 @@ async function pushToVercel(notify = false) {
       },
       body: JSON.stringify({ data: getCloudSnapshot() })
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    let json = null;
+    try { json = JSON.parse(text); } catch {}
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}${json && json.error ? ' - ' + json.error : ''}`);
+    }
+    if (json && json.ok === false) {
+      throw new Error(json.error || 'Erro ao salvar no MongoDB');
+    }
+    lastCloudError = '';
     setCloudStatus('Conectado', 'ok');
     if (notify) alert('Dados salvos no MongoDB Atlas!');
   } catch (err) {
-    setCloudStatus('Salvo local', 'warn');
+    lastCloudError = err && err.message ? err.message : String(err);
+    setCloudStatus('Erro ao salvar', 'warn');
+    if (notify) {
+      alert(`Não foi possível salvar no MongoDB (${ep.url}):\n${lastCloudError}`);
+    }
   }
 }
 
