@@ -365,15 +365,15 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
       <div class="brand-logo">P</div>
       <div>
         <h2>PulseDP</h2>
-        <span>Acesso ao Sistema de Folha & RH</span>
+        <span>Acesso Vinculado ao Escritório Contábil</span>
       </div>
     </div>
 
-    <div id="loginError" class="login-error">Usuário ou senha inválidos. Verifique suas credenciais.</div>
+    <div id="loginError" class="login-error">Usuário, senha ou vínculo de escritório inválidos.</div>
 
     <div class="login-field">
-      <label for="loginUser">Usuário</label>
-      <input id="loginUser" type="text" autocomplete="username" placeholder="Digite seu usuário" required>
+      <label for="loginUser">Usuário de Acesso</label>
+      <input id="loginUser" type="text" autocomplete="username" placeholder="Digite seu login (ex.: admin)" required>
     </div>
 
     <div class="login-field">
@@ -381,9 +381,9 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
       <input id="loginPass" type="password" autocomplete="current-password" placeholder="••••••••" required>
     </div>
 
-    <button class="btn btn-primary login-btn" type="submit">Entrar no Sistema</button>
+    <button class="btn btn-primary login-btn" type="submit">Entrar no Escritório</button>
 
-    <div class="login-foot">Ambiente restrito • Departamento Pessoal</div>
+    <div class="login-foot">Acesso isolado por Escritório • Apenas empresas vinculadas</div>
   </form>
 </div>
 
@@ -406,10 +406,11 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
     <button data-panel="termination"><span class="nav-ico"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>Desligamento (TRCT)</button>
     <button data-panel="history"><span class="nav-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></span>Recibos & Holerites</button>
 
-    <div class="nav-section">Cadastros & Regras</div>
-    <button data-panel="rubrics"><span class="nav-ico"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.2" fill="currentColor"/><circle cx="4" cy="12" r="1.2" fill="currentColor"/><circle cx="4" cy="18" r="1.2" fill="currentColor"/></svg></span>RH - Rubricas</button>
+    <div class="nav-section">Cadastros & Estrutura</div>
+    <button data-panel="offices"><span class="nav-ico"><svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01"/><path d="M9 12v.01"/><path d="M9 15v.01"/><path d="M9 18v.01"/></svg></span>Escritórios & Acessos</button>
+    <button data-panel="company"><span class="nav-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h2"/><path d="M13 9h2"/><path d="M9 13h2"/><path d="M13 13h2"/><path d="M9 21v-4h6v4"/></svg></span>Empresas do Escritório</button>
     <button data-panel="employees"><span class="nav-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Colaboradores</button>
-    <button data-panel="company"><span class="nav-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h2"/><path d="M13 9h2"/><path d="M9 13h2"/><path d="M13 13h2"/><path d="M9 21v-4h6v4"/></svg></span>Dados da Empresa</button>
+    <button data-panel="rubrics"><span class="nav-ico"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.2" fill="currentColor"/><circle cx="4" cy="12" r="1.2" fill="currentColor"/><circle cx="4" cy="18" r="1.2" fill="currentColor"/></svg></span>RH - Rubricas</button>
     <button data-panel="tables"><span class="nav-ico"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>Tabelas INSS / IRRF</button>
 
     <div class="sidebar-footer">
@@ -423,9 +424,18 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
 
   <div class="main-wrap">
     <header>
-      <div class="header-title" id="headerSectionTitle">Folha de Pagamento</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="header-title" id="headerSectionTitle">Folha de Pagamento</div>
+        <div class="pill" style="background:var(--primary-soft);border-color:var(--primary-border)">
+          🏢 Escritório: <b id="topOfficeName">—</b>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:12px;font-weight:600;color:var(--text-muted)">Empresa Ativa:</span>
+          <select id="activeCompanySelect" onchange="switchActiveCompany(this.value)" style="height:31px;padding:3px 8px;font-size:12.5px;font-weight:600;min-width:210px;max-width:290px"></select>
+        </div>
+      </div>
       <div class="header-pills">
-        <div class="pill"><span class="dot-live"></span> Competência: <b id="topComp">11/2026</b></div>
+        <div class="pill"><span class="dot-live"></span> Comp.: <b id="topComp">11/2026</b></div>
         <div class="pill">Equipe: <b id="topEmpCount">0</b> ativos</div>
         <div class="pill" onclick="showCloudDiagnostics()" style="cursor:pointer" title="Clique para ver detalhes da conexão PostgreSQL">Postgres: <b id="topCloudStatus">Local</b></div>
         <button class="btn btn-ghost btn-sm" type="button" id="btnThemeToggle" onclick="toggleThemeMode()" title="Alternar modo claro/escuro">🌙 Escuro</button>
@@ -1462,20 +1472,126 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
       </section>
 
       <!-- ===================================================================
-           8. DADOS DO EMPREGADOR (eSocial S-1000 / Tabelas 04, 05, 08)
+           8A. CADASTRO DE ESCRITÓRIOS & ACESSOS VINCULADOS
+      ==================================================================== -->
+      <section id="offices" class="panel">
+        <div class="page-head">
+          <div>
+            <h1>Cadastro de Escritórios & Acessos</h1>
+            <p>Cadastre escritórios contábeis/matrizes e vincule cada usuário de acesso a um escritório específico. Cada login enxerga apenas as empresas do seu escritório.</p>
+          </div>
+        </div>
+
+        <div class="grid two">
+          <!-- CADASTRO DE ESCRITÓRIO -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title" id="officeFormTitle">Cadastrar / Editar Escritório</h3>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="resetOfficeForm()">+ Novo</button>
+            </div>
+            <div class="grid two">
+              <div style="grid-column:span 2"><label>Nome / Razão Social do Escritório <span class="req">*</span></label><input id="oName" placeholder="Ex.: Contabilidade Londrina & Associados"></div>
+              <div><label>CNPJ / CRC <span class="req">*</span></label><input id="oCnpj" placeholder="00.000.000/0001-00"></div>
+              <div><label>Cidade / UF</label><input id="oCity" placeholder="Londrina - PR"></div>
+              <div style="grid-column:span 2"><label>Responsável Técnico</label><input id="oResp" placeholder="Contador Responsável"></div>
+            </div>
+            <div style="margin-top:12px;display:flex;gap:8px">
+              <button type="button" class="btn btn-primary" onclick="saveOffice()">💾 Salvar Escritório</button>
+            </div>
+
+            <div class="tablewrap" style="margin-top:14px">
+              <table id="officesTable" style="min-width:auto">
+                <thead><tr><th>Escritório</th><th>CNPJ/CRC</th><th>Empresas</th><th>Ações</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- CADASTRO DE USUÁRIOS VINCULADOS AO ESCRITÓRIO -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title" id="userFormTitle">Vincular Usuário de Acesso ao Escritório</h3>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="resetUserForm()">+ Novo Acesso</button>
+            </div>
+            <div class="grid two">
+              <div style="grid-column:span 2">
+                <label>Escritório Vinculado (Obrigatório) <span class="req">*</span></label>
+                <select id="uOfficeId"></select>
+              </div>
+              <div><label>Nome do Usuário <span class="req">*</span></label><input id="uFullName" placeholder="Ex.: João Contador"></div>
+              <div><label>Perfil de Acesso</label>
+                <select id="uRole">
+                  <option value="Administrador Escritório">Administrador Escritório</option>
+                  <option value="Analista DP / Folha">Analista DP / Folha</option>
+                </select>
+              </div>
+              <div><label>Login de Acesso <span class="req">*</span></label><input id="uLogin" placeholder="Ex.: joao.dp"></div>
+              <div><label>Senha <span class="req">*</span></label><input id="uPass" type="text" placeholder="Senha de acesso"></div>
+            </div>
+            <div style="margin-top:12px;display:flex;gap:8px">
+              <button type="button" class="btn btn-primary" onclick="saveAccessUser()">🔐 Salvar Acesso Vinculado</button>
+            </div>
+
+            <div class="tablewrap" style="margin-top:14px">
+              <table id="usersTable" style="min-width:auto">
+                <thead><tr><th>Login</th><th>Usuário</th><th>Escritório Vinculado</th><th>Ações</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           8B. CADASTRO DE EMPRESAS VINCULADAS AO ESCRITÓRIO (eSocial S-1000)
       ==================================================================== -->
       <section id="company" class="panel">
         <div class="page-head">
           <div>
-            <h1>Dados do Empregador</h1>
-            <p>Campos oficiais de identificação do empregador, classificação tributária (Tabela 08), FPAS/Terceiros (Tabela 04) e RAT/FAP.</p>
+            <h1>Empresas Vinculadas ao Escritório</h1>
+            <p id="companyPageSub">Somente empresas vinculadas ao escritório logado são exibidas e acessadas neste ambiente.</p>
           </div>
-          <button class="btn btn-primary" onclick="saveCompany()">💾 Salvar Empresa</button>
+          <div class="actions-bar" id="companyTopActions">
+            <button type="button" class="btn btn-primary" onclick="openCompanyForm()">➕ Cadastrar Empresa no Escritório</button>
+          </div>
         </div>
 
-        <div class="card">
-          <div class="card-header"><h3 class="card-title">Identificação e Enquadramento Tributário</h3></div>
+        <!-- LISTA DE EMPRESAS DO ESCRITÓRIO LOGADO -->
+        <div class="card" id="companyListBox">
+          <div class="toolbar">
+            <input type="text" id="compSearch" class="search-input" placeholder="🔍 Pesquisar empresa por razão social ou CNPJ..." oninput="renderCompanyList()">
+            <span style="font-size:12.5px;color:var(--text-muted)" id="compCountLabel">0 empresas vinculadas</span>
+          </div>
+          <div class="tablewrap">
+            <table id="companiesTable">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Razão Social / Empregador</th>
+                  <th>CNPJ / CPF</th>
+                  <th>Escritório Vinculado</th>
+                  <th>Class. Trib.</th>
+                  <th>Município/UF</th>
+                  <th style="width:185px">Ações</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- FORMULÁRIO DE CADASTRO / EDIÇÃO DE EMPRESA (eSocial S-1000) -->
+        <div class="card" id="companyFormBox" style="display:none">
+          <div class="card-header">
+            <h3 class="card-title" id="companyFormTitle">Cadastro de Empresa (eSocial S-1000)</h3>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="closeCompanyForm()">← Voltar para Empresas</button>
+          </div>
+
           <div class="grid three">
+            <div>
+              <label>Escritório Vinculado <span class="req">*</span></label>
+              <select id="cOfficeId"></select>
+            </div>
             <div>
               <label>Tipo de Inscrição <span class="req">*</span></label>
               <select id="cTpInsc">
@@ -1486,24 +1602,24 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
               </select>
             </div>
             <div><label>Nº Inscrição (CNPJ/CPF) <span class="req">*</span></label><input id="cCnpj" placeholder="00.000.000/0001-00"></div>
-            <div><label>Razão Social / Nome <span class="req">*</span></label><input id="cName"></div>
+            <div style="grid-column:span 2"><label>Razão Social / Nome <span class="req">*</span></label><input id="cName" placeholder="Razão social completa"></div>
             <div>
               <label>Classificação Tributária <span class="req">*</span></label>
               <select id="cClassTrib">
-                <option value="01">01 - Empresa Enquadrada no Regime de Tributação Simples Nacional com Tributação Previdenciária Substituída</option>
-                <option value="02">02 - Empresa Enquadrada no Regime de Tributação Simples Nacional com Tributação Previdenciária Não Substituída</option>
+                <option value="01">01 - Simples Nacional (Tributação Substituída)</option>
+                <option value="02">02 - Simples Nacional (Tributação Não Substituída)</option>
                 <option value="03" selected>03 - Empresa em Geral</option>
-                <option value="04">04 - Simples Nacional - Microempreendedor Individual - MEI</option>
+                <option value="04">04 - Simples Nacional - MEI</option>
                 <option value="06">06 - Agroindústria</option>
                 <option value="07">07 - Produtor Rural Pessoa Física</option>
                 <option value="08">08 - Consórcio Simplificado de Empregadores</option>
                 <option value="09">09 - Órgão Gestor de Mão de Obra - OGMO</option>
-                <option value="10">10 - Entidade Sindical a que se refere a Lei 12.023/2009</option>
-                <option value="11">11 - Empresa de Comunicação / Jornalismo / Radiodifusão</option>
-                <option value="13">13 - Banco, Caixa Econômica, Sociedade de Crédito, Financiamento e Investimento</option>
+                <option value="10">10 - Entidade Sindical (Lei 12.023/2009)</option>
+                <option value="11">11 - Empresa de Comunicação / Jornalismo</option>
+                <option value="13">13 - Banco / Instituição Financeira</option>
                 <option value="21">21 - Pessoa Física em Geral</option>
                 <option value="85">85 - Segurado Especial</option>
-                <option value="99">99 - Pessoas Jurídicas em Geral (Não listadas)</option>
+                <option value="99">99 - Pessoas Jurídicas em Geral</option>
               </select>
             </div>
             <div><label>CNAE Principal (7 dígitos)</label><input id="cCnae" placeholder="6201501"></div>
@@ -1515,7 +1631,7 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
               <label>Ind. Coop./Construtora/Desoneração</label>
               <select id="cIndDeson">
                 <option value="0">0 - Não Aplicável</option>
-                <option value="1">1 - Empresa enquadrada nos arts. 7º a 9º da Lei 12.546/2011 (Desoneração)</option>
+                <option value="1">1 - Desoneração (Lei 12.546/2011)</option>
               </select>
             </div>
             <div>
@@ -1534,6 +1650,11 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
             <div><label>Município</label><input id="cCity"></div>
             <div><label>UF</label><input id="cState" maxlength="2"></div>
             <div><label>CEP</label><input id="cZip"></div>
+          </div>
+
+          <div style="margin-top:16px;display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--surface-2)">
+            <button type="button" class="btn btn-primary" onclick="saveCompany()">💾 Salvar Empresa Vinculada</button>
+            <button type="button" class="btn btn-ghost" onclick="closeCompanyForm()">Cancelar</button>
           </div>
         </div>
       </section>
@@ -1667,34 +1788,105 @@ let isSyncingNow = false;
 let hasPendingLocalSave = false;
 let lastCloudError = '';
 
-const initCompany = {
-  tpInsc: '1',
-  name: 'EMPRESA MODELO DE SERVIÇOS E TECNOLOGIA LTDA',
-  cnpj: '12.345.678/0001-99',
-  classTrib: '03',
-  cnae: '6201501',
-  fpas: '515',
-  terceiros: '0079',
-  rat: 2.0,
-  fap: 1.0,
-  indDeson: '0',
-  indEscr: '1',
-  enteFed: '',
-  addr: 'Av. Higienópolis, 1200 - Centro',
-  city: 'Londrina',
-  state: 'PR',
-  zip: '86020-080'
-};
+const initOffices = [
+  {
+    id: 'esc_matriz',
+    name: 'ESCRITÓRIO CONTÁBIL MATRIZ LONDRINA',
+    cnpj: '44.555.666/0001-10',
+    city: 'Londrina - PR',
+    resp: 'Lucas Fernando dos Santos'
+  },
+  {
+    id: 'esc_filial',
+    name: 'ASSESSORIA CONTÁBIL PARANÁ LTDA',
+    cnpj: '77.888.999/0001-20',
+    city: 'Maringá - PR',
+    resp: 'Mariana Contadora'
+  }
+];
+
+const initAccessUsers = [
+  { id: 'usr_admin', user: 'admin', pass: '1234', fullName: 'Administrador Matriz', role: 'Administrador Escritório', officeId: 'esc_matriz' },
+  { id: 'usr_rh', user: 'rh', pass: 'rh2026', fullName: 'Analista RH Matriz', role: 'Analista DP / Folha', officeId: 'esc_matriz' },
+  { id: 'usr_filial', user: 'parana', pass: '1234', fullName: 'Gestor Escritório Paraná', role: 'Administrador Escritório', officeId: 'esc_filial' }
+];
+
+const initCompanies = [
+  {
+    id: 'comp_1',
+    officeId: 'esc_matriz',
+    tpInsc: '1',
+    name: 'EMPRESA MODELO DE SERVIÇOS E TECNOLOGIA LTDA',
+    cnpj: '12.345.678/0001-99',
+    classTrib: '03',
+    cnae: '6201501',
+    fpas: '515',
+    terceiros: '0079',
+    rat: 2.0,
+    fap: 1.0,
+    indDeson: '0',
+    indEscr: '1',
+    enteFed: '',
+    addr: 'Av. Higienópolis, 1200 - Centro',
+    city: 'Londrina',
+    state: 'PR',
+    zip: '86020-080'
+  },
+  {
+    id: 'comp_2',
+    officeId: 'esc_matriz',
+    tpInsc: '1',
+    name: 'COMÉRCIO E DISTRIBUIDORA LONDRINA LTDA',
+    cnpj: '98.765.432/0001-55',
+    classTrib: '01',
+    cnae: '4711302',
+    fpas: '515',
+    terceiros: '0079',
+    rat: 2.0,
+    fap: 1.0,
+    indDeson: '0',
+    indEscr: '1',
+    enteFed: '',
+    addr: 'Av. Tiradentes, 850 - Shangri-lá',
+    city: 'Londrina',
+    state: 'PR',
+    zip: '86070-545'
+  },
+  {
+    id: 'comp_3',
+    officeId: 'esc_filial',
+    tpInsc: '1',
+    name: 'INDÚSTRIA METALÚRGICA NORTE PARANÁ S/A',
+    cnpj: '33.222.111/0001-88',
+    classTrib: '03',
+    cnae: '2511000',
+    fpas: '507',
+    terceiros: '0079',
+    rat: 3.0,
+    fap: 1.0,
+    indDeson: '0',
+    indEscr: '1',
+    enteFed: '',
+    addr: 'Rod. BR-376, Km 12 - Distrito Industrial',
+    city: 'Maringá',
+    state: 'PR',
+    zip: '87070-000'
+  }
+];
+
+const initCompany = initCompanies[0];
 
 const initEmployees = [
-  { id: 'e1', mat: '000101', status: 'ATIVO', name: 'HELES RESENDE SILVA', cpf: '111.222.333-44', birth: '1989-08-14', sex: 'F', race: '3', edu: '09', pis: '123.45678.90-1', ctps: '4589120 / 001-PR', codCateg: '101', tpRegTrab: '1', tpRegPrev: '1', tpContr: '1', role: 'Analista Administrativo', cbo: '252105', dept: 'Gestão Financeira', adm: '2021-05-10', salary: 4800.00, undSal: '5', deps: 1, depsSf: 1, hours: 220, aposEsp: '1', vacPendingPeriods: 1, vacAcqRef: '10/05/2025 a 09/05/2026', addr: 'Rua Paranaguá, 450 - Centro, Londrina - PR, CEP 86020-030' },
-  { id: 'e2', mat: '000102', status: 'AFASTADO', name: 'MARIANA COSTA OLIVEIRA', cpf: '222.333.444-55', birth: '1995-03-22', sex: 'F', race: '1', edu: '08', pis: '124.98765.43-2', ctps: '7891234 / 002-PR', codCateg: '101', tpRegTrab: '1', tpRegPrev: '1', tpContr: '1', role: 'Assistente de RH', cbo: '411010', dept: 'Recursos Humanos', adm: '2024-02-01', salary: 2850.00, undSal: '5', deps: 0, depsSf: 0, hours: 220, aposEsp: '1', vacPendingPeriods: 0, vacAcqRef: '01/02/2026 a 31/01/2027', addr: 'Av. Madre Leônia Milito, 800 - Gleba Palhano, Londrina - PR, CEP 86050-270' },
-  { id: 'e3', mat: '000103', status: 'INATIVO', name: 'CARLOS EDUARDO MENDES', cpf: '333.444.555-66', birth: '1987-11-05', sex: 'M', race: '1', edu: '09', pis: '125.11223.34-5', ctps: '9921045 / 001-PR', codCateg: '101', tpRegTrab: '1', tpRegPrev: '1', tpContr: '1', role: 'Supervisor Operacional', cbo: '214205', dept: 'Operações', adm: '2020-03-15', salary: 5200.00, undSal: '5', deps: 2, depsSf: 0, hours: 220, aposEsp: '1', vacPendingPeriods: 0, vacAcqRef: 'Encerrado', addr: 'Rua Santos, 210 - Centro, Londrina - PR, CEP 86020-160' }
+  { id: 'e1', companyId: 'comp_1', mat: '000101', status: 'ATIVO', name: 'HELES RESENDE SILVA', cpf: '111.222.333-44', birth: '1989-08-14', sex: 'F', race: '3', edu: '09', pis: '123.45678.90-1', ctps: '4589120 / 001-PR', codCateg: '101', tpRegTrab: '1', tpRegPrev: '1', tpContr: '1', role: 'Analista Administrativo', cbo: '252105', dept: 'Gestão Financeira', adm: '2021-05-10', salary: 4800.00, undSal: '5', deps: 1, depsSf: 1, hours: 220, aposEsp: '1', vacPendingPeriods: 1, vacAcqRef: '10/05/2025 a 09/05/2026', addr: 'Rua Paranaguá, 450 - Centro, Londrina - PR, CEP 86020-030' },
+  { id: 'e2', companyId: 'comp_1', mat: '000102', status: 'AFASTADO', name: 'MARIANA COSTA OLIVEIRA', cpf: '222.333.444-55', birth: '1995-03-22', sex: 'F', race: '1', edu: '08', pis: '124.98765.43-2', ctps: '7891234 / 002-PR', codCateg: '101', tpRegTrab: '1', tpRegPrev: '1', tpContr: '1', role: 'Assistente de RH', cbo: '411010', dept: 'Recursos Humanos', adm: '2024-02-01', salary: 2850.00, undSal: '5', deps: 0, depsSf: 0, hours: 220, aposEsp: '1', vacPendingPeriods: 0, vacAcqRef: '01/02/2026 a 31/01/2027', addr: 'Av. Madre Leônia Milito, 800 - Gleba Palhano, Londrina - PR, CEP 86050-270' },
+  { id: 'e3', companyId: 'comp_2', mat: '000201', status: 'ATIVO', name: 'CARLOS EDUARDO MENDES', cpf: '333.444.555-66', birth: '1987-11-05', sex: 'M', race: '1', edu: '09', pis: '125.11223.34-5', ctps: '9921045 / 001-PR', codCateg: '101', tpRegTrab: '1', tpRegPrev: '1', tpContr: '1', role: 'Supervisor Comercial', cbo: '214205', dept: 'Comercial', adm: '2022-03-15', salary: 5200.00, undSal: '5', deps: 2, depsSf: 0, hours: 220, aposEsp: '1', vacPendingPeriods: 0, vacAcqRef: '15/03/2026 a 14/03/2027', addr: 'Rua Santos, 210 - Centro, Londrina - PR, CEP 86020-160' },
+  { id: 'e4', companyId: 'comp_3', mat: '000301', status: 'ATIVO', name: 'ROBERTO ALVES PEREIRA', cpf: '444.555.666-77', birth: '1984-06-18', sex: 'M', race: '3', edu: '07', pis: '126.44556.78-9', ctps: '3321987 / 001-PR', codCateg: '101', tpRegTrab: '1', tpRegPrev: '1', tpContr: '1', role: 'Técnico Mecânico Industrial', cbo: '314110', dept: 'Produção', adm: '2020-08-01', salary: 4400.00, undSal: '5', deps: 1, depsSf: 1, hours: 220, aposEsp: '1', vacPendingPeriods: 1, vacAcqRef: '01/08/2025 a 31/07/2026', addr: 'Av. Colombo, 3100 - Maringá - PR, CEP 87030-120' }
 ];
 
 const initLeaves = [
   {
     id: 'af_1',
+    companyId: 'comp_1',
     empId: 'e2',
     empName: 'MARIANA COSTA OLIVEIRA',
     codMotAfast: '06',
@@ -1747,40 +1939,139 @@ function safeParse(key, fallback) {
   }
 }
 
-let company = Object.assign({}, structuredClone(initCompany), safeParse('erp_dp_company', initCompany));
+let offices = safeParse('erp_dp_offices', initOffices);
+if (!Array.isArray(offices) || !offices.length) offices = structuredClone(initOffices);
+
+let accessUsers = safeParse('erp_dp_users', initAccessUsers);
+if (!Array.isArray(accessUsers) || !accessUsers.length) accessUsers = structuredClone(initAccessUsers);
+
+let companies = safeParse('erp_dp_companies', null);
+if (!Array.isArray(companies) || !companies.length) {
+  const legacySingle = safeParse('erp_dp_company', null);
+  if (legacySingle && legacySingle.name) {
+    companies = structuredClone(initCompanies);
+    companies[0] = Object.assign({}, companies[0], legacySingle, { id: 'comp_1', officeId: 'esc_matriz' });
+  } else {
+    companies = structuredClone(initCompanies);
+  }
+}
+companies = companies.map((c, idx) => ({
+  ...structuredClone(initCompany),
+  ...c,
+  id: c.id || ('comp_' + (idx + 1)),
+  officeId: c.officeId || offices[0].id
+}));
+
+let currentSession = null;
+let activeCompanyId = localStorage.getItem('erp_dp_active_company') || '';
+let company = companies[0];
+
 function deduplicateEmployeesList(list) {
   if (!Array.isArray(list)) return [];
   const seenIds = new Set();
-  const seenCpfs = new Set();
+  const seenKey = new Set();
   const out = [];
   for (const item of list) {
     if (!item || typeof item !== 'object') continue;
     const idKey = String(item.id || '').trim();
-    const cpfKey = String(item.cpf || '').replace(/\D/g, '');
+    const cId = String(item.companyId || 'comp_1').trim();
+    const cpfKey = cId + ':' + String(item.cpf || '').replace(/\D/g, '');
     if (idKey && seenIds.has(idKey)) continue;
-    if (cpfKey && seenCpfs.has(cpfKey)) continue;
+    if (String(item.cpf || '').replace(/\D/g, '') && seenKey.has(cpfKey)) continue;
     if (idKey) seenIds.add(idKey);
-    if (cpfKey) seenCpfs.add(cpfKey);
-    out.push(item);
+    seenKey.add(cpfKey);
+    out.push({ ...item, companyId: cId });
   }
   return out;
 }
 
-let employees = safeParse('erp_dp_emps', initEmployees);
-employees = deduplicateEmployeesList(employees);
-let rubrics = safeParse('erp_dp_rubs', initRubrics);
-let tables = Object.assign({}, structuredClone(initTables), safeParse('erp_dp_tabs', initTables));
-let savedReceipts = safeParse('erp_dp_receipts', []);
-let leaves = safeParse('erp_dp_leaves', initLeaves);
+let allEmployees = deduplicateEmployeesList(safeParse('erp_dp_emps', initEmployees));
+if (!allEmployees.length) allEmployees = structuredClone(initEmployees);
 
-if (!Array.isArray(employees) || !employees.length) employees = structuredClone(initEmployees);
+let rubrics = safeParse('erp_dp_rubs', initRubrics);
 if (!Array.isArray(rubrics) || !rubrics.length) rubrics = structuredClone(initRubrics);
-if (!Array.isArray(savedReceipts)) savedReceipts = [];
-if (!Array.isArray(leaves)) leaves = structuredClone(initLeaves);
+
+let tables = Object.assign({}, structuredClone(initTables), safeParse('erp_dp_tabs', initTables));
+let allSavedReceipts = safeParse('erp_dp_receipts', []);
+if (!Array.isArray(allSavedReceipts)) allSavedReceipts = [];
+allSavedReceipts = allSavedReceipts.map(r => ({ ...r, companyId: r.companyId || 'comp_1' }));
+
+let allLeaves = safeParse('erp_dp_leaves', initLeaves);
+if (!Array.isArray(allLeaves)) allLeaves = structuredClone(initLeaves);
+allLeaves = allLeaves.map(lv => ({ ...lv, companyId: lv.companyId || 'comp_1' }));
+
+// Visões filtradas pelo Escritório Logado + Empresa Ativa do Escritório
+let employees = [];
+let savedReceipts = [];
+let leaves = [];
+
+function getCurrentOfficeId() {
+  if (currentSession && currentSession.officeId && offices.some(o => o.id === currentSession.officeId)) {
+    return currentSession.officeId;
+  }
+  return offices[0]?.id || 'esc_matriz';
+}
+
+function getCurrentOffice() {
+  const oid = getCurrentOfficeId();
+  return offices.find(o => o.id === oid) || offices[0];
+}
+
+function getOfficeCompanies() {
+  const oid = getCurrentOfficeId();
+  return companies.filter(c => c.officeId === oid);
+}
+
+function syncTenantContext() {
+  const office = getCurrentOffice();
+  const topOffice = document.getElementById('topOfficeName');
+  if (topOffice) topOffice.textContent = office ? office.name : 'Sem escritório';
+
+  const allowedComps = getOfficeCompanies();
+  if (!allowedComps.some(c => c.id === activeCompanyId)) {
+    activeCompanyId = allowedComps[0]?.id || '';
+    if (activeCompanyId) localStorage.setItem('erp_dp_active_company', activeCompanyId);
+  }
+  company = allowedComps.find(c => c.id === activeCompanyId) || allowedComps[0] || {
+    ...structuredClone(initCompany),
+    id: '',
+    officeId: getCurrentOfficeId(),
+    name: 'Nenhuma empresa vinculada a este escritório',
+    cnpj: '—'
+  };
+
+  const sel = document.getElementById('activeCompanySelect');
+  if (sel) {
+    if (allowedComps.length) {
+      sel.innerHTML = allowedComps.map(c =>
+        `<option value="${c.id}" ${c.id === company.id ? 'selected' : ''}>${esc(c.name)} (${esc(c.cnpj)})</option>`
+      ).join('');
+    } else {
+      sel.innerHTML = '<option value="">Nenhuma empresa vinculada</option>';
+    }
+  }
+
+  const cid = company.id;
+  employees = cid ? allEmployees.filter(e => e.companyId === cid) : [];
+  savedReceipts = cid ? allSavedReceipts.filter(r => r.companyId === cid) : [];
+  leaves = cid ? allLeaves.filter(lv => lv.companyId === cid) : [];
+}
+
+function switchActiveCompany(compId) {
+  const allowedComps = getOfficeCompanies();
+  if (!allowedComps.some(c => c.id === compId)) return;
+  activeCompanyId = compId;
+  localStorage.setItem('erp_dp_active_company', activeCompanyId);
+  editEmpId = null;
+  boot();
+}
 
 let currentCalcLines = [];
 let editEmpId = null;
 let editRubCode = null;
+let editOfficeId = null;
+let editUserId = null;
+let editCompanyId = null;
 let lastVacReceipt = null;
 let last13Receipt = null;
 let lastTermReceipt = null;
@@ -1794,38 +2085,56 @@ function setCloudStatus(text, tone = 'muted') {
 
 function getCloudSnapshot() {
   return {
+    offices,
+    accessUsers,
+    companies,
     company,
-    employees,
+    employees: allEmployees,
     rubrics,
     tables,
-    savedReceipts,
-    leaves
+    savedReceipts: allSavedReceipts,
+    leaves: allLeaves
   };
 }
 
 function applyCloudSnapshot(d) {
   if (!d || typeof d !== 'object') return;
-  if (d.company) company = Object.assign({}, structuredClone(initCompany), d.company);
-  if (Array.isArray(d.employees) && d.employees.length) employees = deduplicateEmployeesList(d.employees);
+  if (Array.isArray(d.offices) && d.offices.length) offices = d.offices;
+  if (Array.isArray(d.accessUsers) && d.accessUsers.length) accessUsers = d.accessUsers;
+  if (Array.isArray(d.companies) && d.companies.length) {
+    companies = d.companies.map((c, idx) => ({
+      ...structuredClone(initCompany),
+      ...c,
+      id: c.id || ('comp_' + (idx + 1)),
+      officeId: c.officeId || offices[0].id
+    }));
+  } else if (d.company && d.company.name) {
+    companies[0] = Object.assign({}, companies[0], d.company);
+  }
+  if (Array.isArray(d.employees) && d.employees.length) allEmployees = deduplicateEmployeesList(d.employees);
   if (Array.isArray(d.rubrics) && d.rubrics.length) rubrics = d.rubrics;
   if (d.tables) tables = Object.assign({}, structuredClone(initTables), d.tables);
-  if (Array.isArray(d.savedReceipts)) savedReceipts = d.savedReceipts;
-  if (Array.isArray(d.leaves)) leaves = d.leaves;
+  if (Array.isArray(d.savedReceipts)) allSavedReceipts = d.savedReceipts.map(r => ({ ...r, companyId: r.companyId || 'comp_1' }));
+  if (Array.isArray(d.leaves)) allLeaves = d.leaves.map(lv => ({ ...lv, companyId: lv.companyId || 'comp_1' }));
+  syncTenantContext();
 }
 
 function saveLocalOnly() {
+  localStorage.setItem('erp_dp_offices', JSON.stringify(offices));
+  localStorage.setItem('erp_dp_users', JSON.stringify(accessUsers));
+  localStorage.setItem('erp_dp_companies', JSON.stringify(companies));
   localStorage.setItem('erp_dp_company', JSON.stringify(company));
-  localStorage.setItem('erp_dp_emps', JSON.stringify(employees));
+  localStorage.setItem('erp_dp_emps', JSON.stringify(allEmployees));
   localStorage.setItem('erp_dp_rubs', JSON.stringify(rubrics));
   localStorage.setItem('erp_dp_tabs', JSON.stringify(tables));
-  localStorage.setItem('erp_dp_receipts', JSON.stringify(savedReceipts));
-  localStorage.setItem('erp_dp_leaves', JSON.stringify(leaves));
+  localStorage.setItem('erp_dp_receipts', JSON.stringify(allSavedReceipts));
+  localStorage.setItem('erp_dp_leaves', JSON.stringify(allLeaves));
 }
 
 function resolveCloudEndpoint() {
   const raw = (CLOUD_API_URL || DEFAULT_CLOUD_API_URL).trim();
   if (window.location.protocol === 'file:' && raw.startsWith('/')) {
-    return { url: '', reason: 'Arquivo aberto via file:// (sem servidor /api/state). Configure a URL completa da API (ex.: https://seu-projeto.vercel.app/api/state).' };
+    return { url: '', reason: 'Arquivo aberto via file:// (sem servidor /api/state).' };
   }
   return { url: raw, reason: '' };
 }
@@ -1833,40 +2142,20 @@ function resolveCloudEndpoint() {
 function showCloudDiagnostics() {
   const ep = resolveCloudEndpoint();
   const status = document.getElementById('topCloudStatus')?.textContent || 'Local';
+  const office = getCurrentOffice();
   alert(
-    `Diagnóstico de Conexão PostgreSQL:\n` +
-    `• Status atual: ${status}\n` +
-    `• Endpoint API configurado: ${ep.url || '(não configurado)'}\n` +
-    `• Workspace ID: ${WORKSPACE_ID}\n` +
-    (lastCloudError ? `• Último erro: ${lastCloudError}\n` : `• Último erro: Nenhum\n`) +
-    `\nLembrete: A DATABASE_URL (ou POSTGRES_URL) deve estar salva em Settings > Environment Variables na Vercel, com a rota /api/state publicada.`
+    `Diagnóstico de Conexão PostgreSQL & Multi-Escritório:
+` +
+    `• Status atual: ${status}
+` +
+    `• Endpoint API: ${ep.url || '(não configurado)'}
+` +
+    `• Escritório Logado: ${office ? office.name : '—'}
+` +
+    `• Empresas Vinculadas ao Escritório: ${getOfficeCompanies().length}
+` +
+    (lastCloudError ? `• Último erro: ${lastCloudError}` : `• Último erro: Nenhum`)
   );
-}
-
-function configureCloudEndpoint() {
-  const current = CLOUD_API_URL || DEFAULT_CLOUD_API_URL;
-  const originHint = window.location.origin && window.location.origin !== 'null'
-    ? window.location.origin + '/api/state'
-    : 'https://seu-projeto.vercel.app/api/state';
-  const typed = prompt(
-    'Informe a URL da rota da API no servidor/Vercel (NÃO cole a string postgres:// ou postgresql:// aqui; a DATABASE_URL fica nas variáveis de ambiente da Vercel):\n\nExemplo: ' + originHint,
-    current
-  );
-  if (typed === null) return;
-  const clean = typed.trim() || DEFAULT_CLOUD_API_URL;
-  if (clean.startsWith('postgres://') || clean.startsWith('postgresql://') || clean.startsWith('mongodb://') || clean.startsWith('mongodb+srv://')) {
-    alert(
-      'A string de conexão do banco (postgresql://) não pode ser usada direto no navegador.\n\n' +
-      '1) Cadastre a variável DATABASE_URL nas Environment Variables da Vercel.\n' +
-      '2) Aqui no botão ⚙️ API, mantenha /api/state (ou https://seu-projeto.vercel.app/api/state).'
-    );
-    return;
-  }
-  CLOUD_API_URL = clean;
-  try {
-    localStorage.setItem(CLOUD_API_STORAGE_KEY, clean);
-  } catch {}
-  pullFromVercel(true);
 }
 
 async function pullFromVercel(notify = false, isBackgroundPoll = false) {
@@ -1901,21 +2190,12 @@ async function pullFromVercel(notify = false, isBackgroundPoll = false) {
         const isEditingInput = activeTag === 'INPUT' || activeTag === 'SELECT' || activeTag === 'TEXTAREA';
         const isFormOpen =
           document.getElementById('empFormView')?.style.display === 'block' ||
-          document.getElementById('rubricFormBox')?.style.display === 'block';
+          document.getElementById('rubricFormBox')?.style.display === 'block' ||
+          document.getElementById('companyFormBox')?.style.display === 'block';
         if (!isBackgroundPoll || (!isEditingInput && !isFormOpen)) {
           applyCloudSnapshot(json.data);
           saveLocalOnly();
-          renderCompany();
-          renderEmployees();
-          renderLeaveHistory();
-          renderRubrics();
-          renderTables();
-          populateSelects();
-          loadOrInitPayroll();
-          fillVacationEmp();
-          fill13thEmp();
-          fillTermEmp();
-          renderHistory();
+          boot();
         }
       }
       setCloudStatus('Conectado', 'ok');
@@ -1928,12 +2208,8 @@ async function pullFromVercel(notify = false, isBackgroundPoll = false) {
   } catch (err) {
     lastCloudError = err && err.message ? err.message : String(err);
     setCloudStatus('Erro Postgres', 'warn');
-    if (notify) {
-      alert(
-        `Falha ao conectar no PostgreSQL (${ep.url}):\n${lastCloudError}\n\n` +
-        `Verifique se a rota /api/state existe no seu servidor/Vercel e se a variável DATABASE_URL (ou POSTGRES_URL) está configurada no ambiente.`
-      );
-    }
+    if (notify) alert(`Falha ao conectar no PostgreSQL:
+${lastCloudError}`);
   } finally {
     isSyncingNow = false;
   }
@@ -1944,7 +2220,6 @@ async function pushToVercel(notify = false) {
   if (!ep.url) {
     lastCloudError = ep.reason;
     setCloudStatus('Salvo local', 'warn');
-    if (notify) alert(ep.reason);
     return;
   }
 
@@ -1966,7 +2241,7 @@ async function pushToVercel(notify = false) {
       throw new Error(`HTTP ${res.status}${json && json.error ? ' - ' + json.error : ''}`);
     }
     if (json && json.ok === false) {
-      throw new Error(json.error || 'Erro ao salvar no MongoDB');
+      throw new Error(json.error || 'Erro ao salvar no PostgreSQL');
     }
     lastCloudError = '';
     setCloudStatus('Conectado', 'ok');
@@ -1974,9 +2249,6 @@ async function pushToVercel(notify = false) {
   } catch (err) {
     lastCloudError = err && err.message ? err.message : String(err);
     setCloudStatus('Erro ao salvar', 'warn');
-    if (notify) {
-      alert(`Não foi possível salvar no PostgreSQL (${ep.url}):\n${lastCloudError}`);
-    }
   }
 }
 
@@ -2009,6 +2281,168 @@ function startAutoSyncLoop() {
     if (screen && !screen.classList.contains('hidden')) return;
     pullFromVercel(false, true);
   }, 10000);
+}
+
+// =========================================================================
+// CADASTRO DE ESCRITÓRIOS & USUÁRIOS DE ACESSO VINCULADOS
+// =========================================================================
+function renderOfficesAndUsers() {
+  const oTb = document.querySelector('#officesTable tbody');
+  if (oTb) {
+    oTb.innerHTML = offices.map(o => {
+      const linkedCount = companies.filter(c => c.officeId === o.id).length;
+      const isCurrent = o.id === getCurrentOfficeId();
+      return `
+        <tr>
+          <td><b>${esc(o.name)}</b> ${isCurrent ? '<span class="badge b-green">Logado</span>' : ''}<br><span style="font-size:11px;color:var(--text-muted)">${esc(o.city || '')} ${o.resp ? '• ' + esc(o.resp) : ''}</span></td>
+          <td>${esc(o.cnpj)}</td>
+          <td><span class="badge b-indigo">${linkedCount} empresa(s)</span></td>
+          <td>
+            <div class="actions-cell">
+              <button type="button" class="btn btn-ghost btn-sm" onclick="editOffice('${o.id}')" title="Editar">✏️</button>
+              <button type="button" class="btn btn-danger-soft btn-sm" onclick="deleteOffice('${o.id}')" title="Excluir">🗑️</button>
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  const uOfficeSel = document.getElementById('uOfficeId');
+  if (uOfficeSel) {
+    const prev = uOfficeSel.value;
+    uOfficeSel.innerHTML = offices.map(o => `<option value="${o.id}">${esc(o.name)} (${esc(o.cnpj)})</option>`).join('');
+    if (prev && offices.some(o => o.id === prev)) uOfficeSel.value = prev;
+    else uOfficeSel.value = getCurrentOfficeId();
+  }
+
+  const uTb = document.querySelector('#usersTable tbody');
+  if (uTb) {
+    uTb.innerHTML = accessUsers.map(u => {
+      const off = offices.find(o => o.id === u.officeId);
+      return `
+        <tr>
+          <td><b>${esc(u.user)}</b></td>
+          <td>${esc(u.fullName || u.user)}<br><span style="font-size:11px;color:var(--text-muted)">${esc(u.role || 'Analista')}</span></td>
+          <td><span class="badge b-indigo">${esc(off ? off.name : 'Sem escritório')}</span></td>
+          <td>
+            <div class="actions-cell">
+              <button type="button" class="btn btn-ghost btn-sm" onclick="editAccessUser('${u.id}')" title="Editar">✏️</button>
+              <button type="button" class="btn btn-danger-soft btn-sm" onclick="deleteAccessUser('${u.id}')" title="Excluir">🗑️</button>
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+}
+
+function resetOfficeForm() {
+  editOfficeId = null;
+  document.getElementById('officeFormTitle').textContent = 'Cadastrar / Editar Escritório';
+  ['oName', 'oCnpj', 'oCity', 'oResp'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+}
+
+function editOffice(id) {
+  const o = offices.find(x => x.id === id);
+  if (!o) return;
+  editOfficeId = id;
+  document.getElementById('officeFormTitle').textContent = 'Editar Escritório';
+  document.getElementById('oName').value = o.name;
+  document.getElementById('oCnpj').value = o.cnpj;
+  document.getElementById('oCity').value = o.city || '';
+  document.getElementById('oResp').value = o.resp || '';
+}
+
+function saveOffice() {
+  const name = document.getElementById('oName').value.trim().toUpperCase();
+  const cnpj = document.getElementById('oCnpj').value.trim();
+  const city = document.getElementById('oCity').value.trim();
+  const resp = document.getElementById('oResp').value.trim();
+  if (!name || !cnpj) { alert('Informe o Nome/Razão Social e o CNPJ/CRC do escritório.'); return; }
+
+  if (editOfficeId) {
+    offices = offices.map(o => o.id === editOfficeId ? { ...o, name, cnpj, city, resp } : o);
+  } else {
+    offices.push({ id: 'esc_' + Date.now(), name, cnpj, city, resp });
+  }
+  resetOfficeForm();
+  syncTenantContext();
+  renderOfficesAndUsers();
+  renderCompanyList();
+  saveAll();
+}
+
+function deleteOffice(id) {
+  if (offices.length <= 1) { alert('É obrigatório manter ao menos 1 escritório cadastrado.'); return; }
+  if (companies.some(c => c.officeId === id)) {
+    alert('Não é possível excluir este escritório pois existem empresas vinculadas a ele. Transfira ou remova as empresas primeiro.');
+    return;
+  }
+  if (!confirm('Excluir escritório?')) return;
+  offices = offices.filter(o => o.id !== id);
+  accessUsers = accessUsers.filter(u => u.officeId !== id);
+  syncTenantContext();
+  renderOfficesAndUsers();
+  saveAll();
+}
+
+function resetUserForm() {
+  editUserId = null;
+  document.getElementById('userFormTitle').textContent = 'Vincular Usuário de Acesso ao Escritório';
+  ['uFullName', 'uLogin', 'uPass'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  const sel = document.getElementById('uOfficeId');
+  if (sel) sel.value = getCurrentOfficeId();
+}
+
+function editAccessUser(id) {
+  const u = accessUsers.find(x => x.id === id);
+  if (!u) return;
+  editUserId = id;
+  document.getElementById('userFormTitle').textContent = `Editar Acesso (${u.user})`;
+  document.getElementById('uOfficeId').value = u.officeId;
+  document.getElementById('uFullName').value = u.fullName || '';
+  document.getElementById('uRole').value = u.role || 'Analista DP / Folha';
+  document.getElementById('uLogin').value = u.user;
+  document.getElementById('uPass').value = u.pass;
+}
+
+function saveAccessUser() {
+  const officeId = document.getElementById('uOfficeId').value;
+  const fullName = document.getElementById('uFullName').value.trim();
+  const role = document.getElementById('uRole').value;
+  const user = document.getElementById('uLogin').value.trim().toLowerCase();
+  const pass = document.getElementById('uPass').value.trim();
+
+  if (!officeId) { alert('O acesso precisa obrigatoriamente estar vinculado a um escritório.'); return; }
+  if (!user || !pass) { alert('Informe o login e a senha de acesso.'); return; }
+
+  const dup = accessUsers.find(x => x.id !== editUserId && x.user.toLowerCase() === user);
+  if (dup) { alert(`Já existe um usuário com o login "${user}".`); return; }
+
+  if (editUserId) {
+    accessUsers = accessUsers.map(u => u.id === editUserId ? { ...u, officeId, fullName: fullName || user, role, user, pass } : u);
+    if (currentSession && currentSession.user.toLowerCase() === user) {
+      currentSession.officeId = officeId;
+      try {
+        sessionStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(currentSession));
+        localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(currentSession));
+      } catch {}
+      syncTenantContext();
+      boot();
+    }
+  } else {
+    accessUsers.push({ id: 'usr_' + Date.now(), officeId, fullName: fullName || user, role, user, pass });
+  }
+  resetUserForm();
+  renderOfficesAndUsers();
+  saveAll();
+}
+
+function deleteAccessUser(id) {
+  if (accessUsers.length <= 1) { alert('Mantenha pelo menos 1 usuário de acesso.'); return; }
+  if (!confirm('Remover usuário de acesso?')) return;
+  accessUsers = accessUsers.filter(u => u.id !== id);
+  renderOfficesAndUsers();
+  saveAll();
 }
 
 function calcProgressive(base, bands) {
@@ -2048,7 +2482,11 @@ function loadOrInitPayroll() {
   const pType = document.getElementById('pType')?.value || 'Mensal';
   document.getElementById('topComp').textContent = comp.split('-').reverse().join('/');
   const emp = employees.find(e => e.id === document.getElementById('pEmployee').value) || employees[0];
-  if (!emp) return;
+  if (!emp) {
+    currentCalcLines = [];
+    renderManualGrid();
+    return;
+  }
 
   const recId = `Folha_${pType}_${comp}_${emp.id}`;
   const legacyId = `Folha_${comp}_${emp.id}`;
@@ -2231,6 +2669,7 @@ function buildPayrollObject() {
   const comp = document.getElementById('pComp').value || '2026-11';
   const pType = document.getElementById('pType')?.value || 'Mensal';
   const emp = employees.find(e => e.id === document.getElementById('pEmployee').value) || employees[0];
+  if (!emp || !company.id) return null;
   let gross = 0, inss = 0, irrf = 0, otherDesc = 0, baseInss = 0, baseIrrf = 0, baseFgts = 0;
 
   currentCalcLines.forEach(l => {
@@ -2245,11 +2684,10 @@ function buildPayrollObject() {
     if (l.fgts) baseFgts += sign * l.amount;
   });
 
-  const empObj = emp || {};
   const isSimplesSubst = (company.classTrib === '01' || company.classTrib === '04') && company.indDeson !== '1';
   const ratAjustado = (Number(company.rat || 2) * Number(company.fap || 1)) / 100;
   const aposRateMap = { '2': 0.12, '3': 0.09, '4': 0.06 };
-  const addAposRate = aposRateMap[empObj.aposEsp || '1'] || 0;
+  const addAposRate = aposRateMap[emp.aposEsp || '1'] || 0;
   const patronalInss = isSimplesSubst ? 0 : Math.round(Math.max(0, baseFgts) * 0.20 * 100) / 100;
   const ratValor = isSimplesSubst ? 0 : Math.round(Math.max(0, baseFgts) * ratAjustado * 100) / 100;
   const aposEspValor = isSimplesSubst ? 0 : Math.round(Math.max(0, baseFgts) * addAposRate * 100) / 100;
@@ -2259,7 +2697,7 @@ function buildPayrollObject() {
   const fgtsDeposit = Math.round(baseFgts * (Number(tables.fgtsRate) / 100) * 100) / 100;
 
   return {
-    id: `Folha_${pType}_${comp}_${emp.id}`, docType: 'HOLERITE', kind: `Folha ${pType}`, comp,
+    id: `Folha_${pType}_${comp}_${emp.id}`, companyId: company.id, docType: 'HOLERITE', kind: `Folha ${pType}`, comp,
     empId: emp.id, empName: emp.name, empCpf: emp.cpf, empPis: emp.pis || '', empCtps: emp.ctps || '',
     empRole: emp.role, empDept: emp.dept, empAdm: emp.adm, empSalary: Number(document.getElementById('pSalary').value) || emp.salary,
     gross: Math.round(gross * 100) / 100, inss: Math.round(inss * 100) / 100,
@@ -2272,8 +2710,10 @@ function buildPayrollObject() {
 
 function saveCurrentPayroll() {
   const rec = buildPayrollObject();
-  savedReceipts = savedReceipts.filter(r => r.id !== rec.id);
-  savedReceipts.unshift(rec);
+  if (!rec) { alert('Cadastre ou selecione uma empresa e um colaborador antes de salvar.'); return; }
+  allSavedReceipts = allSavedReceipts.filter(r => r.id !== rec.id);
+  allSavedReceipts.unshift(rec);
+  syncTenantContext();
   saveAll();
   renderHistory();
   alert(`${rec.kind} de ${rec.empName} (${rec.comp}) salva!`);
@@ -2284,7 +2724,7 @@ function previewCurrentPayslip() { showReceiptModal(buildPayrollObject()); }
 // 2. FÉRIAS
 function fillVacationEmp() {
   const emp = employees.find(e => e.id === document.getElementById('vEmployee').value) || employees[0];
-  if (!emp) return;
+  if (!emp) { lastVacReceipt = null; document.querySelector('#vTable tbody').innerHTML = ''; return; }
   document.getElementById('vSalary').value = emp.salary;
   document.getElementById('vDeps').value = emp.deps;
   calcVacation();
@@ -2292,6 +2732,7 @@ function fillVacationEmp() {
 
 function calcVacation() {
   const emp = employees.find(e => e.id === document.getElementById('vEmployee').value) || employees[0];
+  if (!emp || !company.id) return;
   const acqPeriod = document.getElementById('vAcqPeriod').value;
   const startDate = document.getElementById('vStart').value;
   const sal = Number(document.getElementById('vSalary').value) || 0;
@@ -2355,7 +2796,7 @@ function calcVacation() {
 
   const comp = (startDate && startDate.slice(0, 7)) || '2026-12';
   lastVacReceipt = {
-    id: `Ferias_${comp}_${emp.id}`, docType: 'RECIBO_FERIAS', kind: 'Recibo de Férias', comp,
+    id: `Ferias_${comp}_${emp.id}`, companyId: company.id, docType: 'RECIBO_FERIAS', kind: 'Recibo de Férias', comp,
     empId: emp.id, empName: emp.name, empCpf: emp.cpf, empPis: emp.pis || '', empCtps: emp.ctps || '',
     empRole: emp.role, empDept: emp.dept, empAdm: emp.adm, empSalary: sal,
     vacMeta: { acqPeriod, startDate, endDate, returnDate, payDate, days, abonoDays },
@@ -2368,7 +2809,7 @@ function calcVacation() {
 // 3. 13º SALÁRIO
 function fill13thEmp() {
   const emp = employees.find(e => e.id === document.getElementById('tEmployee').value) || employees[0];
-  if (!emp) return;
+  if (!emp) { last13Receipt = null; document.querySelector('#tTable tbody').innerHTML = ''; return; }
   document.getElementById('tSalary').value = emp.salary;
   document.getElementById('tDeps').value = emp.deps;
   document.getElementById('tPaid1').value = (emp.salary / 2).toFixed(2);
@@ -2377,6 +2818,7 @@ function fill13thEmp() {
 
 function calc13th() {
   const emp = employees.find(e => e.id === document.getElementById('tEmployee').value) || employees[0];
+  if (!emp || !company.id) return;
   const inst = document.getElementById('tInstallment').value;
   const avos = Math.min(12, Math.max(1, Number(document.getElementById('tAvos').value) || 12));
   const sal = Number(document.getElementById('tSalary').value) || 0;
@@ -2434,7 +2876,7 @@ function calc13th() {
 
   const comp = `${year}-${inst === '1' ? '11' : '12'}`;
   last13Receipt = {
-    id: `13_${inst}_${comp}_${emp.id}`, docType: 'HOLERITE', kind: `13º Salário (${inst}ª)`, comp,
+    id: `13_${inst}_${comp}_${emp.id}`, companyId: company.id, docType: 'HOLERITE', kind: `13º Salário (${inst}ª)`, comp,
     empId: emp.id, empName: emp.name, empCpf: emp.cpf, empPis: emp.pis || '', empCtps: emp.ctps || '',
     empRole: emp.role, empDept: emp.dept, empAdm: emp.adm, empSalary: sal,
     gross, inss, irrf, otherDesc, net,
@@ -2446,13 +2888,14 @@ function calc13th() {
 // 4. DESLIGAMENTO (TRCT PADRÃO CONTÁBIL)
 function fillTermEmp() {
   const emp = employees.find(e => e.id === document.getElementById('rEmployee').value) || employees[0];
-  if (!emp) return;
+  if (!emp) { lastTermReceipt = null; document.querySelector('#termTable tbody').innerHTML = ''; return; }
   document.getElementById('rSalary').value = emp.salary;
   calcTermination();
 }
 
 function calcTermination() {
   const emp = employees.find(e => e.id === document.getElementById('rEmployee').value) || employees[0];
+  if (!emp || !company.id) return;
   const reason = document.getElementById('rReason').value;
   const notice = document.getElementById('rNotice').value;
   const noticeDate = document.getElementById('rNoticeDate').value;
@@ -2549,7 +2992,7 @@ function calcTermination() {
 
   const comp = (termDate && termDate.slice(0, 7)) || '2026-11';
   lastTermReceipt = {
-    id: `Rescisao_${comp}_${emp.id}`, docType: 'TRCT', kind: 'Rescisão (TRCT)', comp,
+    id: `Rescisao_${comp}_${emp.id}`, companyId: company.id, docType: 'TRCT', kind: 'Rescisão (TRCT)', comp,
     empId: emp.id, empName: emp.name, empCpf: emp.cpf, empPis: emp.pis || '', empCtps: emp.ctps || '',
     empAddr: emp.addr || '', empRole: emp.role, empDept: emp.dept, empAdm: emp.adm, empSalary: sal,
     trctMeta: { ...reasonLabels[reason], notice, noticeDate, termDate, fgtsBal, fgtsFine, fgtsMonth },
@@ -2561,7 +3004,7 @@ function calcTermination() {
 
 function applyTerminationStatusRule(rec) {
   if (!rec || !rec.empId) return;
-  employees = employees.map(e => {
+  allEmployees = allEmployees.map(e => {
     if (e.id !== rec.empId) return e;
     return {
       ...e,
@@ -2570,20 +3013,22 @@ function applyTerminationStatusRule(rec) {
       motDeslig: rec.trctMeta?.code || 'SJ2'
     };
   });
-  leaves = leaves.map(lv => lv.empId === rec.empId ? { ...lv, active: false, dtFimAfast: lv.dtFimAfast || (rec.trctMeta?.termDate || new Date().toISOString().slice(0, 10)) } : lv);
+  allLeaves = allLeaves.map(lv => lv.empId === rec.empId ? { ...lv, active: false, dtFimAfast: lv.dtFimAfast || (rec.trctMeta?.termDate || new Date().toISOString().slice(0, 10)) } : lv);
+  syncTenantContext();
 }
 
 function saveSpecialReceipt(type) {
   const map = { 'Férias': lastVacReceipt, '13º Salário': last13Receipt, 'Rescisão': lastTermReceipt };
   const rec = map[type];
   if (!rec) return;
-  savedReceipts = savedReceipts.filter(r => r.id !== rec.id);
-  savedReceipts.unshift(structuredClone(rec));
+  allSavedReceipts = allSavedReceipts.filter(r => r.id !== rec.id);
+  allSavedReceipts.unshift(structuredClone(rec));
   if (type === 'Rescisão') {
     applyTerminationStatusRule(rec);
     renderEmployees();
     populateSelects();
   }
+  syncTenantContext();
   saveAll();
   renderHistory();
   alert(type === 'Rescisão'
@@ -2598,7 +3043,7 @@ function renderHistory() {
   const filtered = savedReceipts.filter(r => r.empName.toLowerCase().includes(q) || r.kind.toLowerCase().includes(q) || r.comp.includes(q));
 
   if (!filtered.length) {
-    tb.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#64748b;padding:22px">Nenhum demonstrativo gravado até o momento.</td></tr>';
+    tb.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#64748b;padding:22px">Nenhum demonstrativo gravado para esta empresa.</td></tr>';
     return;
   }
 
@@ -2623,7 +3068,8 @@ function renderHistory() {
 
 function deleteReceipt(id) {
   if (confirm('Excluir demonstrativo?')) {
-    savedReceipts = savedReceipts.filter(r => r.id !== id);
+    allSavedReceipts = allSavedReceipts.filter(r => r.id !== id);
+    syncTenantContext();
     saveAll();
     renderHistory();
   }
@@ -2677,9 +3123,6 @@ function showReceiptModal(r) {
   document.getElementById('modalReceipt').classList.add('open');
 }
 
-// =========================================================================
-// LAYOUT CONTÁBIL 1: RECIBO DE PAGAMENTO DE SALÁRIO (HOLERITE)
-// =========================================================================
 function renderHoleriteContabil(r) {
   const bases = r.bases || { inss: 0, irrf: 0, fgts: 0, fgtsDeposit: 0 };
   const totalDesc = Math.round((r.inss + r.irrf + r.otherDesc) * 100) / 100;
@@ -2755,9 +3198,6 @@ function renderHoleriteContabil(r) {
   return viaHtml('1ª VIA — EMPREGADOR') + '<div class="dc-via-cut">✂ ----------------------------------------------------------------------------------------------------------------- ✂</div>' + viaHtml('2ª VIA — EMPREGADO');
 }
 
-// =========================================================================
-// LAYOUT CONTÁBIL 2: AVISO E RECIBO DE FÉRIAS (ART. 135 E 145 CLT)
-// =========================================================================
 function renderFeriasContabil(r) {
   const vm = r.vacMeta || {};
   const bases = r.bases || { inss: 0, irrf: 0, fgts: 0, fgtsDeposit: 0 };
@@ -2843,9 +3283,6 @@ function renderFeriasContabil(r) {
     </div>`;
 }
 
-// =========================================================================
-// LAYOUT CONTÁBIL 3: TERMO DE RESCISÃO DO CONTRATO DE TRABALHO (TRCT)
-// =========================================================================
 function renderTRCTContabil(r) {
   const tm = r.trctMeta || {};
   const totalDesc = Math.round((r.inss + r.irrf + r.otherDesc) * 100) / 100;
@@ -3081,7 +3518,7 @@ function renderRubrics() {
   document.getElementById('rubricCountLabel').textContent = `Exibindo ${list.length} de ${rubrics.length} registros`;
 }
 
-// 7. COLABORADORES, EMPRESA & TABELAS
+// 7. COLABORADORES (VINCULADOS À EMPRESA ATIVA DO ESCRITÓRIO)
 const S2300_CATEGORIES = new Set(['201','202','401','410','701','711','712','721','722','723','731','734','738','741','751','761','771','781','901','902','903','904']);
 
 function inferEsocialEventType(emp) {
@@ -3103,7 +3540,6 @@ function switchEsocialEventMode(mode) {
 
   document.getElementById('blockS2200').style.display = isTsv ? 'none' : 'block';
   document.getElementById('blockS2300').style.display = isTsv ? 'block' : 'none';
-
   document.getElementById('wrapCtps').style.display = isTsv ? 'none' : 'block';
   document.getElementById('wrapVacPending').style.display = isTsv ? 'none' : 'block';
   document.getElementById('wrapVacAcqRef').style.display = isTsv ? 'none' : 'block';
@@ -3115,11 +3551,8 @@ function switchEsocialEventMode(mode) {
       : '<b>S-2200 (Com Vínculo Empregatício / Estatutário):</b> Empregados CLT (101), Aprendiz (103), Doméstico (104), Temporário (106), Intermitente (111) e Estatutários (3xx).';
   }
 
-  if (isTsv) {
-    onChangeS2300Categ();
-  } else {
-    onChangeS2200Categ();
-  }
+  if (isTsv) onChangeS2300Categ();
+  else onChangeS2200Categ();
 }
 
 function onChangeS2200Categ() {
@@ -3134,9 +3567,7 @@ function onChangeS2200Categ() {
     if (tpRegTrab) tpRegTrab.value = '1';
     if (tpRegPrev) tpRegPrev.value = '1';
   }
-  if (['103', '105', '106'].includes(categ) && tpContr && tpContr.value === '1') {
-    tpContr.value = '2';
-  }
+  if (['103', '105', '106'].includes(categ) && tpContr && tpContr.value === '1') tpContr.value = '2';
   toggleTermContractDate();
 }
 
@@ -3157,6 +3588,10 @@ function onChangeS2300Categ() {
 }
 
 function openEmployeeForm(id = null) {
+  if (!company.id) {
+    alert('Cadastre e selecione uma empresa vinculada ao escritório antes de incluir colaboradores.');
+    return;
+  }
   document.getElementById('empManagerView').style.display = 'none';
   document.getElementById('empLeaveHistoryView').style.display = 'none';
   document.getElementById('empManagerActions').style.display = 'none';
@@ -3168,9 +3603,7 @@ function openEmployeeForm(id = null) {
     editEmpId = id;
     const evType = inferEsocialEventType(e);
     document.getElementById('empPageTitle').textContent = `Editar Colaborador — ${e.name}`;
-    document.getElementById('empPageSub').textContent = evType === 'S-2300'
-      ? 'Cadastro Sem Vínculo Empregatício (TSVE — Evento eSocial S-2300).'
-      : 'Cadastro Com Vínculo Empregatício / Estatutário (Admissão — Evento eSocial S-2200).';
+    document.getElementById('empPageSub').textContent = `Empresa: ${company.name} (${evType})`;
     document.getElementById('empFormHeaderTitle').textContent = `Editar Colaborador (${evType} — ${e.mat || e.cpf})`;
 
     document.getElementById('eName').value = e.name;
@@ -3245,7 +3678,7 @@ function openEmployeeForm(id = null) {
   } else {
     clearEmployeeForm();
     document.getElementById('empPageTitle').textContent = 'Cadastro de Colaborador (eSocial S-2200 / S-2300)';
-    document.getElementById('empPageSub').textContent = 'Selecione Com Vínculo (S-2200) ou Sem Vínculo TSVE (S-2300) conforme os leiautes eSocial v1.3.';
+    document.getElementById('empPageSub').textContent = `Empresa vinculada: ${company.name}`;
     document.getElementById('empFormHeaderTitle').textContent = 'Novo Colaborador — eSocial S-2200 / S-2300';
   }
 }
@@ -3257,7 +3690,7 @@ function closeEmployeeForm() {
   document.getElementById('empManagerView').style.display = 'block';
   document.getElementById('empManagerActions').style.display = 'flex';
   document.getElementById('empPageTitle').textContent = 'Gerenciador de Colaboradores';
-  document.getElementById('empPageSub').textContent = 'Dashboard de ativos, afastados (S-2230), inativos (S-2299) e férias pendentes.';
+  document.getElementById('empPageSub').textContent = `Empresa ativa: ${company.name} — Dashboard de ativos, afastados e férias pendentes.`;
 }
 
 function openLeaveHistoryView(empId = null) {
@@ -3266,7 +3699,7 @@ function openLeaveHistoryView(empId = null) {
   document.getElementById('empManagerActions').style.display = 'none';
   document.getElementById('empLeaveHistoryView').style.display = 'block';
   document.getElementById('empPageTitle').textContent = 'Histórico de Afastamento — eSocial S-2230 (Tabela 18)';
-  document.getElementById('empPageSub').textContent = 'Lançamento e acompanhamento de afastamentos temporários com regra automática de status.';
+  document.getElementById('empPageSub').textContent = `Empresa: ${company.name}`;
   const sel = document.getElementById('lEmployee');
   if (sel) {
     sel.innerHTML = employees.map(e => `<option value="${e.id}">${esc(e.name)} (${esc(e.status || 'ATIVO')})</option>`).join('');
@@ -3275,9 +3708,7 @@ function openLeaveHistoryView(empId = null) {
   renderLeaveHistory();
 }
 
-function closeLeaveHistoryView() {
-  closeEmployeeForm();
-}
+function closeLeaveHistoryView() { closeEmployeeForm(); }
 
 function syncLeaveCategory() {
   const raw = document.getElementById('lMotAfast')?.value || '06|MATERNIDADE';
@@ -3313,6 +3744,7 @@ function saveLeaveRecord() {
   const active = isLeaveCurrentlyActive(dtIniAfast, dtFimAfast);
   const newRec = {
     id: 'af_' + Date.now(),
+    companyId: company.id,
     empId: emp.id,
     empName: emp.name,
     codMotAfast,
@@ -3326,11 +3758,11 @@ function saveLeaveRecord() {
   };
 
   if (active) {
-    leaves = leaves.map(lv => lv.empId === emp.id ? { ...lv, active: false } : lv);
+    allLeaves = allLeaves.map(lv => lv.empId === emp.id ? { ...lv, active: false } : lv);
   }
-  leaves.unshift(newRec);
+  allLeaves.unshift(newRec);
 
-  employees = employees.map(e => {
+  allEmployees = allEmployees.map(e => {
     if (e.id !== emp.id) return e;
     const nextStatus = active ? 'AFASTADO' : (e.status === 'INATIVO' ? 'INATIVO' : 'ATIVO');
     return { ...e, status: nextStatus };
@@ -3338,13 +3770,11 @@ function saveLeaveRecord() {
 
   document.getElementById('lEndDate').value = '';
   document.getElementById('lObs').value = '';
+  syncTenantContext();
   saveAll();
   renderLeaveHistory();
   renderEmployees();
   populateSelects();
-  alert(active
-    ? `Afastamento (S-2230) registrado para ${emp.name}! Status alterado para AFASTADO.`
-    : `Histórico de afastamento encerrado registrado para ${emp.name}.`);
 }
 
 function finishLeaveRecord(id) {
@@ -3352,13 +3782,13 @@ function finishLeaveRecord(id) {
   if (!lv) return;
   const today = new Date().toISOString().slice(0, 10);
   const endDt = lv.dtFimAfast || today;
-  leaves = leaves.map(x => x.id === id ? { ...x, active: false, dtFimAfast: endDt } : x);
-  const hasOtherActive = leaves.some(x => x.empId === lv.empId && x.id !== id && x.active);
-  employees = employees.map(e => {
-    if (e.id !== lv.empId) return e;
-    if (e.status === 'INATIVO') return e;
+  allLeaves = allLeaves.map(x => x.id === id ? { ...x, active: false, dtFimAfast: endDt } : x);
+  const hasOtherActive = allLeaves.some(x => x.empId === lv.empId && x.id !== id && x.active);
+  allEmployees = allEmployees.map(e => {
+    if (e.id !== lv.empId || e.status === 'INATIVO') return e;
     return { ...e, status: hasOtherActive ? 'AFASTADO' : 'ATIVO' };
   });
+  syncTenantContext();
   saveAll();
   renderLeaveHistory();
   renderEmployees();
@@ -3369,12 +3799,13 @@ function deleteLeaveRecord(id) {
   const lv = leaves.find(x => x.id === id);
   if (!lv) return;
   if (!confirm('Excluir registro de afastamento?')) return;
-  leaves = leaves.filter(x => x.id !== id);
-  const hasOtherActive = leaves.some(x => x.empId === lv.empId && x.active);
-  employees = employees.map(e => {
+  allLeaves = allLeaves.filter(x => x.id !== id);
+  const hasOtherActive = allLeaves.some(x => x.empId === lv.empId && x.active);
+  allEmployees = allEmployees.map(e => {
     if (e.id !== lv.empId || e.status === 'INATIVO') return e;
     return { ...e, status: hasOtherActive ? 'AFASTADO' : 'ATIVO' };
   });
+  syncTenantContext();
   saveAll();
   renderLeaveHistory();
   renderEmployees();
@@ -3385,7 +3816,7 @@ function renderLeaveHistory() {
   const tb = document.querySelector('#leaveHistoryTable tbody');
   if (!tb) return;
   if (!leaves.length) {
-    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:18px">Nenhum afastamento registrado no histórico (S-2230).</td></tr>';
+    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:18px">Nenhum afastamento registrado para esta empresa.</td></tr>';
     return;
   }
   const catBadge = { DOENCA: 'b-red', FERIAS: 'b-amber', MATERNIDADE: 'b-indigo', OUTROS: 'b-slate' };
@@ -3408,6 +3839,7 @@ function renderLeaveHistory() {
 }
 
 function saveEmployee() {
+  if (!company.id) { alert('Nenhuma empresa ativa selecionada.'); return; }
   const eventType = document.getElementById('eEventType').value || 'S-2200';
   const isTsv = eventType === 'S-2300';
 
@@ -3417,7 +3849,7 @@ function saveEmployee() {
   const addr = document.getElementById('eAddr').value.trim();
 
   if (!name || !cpf || !birth) {
-    alert('Regras eSocial (S-2200 / S-2300): Nome Completo, CPF e Data de Nascimento são obrigatórios.');
+    alert('Regras eSocial: Nome Completo, CPF e Data de Nascimento são obrigatórios.');
     return;
   }
 
@@ -3439,20 +3871,12 @@ function saveEmployee() {
     const tpContr = document.getElementById('eTpContr').value;
     const dtTerm = document.getElementById('eDtTerm').value;
 
-    if (!cleanMat) {
-      alert('Regra eSocial S-2200 (Com Vínculo): O campo Matrícula é obrigatório.');
-      return;
-    }
-    if (!dtAdm) {
-      alert('Regra eSocial S-2200: A Data de Admissão é obrigatória.');
-      return;
-    }
-    if (!role || cbo.length !== 6) {
-      alert('Regra eSocial S-2200: Cargo (nmCargo) e CBO (codCBO com 6 dígitos) são obrigatórios.');
+    if (!cleanMat || !dtAdm || !role || cbo.length !== 6) {
+      alert('Regra eSocial S-2200: Matrícula, Data de Admissão, Cargo e CBO (6 dígitos) são obrigatórios.');
       return;
     }
     if (tpContr !== '1' && !dtTerm) {
-      alert('Regra eSocial S-2200: Para contrato por prazo determinado (tpContr 2 ou 3), informe a Data de Término (dtTerm).');
+      alert('Regra eSocial S-2200: Para contrato por prazo determinado, informe a Data de Término.');
       return;
     }
   } else {
@@ -3461,12 +3885,8 @@ function saveEmployee() {
     const roleTsv = document.getElementById('eRoleTsv').value.trim();
     const cboTsv = normalizeDigits(document.getElementById('eCboTsv').value);
 
-    if (!dtInicio) {
-      alert('Regra eSocial S-2300 (TSVE): A Data de Início é obrigatória.');
-      return;
-    }
-    if (!roleTsv || cboTsv.length !== 6) {
-      alert('Regra eSocial S-2300: Cargo/Atividade (nmCargo) e CBO (codCBO com 6 dígitos) são obrigatórios.');
+    if (!dtInicio || !roleTsv || cboTsv.length !== 6) {
+      alert('Regra eSocial S-2300: Data de Início, Cargo/Atividade e CBO (6 dígitos) são obrigatórios.');
       return;
     }
     if (categTsv === '901') {
@@ -3474,38 +3894,18 @@ function saveEmployee() {
       const cnpjInst = document.getElementById('eCnpjInstEnsino').value.trim();
       const cpfSup = document.getElementById('eCpfSupervisor').value.trim();
       if (!dtPrev || !cnpjInst || !cpfSup) {
-        alert('Regra eSocial S-2300 (Estagiário - Categ. 901): Informe Data Prevista de Término, CNPJ da Instituição de Ensino e CPF do Supervisor.');
+        alert('Regra eSocial S-2300 (Estagiário): Informe Data Prevista de Término, CNPJ da Instituição de Ensino e CPF do Supervisor.');
         return;
       }
     }
-    if ((categTsv === '401' || categTsv === '410') && !document.getElementById('eCnpjOrigem').value.trim()) {
-      alert('Regra eSocial S-2300 (Categ. 401/410): Informe o CNPJ da Empresa/Órgão de Origem.');
-      return;
-    }
   }
 
-  const duplicateByCpf = employees.find(e =>
-    e.id !== editEmpId && cleanCpf && normalizeDigits(e.cpf) === cleanCpf
-  );
+  const duplicateByCpf = employees.find(e => e.id !== editEmpId && cleanCpf && normalizeDigits(e.cpf) === cleanCpf);
   if (duplicateByCpf) {
-    const goEdit = confirm(
-      `Já existe um colaborador cadastrado com este CPF:
-${duplicateByCpf.name} (${inferEsocialEventType(duplicateByCpf)} | Matrícula: ${duplicateByCpf.mat || '—'}).
-
-Deseja abrir o cadastro existente para edição em vez de duplicar?`
-    );
-    if (goEdit) openEmployeeForm(duplicateByCpf.id);
-    return;
-  }
-
-  if (cleanMat) {
-    const duplicateByMat = employees.find(e =>
-      e.id !== editEmpId && (e.mat || '').trim().toLowerCase() === cleanMat.toLowerCase()
-    );
-    if (duplicateByMat) {
-      alert(`Já existe um colaborador com a matrícula "${cleanMat}" (${duplicateByMat.name}). Informe outra matrícula ou edite o registro existente.`);
-      return;
+    if (confirm(`Já existe um colaborador com este CPF nesta empresa (${duplicateByCpf.name}). Deseja editá-lo?`)) {
+      openEmployeeForm(duplicateByCpf.id);
     }
+    return;
   }
 
   const existing = editEmpId ? employees.find(e => e.id === editEmpId) : null;
@@ -3519,6 +3919,7 @@ Deseja abrir o cadastro existente para edição em vez de duplicar?`
 
   const obj = {
     id: editEmpId || 'emp_' + Date.now(),
+    companyId: company.id,
     eventType,
     name,
     cpf,
@@ -3576,16 +3977,12 @@ Deseja abrir o cadastro existente para edição em vez de duplicar?`
   };
 
   if (editEmpId) {
-    employees = employees.map(e => e.id === editEmpId ? obj : e);
+    allEmployees = allEmployees.map(e => e.id === editEmpId ? obj : e);
   } else {
-    const idxByCpf = cleanCpf ? employees.findIndex(e => normalizeDigits(e.cpf) === cleanCpf) : -1;
-    if (idxByCpf >= 0) {
-      employees[idxByCpf] = { ...obj, id: employees[idxByCpf].id };
-    } else {
-      employees.push(obj);
-    }
+    allEmployees.push(obj);
   }
-  employees = deduplicateEmployeesList(employees);
+  allEmployees = deduplicateEmployeesList(allEmployees);
+  syncTenantContext();
   saveAll();
   clearEmployeeForm();
   renderEmployees();
@@ -3593,15 +3990,13 @@ Deseja abrir o cadastro existente para edição em vez de duplicar?`
   closeEmployeeForm();
 }
 
-function editEmployee(id) {
-  openEmployeeForm(id);
-}
+function editEmployee(id) { openEmployeeForm(id); }
 
 function deleteEmployee(id) {
-  if (employees.length <= 1) { alert('Mantenha pelo menos 1 colaborador.'); return; }
-  if (confirm('Excluir colaborador?')) {
-    employees = employees.filter(e => e.id !== id);
-    leaves = leaves.filter(lv => lv.empId !== id);
+  if (confirm('Excluir colaborador desta empresa?')) {
+    allEmployees = allEmployees.filter(e => e.id !== id);
+    allLeaves = allLeaves.filter(lv => lv.empId !== id);
+    syncTenantContext();
     saveAll();
     renderEmployees();
     populateSelects();
@@ -3684,7 +4079,7 @@ function renderEmployees() {
   }
   if (dInact) {
     dInact.textContent = inactiveList.length;
-    document.getElementById('dashEmpInactiveSub').textContent = `${inactiveList.length} desligado(s) (S-2299/S-2399)`;
+    document.getElementById('dashEmpInactiveSub').textContent = `${inactiveList.length} desligado(s)`;
   }
   if (dPend) {
     dPend.textContent = `${pendingPeriodsSum} per.`;
@@ -3697,7 +4092,7 @@ function renderEmployees() {
 
   const vacTb = document.querySelector('#empVacationAnalysisTable tbody');
   if (vacTb) {
-    vacTb.innerHTML = cltActiveList.map(e => {
+    vacTb.innerHTML = cltActiveList.length ? cltActiveList.map(e => {
       const st = e.status || 'ATIVO';
       const pend = Number(e.vacPendingPeriods) || 0;
       const stBadge = st === 'AFASTADO' ? '<span class="badge b-amber">AFASTADO</span>' : '<span class="badge b-green">ATIVO</span>';
@@ -3714,7 +4109,7 @@ function renderEmployees() {
           <td>${fmtDateBR(e.adm)}</td>
           <td>${diagBadge}</td>
         </tr>`;
-    }).join('');
+    }).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:16px">Nenhum colaborador CLT cadastrado nesta empresa.</td></tr>';
   }
 
   const q = (document.getElementById('empSearch')?.value || '').toLowerCase();
@@ -3738,14 +4133,14 @@ function renderEmployees() {
   });
 
   const lbl = document.getElementById('empCountLabel');
-  if (lbl) lbl.textContent = `Exibindo ${list.length} de ${employees.length} colaboradores`;
+  if (lbl) lbl.textContent = `Exibindo ${list.length} de ${employees.length} colaboradores (${company.name})`;
 
   document.querySelector('#empTable tbody').innerHTML = list.length ? list.map(e => {
     const st = e.status || 'ATIVO';
     const evType = inferEsocialEventType(e);
     const evBadge = evType === 'S-2300'
-      ? '<span class="badge b-amber" title="Sem Vínculo Empregatício (TSVE)">Sem Vínculo (S-2300)</span>'
-      : '<span class="badge b-indigo" title="Com Vínculo Empregatício">Com Vínculo (S-2200)</span>';
+      ? '<span class="badge b-amber">Sem Vínculo (S-2300)</span>'
+      : '<span class="badge b-indigo">Com Vínculo (S-2200)</span>';
     const stBadge = st === 'ATIVO'
       ? '<span class="badge b-green">ATIVO</span>'
       : (st === 'AFASTADO' ? '<span class="badge b-amber">AFASTADO</span>' : '<span class="badge b-red">INATIVO</span>');
@@ -3766,39 +4161,130 @@ function renderEmployees() {
         <td>${money(e.salary)}</td>
         <td>
           <div class="actions-cell">
-            <button type="button" class="btn btn-ghost btn-sm" onclick="openLeaveHistoryView('${e.id}')" title="Histórico de Afastamento (S-2230)">📋</button>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="openLeaveHistoryView('${e.id}')" title="Histórico de Afastamento">📋</button>
             <button type="button" class="btn btn-ghost btn-sm" onclick="editEmployee('${e.id}')" title="Editar">✏️</button>
             <button type="button" class="btn btn-danger-soft btn-sm" onclick="deleteEmployee('${e.id}')" title="Excluir">🗑️</button>
           </div>
         </td>
       </tr>`;
-  }).join('') : '<tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:20px">Nenhum colaborador encontrado.</td></tr>';
+  }).join('') : '<tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:20px">Nenhum colaborador cadastrado nesta empresa.</td></tr>';
 }
 
-function renderCompany() {
-  document.getElementById('cTpInsc').value = company.tpInsc || '1';
-  document.getElementById('cName').value = company.name;
-  document.getElementById('cCnpj').value = company.cnpj;
-  document.getElementById('cClassTrib').value = company.classTrib || '03';
-  document.getElementById('cCnae').value = company.cnae;
-  document.getElementById('cFpas').value = company.fpas || '515';
-  document.getElementById('cTerceiros').value = company.terceiros || '0079';
-  document.getElementById('cRat').value = company.rat ?? 2.0;
-  document.getElementById('cFap').value = company.fap ?? 1.0;
-  document.getElementById('cIndDeson').value = company.indDeson || '0';
-  document.getElementById('cIndEscr').value = company.indEscr || '1';
-  document.getElementById('cEnteFed').value = company.enteFed || '';
-  document.getElementById('cAddr').value = company.addr;
-  document.getElementById('cCity').value = company.city;
-  document.getElementById('cState').value = company.state;
-  document.getElementById('cZip').value = company.zip;
+// 8. GERENCIADOR DE EMPRESAS VINCULADAS AO ESCRITÓRIO
+function renderCompanyList() {
+  const office = getCurrentOffice();
+  const allowedComps = getOfficeCompanies();
+  const q = (document.getElementById('compSearch')?.value || '').toLowerCase();
+  const filtered = allowedComps.filter(c =>
+    c.name.toLowerCase().includes(q) || (c.cnpj || '').toLowerCase().includes(q)
+  );
+
+  const sub = document.getElementById('companyPageSub');
+  if (sub && office) {
+    sub.textContent = `Escritório Logado: ${office.name} — Exibindo exclusivamente as empresas vinculadas a este escritório.`;
+  }
+
+  const lbl = document.getElementById('compCountLabel');
+  if (lbl) lbl.textContent = `${filtered.length} empresa(s) vinculada(s) ao escritório`;
+
+  const tb = document.querySelector('#companiesTable tbody');
+  if (!tb) return;
+
+  tb.innerHTML = filtered.length ? filtered.map(c => {
+    const isSelected = c.id === company.id;
+    const off = offices.find(o => o.id === c.officeId);
+    return `
+      <tr>
+        <td>${isSelected ? '<span class="badge b-green">Em Uso</span>' : '<span class="badge b-slate">Vinculada</span>'}</td>
+        <td><b>${esc(c.name)}</b></td>
+        <td>${esc(c.cnpj)}</td>
+        <td><span class="badge b-indigo">${esc(off ? off.name : '—')}</span></td>
+        <td>Cód. ${esc(c.classTrib || '03')}</td>
+        <td>${esc(c.city || '—')}/${esc(c.state || '—')}</td>
+        <td>
+          <div class="actions-cell">
+            ${!isSelected ? `<button type="button" class="btn btn-primary btn-sm" onclick="switchActiveCompany('${c.id}')">Selecionar</button>` : ''}
+            <button type="button" class="btn btn-ghost btn-sm" onclick="openCompanyForm('${c.id}')" title="Editar">✏️</button>
+            <button type="button" class="btn btn-danger-soft btn-sm" onclick="deleteCompany('${c.id}')" title="Excluir">🗑️</button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px">Nenhuma empresa vinculada a este escritório ainda. Clique em "Cadastrar Empresa no Escritório".</td></tr>';
+}
+
+function openCompanyForm(id = null) {
+  document.getElementById('companyListBox').style.display = 'none';
+  document.getElementById('companyTopActions').style.display = 'none';
+  document.getElementById('companyFormBox').style.display = 'block';
+
+  const offSel = document.getElementById('cOfficeId');
+  const currentOffId = getCurrentOfficeId();
+  if (offSel) {
+    offSel.innerHTML = offices
+      .filter(o => o.id === currentOffId)
+      .map(o => `<option value="${o.id}">${esc(o.name)} (${esc(o.cnpj)})</option>`)
+      .join('');
+    offSel.value = currentOffId;
+  }
+
+  if (id) {
+    const c = getOfficeCompanies().find(x => x.id === id);
+    if (!c) return;
+    editCompanyId = id;
+    document.getElementById('companyFormTitle').textContent = `Editar Empresa — ${c.name}`;
+    document.getElementById('cTpInsc').value = c.tpInsc || '1';
+    document.getElementById('cName').value = c.name;
+    document.getElementById('cCnpj').value = c.cnpj;
+    document.getElementById('cClassTrib').value = c.classTrib || '03';
+    document.getElementById('cCnae').value = c.cnae || '';
+    document.getElementById('cFpas').value = c.fpas || '515';
+    document.getElementById('cTerceiros').value = c.terceiros || '0079';
+    document.getElementById('cRat').value = c.rat ?? 2.0;
+    document.getElementById('cFap').value = c.fap ?? 1.0;
+    document.getElementById('cIndDeson').value = c.indDeson || '0';
+    document.getElementById('cIndEscr').value = c.indEscr || '1';
+    document.getElementById('cEnteFed').value = c.enteFed || '';
+    document.getElementById('cAddr').value = c.addr || '';
+    document.getElementById('cCity').value = c.city || '';
+    document.getElementById('cState').value = c.state || '';
+    document.getElementById('cZip').value = c.zip || '';
+  } else {
+    editCompanyId = null;
+    document.getElementById('companyFormTitle').textContent = 'Nova Empresa Vinculada ao Escritório';
+    ['cName', 'cCnpj', 'cCnae', 'cEnteFed', 'cAddr', 'cCity', 'cState', 'cZip'].forEach(fid => {
+      const el = document.getElementById(fid);
+      if (el) el.value = '';
+    });
+    document.getElementById('cTpInsc').value = '1';
+    document.getElementById('cClassTrib').value = '03';
+    document.getElementById('cFpas').value = '515';
+    document.getElementById('cTerceiros').value = '0079';
+    document.getElementById('cRat').value = 2.0;
+    document.getElementById('cFap').value = 1.0;
+    document.getElementById('cIndDeson').value = '0';
+    document.getElementById('cIndEscr').value = '1';
+  }
+}
+
+function closeCompanyForm() {
+  editCompanyId = null;
+  document.getElementById('companyFormBox').style.display = 'none';
+  document.getElementById('companyListBox').style.display = 'block';
+  document.getElementById('companyTopActions').style.display = 'flex';
 }
 
 function saveCompany() {
-  company = {
+  const officeId = getCurrentOfficeId();
+  const name = document.getElementById('cName').value.trim().toUpperCase();
+  const cnpj = document.getElementById('cCnpj').value.trim();
+  if (!name || !cnpj) { alert('Preencha a Razão Social e o CNPJ/CPF da empresa.'); return; }
+
+  const payload = {
+    id: editCompanyId || 'comp_' + Date.now(),
+    officeId,
     tpInsc: document.getElementById('cTpInsc').value || '1',
-    name: document.getElementById('cName').value.trim().toUpperCase(),
-    cnpj: document.getElementById('cCnpj').value.trim(),
+    name,
+    cnpj,
     classTrib: document.getElementById('cClassTrib').value || '03',
     cnae: document.getElementById('cCnae').value.trim(),
     fpas: document.getElementById('cFpas').value.trim() || '515',
@@ -3813,8 +4299,36 @@ function saveCompany() {
     state: document.getElementById('cState').value.trim().toUpperCase(),
     zip: document.getElementById('cZip').value.trim()
   };
+
+  if (editCompanyId) {
+    companies = companies.map(c => c.id === editCompanyId ? payload : c);
+  } else {
+    companies.push(payload);
+    activeCompanyId = payload.id;
+    localStorage.setItem('erp_dp_active_company', activeCompanyId);
+  }
+
+  closeCompanyForm();
+  syncTenantContext();
+  boot();
   saveAll();
-  alert('Dados do empregador salvos!');
+  alert('Empresa salva e vinculada ao escritório!');
+}
+
+function deleteCompany(id) {
+  const allowedComps = getOfficeCompanies();
+  if (allowedComps.length <= 1) {
+    alert('Mantenha pelo menos 1 empresa vinculada ao escritório.');
+    return;
+  }
+  if (!confirm('Excluir esta empresa e todos os colaboradores/recibos vinculados a ela?')) return;
+  companies = companies.filter(c => c.id !== id);
+  allEmployees = allEmployees.filter(e => e.companyId !== id);
+  allSavedReceipts = allSavedReceipts.filter(r => r.companyId !== id);
+  allLeaves = allLeaves.filter(lv => lv.companyId !== id);
+  syncTenantContext();
+  boot();
+  saveAll();
 }
 
 function renderTables() {
@@ -3855,20 +4369,22 @@ function saveTables() {
 }
 
 function exportAllCSV() {
-  if (!savedReceipts.length) { alert('Nenhum recibo salvo.'); return; }
-  const rows = [['Documento', 'Competencia', 'Colaborador', 'CPF', 'Bruto', 'INSS', 'IRRF', 'Outros_Desc', 'Liquido'].join(';')];
-  savedReceipts.forEach(r => rows.push([r.kind, r.comp, `"${r.empName}"`, r.empCpf, Number(r.gross).toFixed(2), Number(r.inss).toFixed(2), Number(r.irrf).toFixed(2), Number(r.otherDesc).toFixed(2), Number(r.net).toFixed(2)].join(';')));
-  downloadBlob('\uFEFF' + rows.join('\n'), 'relatorio_dp_completo.csv', 'text/csv;charset=utf-8;');
+  if (!savedReceipts.length) { alert('Nenhum recibo salvo para esta empresa.'); return; }
+  const rows = [['Empresa', 'Documento', 'Competencia', 'Colaborador', 'CPF', 'Bruto', 'INSS', 'IRRF', 'Outros_Desc', 'Liquido'].join(';')];
+  savedReceipts.forEach(r => rows.push([`"${company.name}"`, r.kind, r.comp, `"${r.empName}"`, r.empCpf, Number(r.gross).toFixed(2), Number(r.inss).toFixed(2), Number(r.irrf).toFixed(2), Number(r.otherDesc).toFixed(2), Number(r.net).toFixed(2)].join(';')));
+  downloadBlob('﻿' + rows.join('
+'), 'relatorio_dp_empresa.csv', 'text/csv;charset=utf-8;');
 }
 
 function exportRubricsCSV() {
   const rows = [['Codigo', 'Descricao', 'Criacao', 'Tipo', 'Situacao'].join(';')];
   rubrics.forEach(r => rows.push([r.code, `"${r.name}"`, r.created, r.type, r.status].join(';')));
-  downloadBlob('\uFEFF' + rows.join('\n'), 'rh_rubricas.csv', 'text/csv;charset=utf-8;');
+  downloadBlob('﻿' + rows.join('
+'), 'rh_rubricas.csv', 'text/csv;charset=utf-8;');
 }
 
 function exportBackup() {
-  downloadBlob(JSON.stringify({ company, employees, rubrics, tables, savedReceipts, leaves }, null, 2), 'backup_pulsedp.json', 'application/json');
+  downloadBlob(JSON.stringify(getCloudSnapshot(), null, 2), 'backup_pulsedp.json', 'application/json');
 }
 
 function importBackup(ev) {
@@ -3879,13 +4395,11 @@ function importBackup(ev) {
     try {
       const parsed = JSON.parse(e.target.result);
       const snapshot = parsed && typeof parsed === 'object' && parsed.data ? parsed.data : parsed;
-      if (!snapshot || typeof snapshot !== 'object') {
-        throw new Error('Estrutura JSON inválida');
-      }
+      if (!snapshot || typeof snapshot !== 'object') throw new Error('Estrutura JSON inválida');
       applyCloudSnapshot(snapshot);
       boot();
       await saveAll({ syncCloud: true, notifyCloud: false });
-      alert('Backup JSON restaurado e sincronizado com o PostgreSQL!');
+      alert('Backup JSON restaurado e sincronizado!');
     } catch {
       alert('Arquivo JSON inválido ou corrompido.');
     } finally {
@@ -3906,7 +4420,9 @@ function populateSelects() {
   const empSelects = ['pEmployee', 'vEmployee', 'tEmployee', 'rEmployee'];
   const activeEmps = employees.filter(e => (e.status || 'ATIVO') !== 'INATIVO');
   const poolEmps = activeEmps.length ? activeEmps : employees;
-  const opts = poolEmps.map(e => `<option value="${e.id}">${esc(e.name)} — ${esc(e.role)} (${esc(e.status || 'ATIVO')})</option>`).join('');
+  const opts = poolEmps.length
+    ? poolEmps.map(e => `<option value="${e.id}">${esc(e.name)} — ${esc(e.role)} (${esc(e.status || 'ATIVO')})</option>`).join('')
+    : '<option value="">Nenhum colaborador nesta empresa</option>';
   empSelects.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -3927,11 +4443,15 @@ document.querySelectorAll('aside button[data-panel]').forEach(btn => {
     document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === target));
     document.getElementById('headerSectionTitle').textContent = btn.textContent.trim();
     if (target === 'employees') closeEmployeeForm();
+    if (target === 'company') closeCompanyForm();
+    if (target === 'offices') renderOfficesAndUsers();
   });
 });
 
 function boot() {
-  renderCompany();
+  syncTenantContext();
+  renderOfficesAndUsers();
+  renderCompanyList();
   renderEmployees();
   renderLeaveHistory();
   renderRubrics();
@@ -3945,13 +4465,9 @@ function boot() {
 }
 
 // =========================================================================
-// AUTENTICAÇÃO DE ACESSO AO SISTEMA
+// AUTENTICAÇÃO VINCULADA AO ESCRITÓRIO
 // =========================================================================
-const AUTH_SESSION_KEY = 'pulsedp_auth_session_v1';
-const AUTH_USERS = [
-  { user: 'admin', pass: '1234', role: 'Administrador DP' },
-  { user: 'rh', pass: 'rh2026', role: 'Analista de RH' }
-];
+const AUTH_SESSION_KEY = 'pulsedp_auth_session_v2';
 
 function checkLoginState() {
   const screen = document.getElementById('loginScreen');
@@ -3960,12 +4476,16 @@ function checkLoginState() {
     const raw = sessionStorage.getItem(AUTH_SESSION_KEY) || localStorage.getItem(AUTH_SESSION_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed && parsed.loggedIn && parsed.user) {
+      if (parsed && parsed.loggedIn && parsed.user && parsed.officeId) {
+        currentSession = parsed;
+        syncTenantContext();
+        boot();
         screen.classList.add('hidden');
         return;
       }
     }
   } catch {}
+  currentSession = null;
   screen.classList.remove('hidden');
 }
 
@@ -3975,24 +4495,43 @@ function handleLogin(event) {
   const p = (document.getElementById('loginPass')?.value || '').trim();
   const errEl = document.getElementById('loginError');
 
-  const found = AUTH_USERS.find(acc => acc.user.toLowerCase() === u && acc.pass === p);
-  if (!found) {
-    if (errEl) errEl.classList.add('show');
+  const found = accessUsers.find(acc => acc.user.toLowerCase() === u && acc.pass === p);
+  const linkedOffice = found ? offices.find(o => o.id === found.officeId) : null;
+
+  if (!found || !linkedOffice) {
+    if (errEl) {
+      errEl.textContent = !found
+        ? 'Usuário ou senha inválidos. Verifique suas credenciais.'
+        : 'Este usuário não possui um escritório válido vinculado.';
+      errEl.classList.add('show');
+    }
     return;
   }
 
   if (errEl) errEl.classList.remove('show');
-  const sessionData = { loggedIn: true, user: found.user, role: found.role, at: Date.now() };
+  const sessionData = {
+    loggedIn: true,
+    user: found.user,
+    fullName: found.fullName || found.user,
+    role: found.role || 'Analista',
+    officeId: linkedOffice.id,
+    at: Date.now()
+  };
+  currentSession = sessionData;
   try {
     sessionStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(sessionData));
     localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(sessionData));
   } catch {}
 
+  activeCompanyId = '';
+  syncTenantContext();
+  boot();
   document.getElementById('loginScreen')?.classList.add('hidden');
   pullFromVercel(false);
 }
 
 function logoutSystem() {
+  currentSession = null;
   try {
     sessionStorage.removeItem(AUTH_SESSION_KEY);
     localStorage.removeItem(AUTH_SESSION_KEY);
@@ -4042,11 +4581,8 @@ let themeConfig = Object.assign({}, defaultThemeConfig, safeParse(THEME_STORAGE_
 
 function applyThemeConfig() {
   const root = document.documentElement;
-  if (themeConfig.mode === 'dark') {
-    root.setAttribute('data-theme', 'dark');
-  } else {
-    root.removeAttribute('data-theme');
-  }
+  if (themeConfig.mode === 'dark') root.setAttribute('data-theme', 'dark');
+  else root.removeAttribute('data-theme');
 
   root.style.setProperty('--primary', themeConfig.primary);
   root.style.setProperty('--primary-hover', darkenHex(themeConfig.primary, 18));
@@ -4055,11 +4591,8 @@ function applyThemeConfig() {
   root.style.setProperty('--sidebar', themeConfig.sidebar);
   root.style.setProperty('--sidebar-hover', darkenHex(themeConfig.sidebar, -14));
   root.style.setProperty('--success', themeConfig.success);
-  if (themeConfig.bg && themeConfig.bg !== defaultThemeConfig.bg) {
-    root.style.setProperty('--bg', themeConfig.bg);
-  } else {
-    root.style.removeProperty('--bg');
-  }
+  if (themeConfig.bg && themeConfig.bg !== defaultThemeConfig.bg) root.style.setProperty('--bg', themeConfig.bg);
+  else root.style.removeProperty('--bg');
 
   const p1 = document.getElementById('pickPrimary');
   const p2 = document.getElementById('pickSidebar');
@@ -4078,46 +4611,29 @@ function applyThemeConfig() {
   }
 
   const btnToggle = document.getElementById('btnThemeToggle');
-  if (btnToggle) {
-    btnToggle.textContent = themeConfig.mode === 'dark' ? '☀️ Claro' : '🌙 Escuro';
-  }
+  if (btnToggle) btnToggle.textContent = themeConfig.mode === 'dark' ? '☀️ Claro' : '🌙 Escuro';
 
-  try {
-    localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(themeConfig));
-  } catch {}
+  try { localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(themeConfig)); } catch {}
 }
 
-function toggleThemeMode() {
-  setThemeMode(themeConfig.mode === 'dark' ? 'light' : 'dark');
-}
-
-function toggleThemePanel() {
-  const pop = document.getElementById('themePopover');
-  if (pop) pop.classList.toggle('open');
-}
-
+function toggleThemeMode() { setThemeMode(themeConfig.mode === 'dark' ? 'light' : 'dark'); }
+function toggleThemePanel() { document.getElementById('themePopover')?.classList.toggle('open'); }
 function setThemeMode(mode) {
   themeConfig.mode = mode === 'dark' ? 'dark' : 'light';
-  if (mode === 'dark' && themeConfig.bg === '#f8fafc') {
-    themeConfig.bg = '#0b1120';
-  } else if (mode === 'light' && themeConfig.bg === '#0b1120') {
-    themeConfig.bg = '#f8fafc';
-  }
+  if (mode === 'dark' && themeConfig.bg === '#f8fafc') themeConfig.bg = '#0b1120';
+  else if (mode === 'light' && themeConfig.bg === '#0b1120') themeConfig.bg = '#f8fafc';
   applyThemeConfig();
 }
-
 function applyColorPreset(primary, sidebar, success) {
   themeConfig.primary = primary;
   themeConfig.sidebar = sidebar;
   themeConfig.success = success;
   applyThemeConfig();
 }
-
 function updateCustomColor(key, value) {
   themeConfig[key] = value;
   applyThemeConfig();
 }
-
 function resetThemeCustomization() {
   themeConfig = Object.assign({}, defaultThemeConfig);
   applyThemeConfig();
