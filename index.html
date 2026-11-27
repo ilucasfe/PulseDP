@@ -428,8 +428,6 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
         <div class="pill"><span class="dot-live"></span> Competência: <b id="topComp">11/2026</b></div>
         <div class="pill">Equipe: <b id="topEmpCount">0</b> ativos</div>
         <div class="pill" onclick="showCloudDiagnostics()" style="cursor:pointer" title="Clique para ver detalhes da conexão PostgreSQL">Postgres: <b id="topCloudStatus">Local</b></div>
-        <button class="btn btn-ghost btn-sm" type="button" onclick="pullFromVercel(true)" title="Sincronizar com PostgreSQL">☁️ Sync</button>
-        <button class="btn btn-ghost btn-sm" type="button" onclick="configureCloudEndpoint()" title="Configurar URL da API PostgreSQL">⚙️ API</button>
         <button class="btn btn-ghost btn-sm" type="button" id="btnThemeToggle" onclick="toggleThemeMode()" title="Alternar modo claro/escuro">🌙 Escuro</button>
         <button class="btn btn-ghost btn-sm" type="button" onclick="toggleThemePanel()" title="Personalizar cores do sistema">🎨 Cores</button>
         <button class="btn btn-ghost btn-sm" type="button" onclick="logoutSystem()" title="Sair do sistema">Sair</button>
@@ -1664,6 +1662,9 @@ try {
 } catch {}
 const WORKSPACE_ID = '6b013134917c7ced9de2805f';
 let cloudSyncTimer = null;
+let autoSyncIntervalId = null;
+let isSyncingNow = false;
+let hasPendingLocalSave = false;
 let lastCloudError = '';
 
 const initCompany = {
@@ -1868,18 +1869,18 @@ function configureCloudEndpoint() {
   pullFromVercel(true);
 }
 
-async function pullFromVercel(notify = false) {
+async function pullFromVercel(notify = false, isBackgroundPoll = false) {
+  if (isSyncingNow || hasPendingLocalSave) return;
   const ep = resolveCloudEndpoint();
   if (!ep.url) {
     lastCloudError = ep.reason;
     setCloudStatus('Sem servidor API', 'warn');
-    if (notify) {
-      alert(ep.reason + '\n\nClique em "⚙️ API" no topo para informar a URL da API.');
-    }
+    if (notify) alert(ep.reason);
     return;
   }
 
-  setCloudStatus('Sincronizando...');
+  isSyncingNow = true;
+  if (!isBackgroundPoll) setCloudStatus('Sincronizando...');
   try {
     const sep = ep.url.includes('?') ? '&' : '?';
     const res = await fetch(`${ep.url}${sep}workspace=${encodeURIComponent(WORKSPACE_ID)}`, {
@@ -1893,22 +1894,36 @@ async function pullFromVercel(notify = false) {
     }
     if (json && json.ok && json.data) {
       lastCloudError = '';
-      applyCloudSnapshot(json.data);
-      saveLocalOnly();
-      renderCompany();
-      renderEmployees();
-      renderRubrics();
-      renderTables();
-      populateSelects();
-      loadOrInitPayroll();
-      fillVacationEmp();
-      fill13thEmp();
-      fillTermEmp();
-      renderHistory();
+      const currentRaw = JSON.stringify(getCloudSnapshot());
+      const incomingRaw = JSON.stringify(json.data);
+      if (currentRaw !== incomingRaw) {
+        const activeTag = document.activeElement ? document.activeElement.tagName : '';
+        const isEditingInput = activeTag === 'INPUT' || activeTag === 'SELECT' || activeTag === 'TEXTAREA';
+        const isFormOpen =
+          document.getElementById('empFormView')?.style.display === 'block' ||
+          document.getElementById('rubricFormBox')?.style.display === 'block';
+        if (!isBackgroundPoll || (!isEditingInput && !isFormOpen)) {
+          applyCloudSnapshot(json.data);
+          saveLocalOnly();
+          renderCompany();
+          renderEmployees();
+          renderLeaveHistory();
+          renderRubrics();
+          renderTables();
+          populateSelects();
+          loadOrInitPayroll();
+          fillVacationEmp();
+          fill13thEmp();
+          fillTermEmp();
+          renderHistory();
+        }
+      }
       setCloudStatus('Conectado', 'ok');
       if (notify) alert('Dados sincronizados com o PostgreSQL!');
     } else {
+      isSyncingNow = false;
       await pushToVercel(notify);
+      return;
     }
   } catch (err) {
     lastCloudError = err && err.message ? err.message : String(err);
@@ -1919,6 +1934,8 @@ async function pullFromVercel(notify = false) {
         `Verifique se a rota /api/state existe no seu servidor/Vercel e se a variável DATABASE_URL (ou POSTGRES_URL) está configurada no ambiente.`
       );
     }
+  } finally {
+    isSyncingNow = false;
   }
 }
 
@@ -1970,13 +1987,28 @@ async function saveAll(options = {}) {
     setCloudStatus('Salvo local', 'warn');
     return;
   }
+  hasPendingLocalSave = true;
   clearTimeout(cloudSyncTimer);
   return new Promise((resolve) => {
     cloudSyncTimer = setTimeout(async () => {
-      await pushToVercel(notifyCloud);
+      try {
+        await pushToVercel(notifyCloud);
+      } finally {
+        hasPendingLocalSave = false;
+      }
       resolve();
     }, 350);
   });
+}
+
+function startAutoSyncLoop() {
+  if (autoSyncIntervalId) clearInterval(autoSyncIntervalId);
+  autoSyncIntervalId = setInterval(() => {
+    if (document.hidden) return;
+    const screen = document.getElementById('loginScreen');
+    if (screen && !screen.classList.contains('hidden')) return;
+    pullFromVercel(false, true);
+  }, 10000);
 }
 
 function calcProgressive(base, bands) {
@@ -4095,6 +4127,7 @@ applyThemeConfig();
 boot();
 checkLoginState();
 pullFromVercel(false);
+startAutoSyncLoop();
 </script>
 </body>
 </html>
