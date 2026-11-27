@@ -104,7 +104,7 @@ header{
 .dot-live{width:7px;height:7px;border-radius:50%;background:var(--success)}
 
 main{padding:16px 18px;max-width:100%;width:100%;margin:0 auto}
-.panel{display:none!important;animation:fadeIn .18s ease}.panel.active{display:block!important}
+.panel{display:none;animation:fadeIn .18s ease}.panel.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
 .page-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px}
@@ -304,6 +304,7 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
   .grid,.grid.two,.grid.three,.grid.six,.kpi-grid{grid-template-columns:1fr}
 }
 
+
 /* PERSONALIZADOR DE TEMA & CORES */
 .theme-popover{
   display:none;position:fixed;top:56px;right:18px;width:320px;max-width:calc(100vw - 24px);
@@ -333,9 +334,7 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
   background:radial-gradient(circle at top left,#1e293b,#0f172a 65%);
   display:flex;align-items:center;justify-content:center;padding:20px
 }
-#loginScreen.hidden{display:none!important}
-body.auth-locked .app{display:none!important}
-body:not(.auth-locked) .app{display:grid}
+#loginScreen.hidden{display:none}
 .login-card{
   width:100%;max-width:400px;background:#ffffff;color:var(--text);
   border-radius:16px;padding:32px 28px;box-shadow:0 24px 48px rgba(0,0,0,.35);
@@ -354,9 +353,10 @@ body:not(.auth-locked) .app{display:grid}
 .login-btn{width:100%;height:42px;font-size:14px;margin-top:6px}
 .login-foot{margin-top:18px;text-align:center;font-size:11.5px;color:#64748b}
 @media print{#loginScreen{display:none!important}}
+
 </style>
 </head>
-<body class="auth-locked">
+<body>
 
 <!-- TELA DE LOGIN -->
 <div id="loginScreen">
@@ -386,6 +386,7 @@ body:not(.auth-locked) .app{display:grid}
     <div class="login-foot">Acesso isolado por Escritório • Apenas empresas vinculadas</div>
   </form>
 </div>
+
 
 <div class="app">
   <!-- SIDEBAR MODERNA -->
@@ -444,7 +445,9 @@ body:not(.auth-locked) .app{display:grid}
     </header>
 
     <main>
-      <!-- 1. CÁLCULO & MANUTENÇÃO MANUAL DA FOLHA -->
+      <!-- ===================================================================
+           1. CÁLCULO & MANUTENÇÃO MANUAL DA FOLHA
+      ==================================================================== -->
       <section id="payroll" class="panel active">
         <div class="page-head">
           <div>
@@ -546,7 +549,9 @@ body:not(.auth-locked) .app{display:grid}
         </div>
       </section>
 
-      <!-- 2. CÁLCULO DE FÉRIAS -->
+      <!-- ===================================================================
+           2. CÁLCULO DE FÉRIAS
+      ==================================================================== -->
       <section id="vacation" class="panel">
         <div class="page-head">
           <div>
@@ -627,7 +632,9 @@ body:not(.auth-locked) .app{display:grid}
         </div>
       </section>
 
-      <!-- 3. CÁLCULO DE 13º SALÁRIO -->
+      <!-- ===================================================================
+           3. CÁLCULO DE 13º SALÁRIO
+      ==================================================================== -->
       <section id="thirteenth" class="panel">
         <div class="page-head">
           <div>
@@ -697,7 +704,9 @@ body:not(.auth-locked) .app{display:grid}
         </div>
       </section>
 
-      <!-- 4. CÁLCULO DE DESLIGAMENTO (TRCT OFICIAL) -->
+      <!-- ===================================================================
+           4. CÁLCULO DE DESLIGAMENTO (TRCT OFICIAL)
+      ==================================================================== -->
       <section id="termination" class="panel">
         <div class="page-head">
           <div>
@@ -781,7 +790,9 @@ body:not(.auth-locked) .app{display:grid}
         </div>
       </section>
 
-      <!-- 5. HOLERITES & RECIBOS SALVOS -->
+      <!-- ===================================================================
+           5. HOLERITES & RECIBOS SALVOS
+      ==================================================================== -->
       <section id="history" class="panel">
         <div class="page-head">
           <div>
@@ -822,7 +833,9 @@ body:not(.auth-locked) .app{display:grid}
         </div>
       </section>
 
-      <!-- 6. RH - RUBRICAS -->
+      <!-- ===================================================================
+           6. RH - RUBRICAS
+      ==================================================================== -->
       <section id="rubrics" class="panel">
         <div class="page-head">
           <div>
@@ -941,7 +954,9 @@ body:not(.auth-locked) .app{display:grid}
         </div>
       </section>
 
-      <!-- 7. COLABORADORES -->
+      <!-- ===================================================================
+           7. COLABORADORES (GERENCIADOR DE CONSULTA + TELA DE CADASTRO)
+      ==================================================================== -->
       <section id="employees" class="panel">
         <div class="page-head">
           <div>
@@ -953,7 +968,9 @@ body:not(.auth-locked) .app{display:grid}
           </div>
         </div>
 
+        <!-- TELA 1: GERENCIADOR DE CONSULTA + DASHBOARD -->
         <div id="empManagerView">
+          <!-- DASHBOARD DE COLABORADORES, AFASTAMENTOS E FÉRIAS PENDENTES -->
           <div class="kpi-grid" style="margin-top:0;margin-bottom:14px">
             <div class="kpi green" onclick="setEmpStatusFilter('ATIVO')" style="cursor:pointer" title="Filtrar colaboradores ativos">
               <small>Colaboradores Ativos</small>
@@ -977,6 +994,7 @@ body:not(.auth-locked) .app{display:grid}
             </div>
           </div>
 
+          <!-- ANÁLISE DE FÉRIAS PENDENTES -->
           <div class="card" style="margin-bottom:14px">
             <div class="card-header" style="margin-bottom:10px;padding-bottom:8px">
               <div>
@@ -1033,6 +1051,7 @@ body:not(.auth-locked) .app{display:grid}
           </div>
         </div>
 
+        <!-- TELA 3: HISTÓRICO E LANÇAMENTO DE AFASTAMENTO (eSocial S-2230 / Tabela 18) -->
         <div id="empLeaveHistoryView" style="display:none">
           <div class="card" style="margin-bottom:14px">
             <div class="card-header">
@@ -1102,12 +1121,14 @@ body:not(.auth-locked) .app{display:grid}
           </div>
         </div>
 
+        <!-- TELA 2: FORMULÁRIO DE CADASTRO / EDIÇÃO (eSocial S-2200 Com Vínculo vs S-2300 TSVE Sem Vínculo) -->
         <div class="card" id="empFormView" style="display:none">
           <div class="card-header">
             <h3 class="card-title" id="empFormHeaderTitle">Incluir Colaborador — eSocial S-2200 / S-2300</h3>
             <button type="button" class="btn btn-ghost btn-sm" onclick="closeEmployeeForm()">← Voltar para Consulta</button>
           </div>
 
+          <!-- SELETOR DO EVENTO / REGIME ESOCIAL -->
           <div style="background:var(--primary-soft);border:1px solid var(--primary-border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:16px">
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
               <div>
@@ -1201,6 +1222,7 @@ body:not(.auth-locked) .app{display:grid}
             <div id="wrapVacAcqRef"><label>Período Aquisitivo de Referência</label><input id="eVacAcqRef" placeholder="Ex.: 10/05/2025 a 09/05/2026"></div>
           </div>
 
+          <!-- BLOCO ESPECÍFICO: COM VÍNCULO (S-2200 - evtAdmissao) -->
           <div id="blockS2200">
             <div class="card-header" style="margin-top:16px">
               <div>
@@ -1323,6 +1345,7 @@ body:not(.auth-locked) .app{display:grid}
             </div>
           </div>
 
+          <!-- BLOCO ESPECÍFICO: SEM VÍNCULO EMPREGATÍCIO — TSVE (S-2300 - evtTSVInicio) -->
           <div id="blockS2300" style="display:none">
             <div class="card-header" style="margin-top:16px">
               <div>
@@ -1392,6 +1415,7 @@ body:not(.auth-locked) .app{display:grid}
               <div id="wrapDtOpcFgtsTsv" style="display:none"><label>Data Opção FGTS Diretor</label><input type="date" id="eDtOpcFgtsTsv"></div>
             </div>
 
+            <!-- SUBGRUPO ESPECÍFICO ESTAGIÁRIO (infoEstagiario - Categ. 901) -->
             <div id="subEstagiarioS2300" style="display:none;margin-top:12px;padding:12px;border:1px dashed var(--primary-border);border-radius:var(--radius-sm);background:var(--surface-2)">
               <strong style="display:block;font-size:12.5px;margin-bottom:8px;color:var(--primary)">Dados do Estágio (Lei 11.788/2008)</strong>
               <div class="grid">
@@ -1422,6 +1446,7 @@ body:not(.auth-locked) .app{display:grid}
               </div>
             </div>
 
+            <!-- SUBGRUPO ESPECÍFICO DIRIGENTE SINDICAL / CEDIDO (Categ. 401 / 410) -->
             <div id="subDirigenteS2300" style="display:none;margin-top:12px;padding:12px;border:1px dashed var(--primary-border);border-radius:var(--radius-sm);background:var(--surface-2)">
               <strong style="display:block;font-size:12.5px;margin-bottom:8px;color:var(--primary)">Dados de Dirigente Sindical / Trabalhador Cedido</strong>
               <div class="grid three">
@@ -1446,7 +1471,9 @@ body:not(.auth-locked) .app{display:grid}
         </div>
       </section>
 
-      <!-- 8A. CADASTRO DE ESCRITÓRIOS & ACESSOS VINCULADOS -->
+      <!-- ===================================================================
+           8A. CADASTRO DE ESCRITÓRIOS & ACESSOS VINCULADOS
+      ==================================================================== -->
       <section id="offices" class="panel">
         <div class="page-head">
           <div>
@@ -1456,6 +1483,7 @@ body:not(.auth-locked) .app{display:grid}
         </div>
 
         <div class="grid two">
+          <!-- CADASTRO DE ESCRITÓRIO -->
           <div class="card">
             <div class="card-header">
               <h3 class="card-title" id="officeFormTitle">Cadastrar / Editar Escritório</h3>
@@ -1479,6 +1507,7 @@ body:not(.auth-locked) .app{display:grid}
             </div>
           </div>
 
+          <!-- CADASTRO DE USUÁRIOS VINCULADOS AO ESCRITÓRIO -->
           <div class="card">
             <div class="card-header">
               <h3 class="card-title" id="userFormTitle">Vincular Usuário de Acesso ao Escritório</h3>
@@ -1513,7 +1542,9 @@ body:not(.auth-locked) .app{display:grid}
         </div>
       </section>
 
-      <!-- 8B. CADASTRO DE EMPRESAS VINCULADAS AO ESCRITÓRIO (eSocial S-1000) -->
+      <!-- ===================================================================
+           8B. CADASTRO DE EMPRESAS VINCULADAS AO ESCRITÓRIO (eSocial S-1000)
+      ==================================================================== -->
       <section id="company" class="panel">
         <div class="page-head">
           <div>
@@ -1525,6 +1556,7 @@ body:not(.auth-locked) .app{display:grid}
           </div>
         </div>
 
+        <!-- LISTA DE EMPRESAS DO ESCRITÓRIO LOGADO -->
         <div class="card" id="companyListBox">
           <div class="toolbar">
             <input type="text" id="compSearch" class="search-input" placeholder="🔍 Pesquisar empresa por razão social ou CNPJ..." oninput="renderCompanyList()">
@@ -1548,6 +1580,7 @@ body:not(.auth-locked) .app{display:grid}
           </div>
         </div>
 
+        <!-- FORMULÁRIO DE CADASTRO / EDIÇÃO DE EMPRESA (eSocial S-1000) -->
         <div class="card" id="companyFormBox" style="display:none">
           <div class="card-header">
             <h3 class="card-title" id="companyFormTitle">Cadastro de Empresa (eSocial S-1000)</h3>
@@ -1626,7 +1659,9 @@ body:not(.auth-locked) .app{display:grid}
         </div>
       </section>
 
-      <!-- 9. TABELAS LEGAIS -->
+      <!-- ===================================================================
+           9. TABELAS LEGAIS
+      ==================================================================== -->
       <section id="tables" class="panel">
         <div class="page-head">
           <div>
@@ -1965,6 +2000,7 @@ let allLeaves = safeParse('erp_dp_leaves', initLeaves);
 if (!Array.isArray(allLeaves)) allLeaves = structuredClone(initLeaves);
 allLeaves = allLeaves.map(lv => ({ ...lv, companyId: lv.companyId || 'comp_1' }));
 
+// Visões filtradas pelo Escritório Logado + Empresa Ativa do Escritório
 let employees = [];
 let savedReceipts = [];
 let leaves = [];
@@ -2108,11 +2144,16 @@ function showCloudDiagnostics() {
   const status = document.getElementById('topCloudStatus')?.textContent || 'Local';
   const office = getCurrentOffice();
   alert(
-    `Diagnóstico de Conexão PostgreSQL & Multi-Escritório:\n` +
-    `• Status atual: ${status}\n` +
-    `• Endpoint API: ${ep.url || '(não configurado)'}\n` +
-    `• Escritório Logado: ${office ? office.name : '—'}\n` +
-    `• Empresas Vinculadas ao Escritório: ${getOfficeCompanies().length}\n` +
+    `Diagnóstico de Conexão PostgreSQL & Multi-Escritório:
+` +
+    `• Status atual: ${status}
+` +
+    `• Endpoint API: ${ep.url || '(não configurado)'}
+` +
+    `• Escritório Logado: ${office ? office.name : '—'}
+` +
+    `• Empresas Vinculadas ao Escritório: ${getOfficeCompanies().length}
+` +
     (lastCloudError ? `• Último erro: ${lastCloudError}` : `• Último erro: Nenhum`)
   );
 }
@@ -2167,7 +2208,8 @@ async function pullFromVercel(notify = false, isBackgroundPoll = false) {
   } catch (err) {
     lastCloudError = err && err.message ? err.message : String(err);
     setCloudStatus('Erro Postgres', 'warn');
-    if (notify) alert(`Falha ao conectar no PostgreSQL:\n${lastCloudError}`);
+    if (notify) alert(`Falha ao conectar no PostgreSQL:
+${lastCloudError}`);
   } finally {
     isSyncingNow = false;
   }
@@ -2241,7 +2283,9 @@ function startAutoSyncLoop() {
   }, 10000);
 }
 
+// =========================================================================
 // CADASTRO DE ESCRITÓRIOS & USUÁRIOS DE ACESSO VINCULADOS
+// =========================================================================
 function renderOfficesAndUsers() {
   const oTb = document.querySelector('#officesTable tbody');
   if (oTb) {
@@ -3474,7 +3518,7 @@ function renderRubrics() {
   document.getElementById('rubricCountLabel').textContent = `Exibindo ${list.length} de ${rubrics.length} registros`;
 }
 
-// 7. COLABORADORES
+// 7. COLABORADORES (VINCULADOS À EMPRESA ATIVA DO ESCRITÓRIO)
 const S2300_CATEGORIES = new Set(['201','202','401','410','701','711','712','721','722','723','731','734','738','741','751','761','771','781','901','902','903','904']);
 
 function inferEsocialEventType(emp) {
@@ -3867,153 +3911,89 @@ function saveEmployee() {
   const existing = editEmpId ? employees.find(e => e.id === editEmpId) : null;
   const chosenStatus = document.getElementById('eStatus').value || 'ATIVO';
   const hasActiveLeave = editEmpId ? leaves.some(lv => lv.empId === editEmpId && lv.active) : false;
-  let finalStatus = chosenStatus;
-  if (chosenStatus === 'INATIVO') finalStatus = 'INATIVO';
-  else if (hasActiveLeave && existing?.status === 'AFASTADO') finalStatus = 'AFASTADO';
-  else finalStatus = 'ATIVO';
+  const finalStatus = chosenStatus === 'INATIVO' ? 'INATIVO' : (hasActiveLeave && existing?.status === 'AFASTADO' ? 'AFASTADO' : chosenStatus);
 
-  const commonFields = {
+  const codCateg = isTsv
+    ? document.getElementById('eCodCategS2300').value
+    : document.getElementById('eCodCategS2200').value;
+
+  const obj = {
+    id: editEmpId || 'emp_' + Date.now(),
     companyId: company.id,
     eventType,
+    name,
+    cpf,
     mat: cleanMat,
     status: finalStatus,
     vacPendingPeriods: isTsv ? 0 : Math.max(0, Number(document.getElementById('eVacPending').value) || 0),
-    vacAcqRef: isTsv ? '' : document.getElementById('eVacAcqRef').value.trim(),
-    name,
-    cpf,
+    vacAcqRef: isTsv ? 'Não se aplica (TSVE S-2300)' : (document.getElementById('eVacAcqRef').value.trim() || 'Período vigente'),
     birth,
-    sex: document.getElementById('eSex').value,
-    race: document.getElementById('eRace').value,
-    edu: document.getElementById('eEdu').value,
-    estCiv: document.getElementById('eEstCiv').value,
-    paisNac: document.getElementById('ePaisNac').value,
+    sex: document.getElementById('eSex').value || 'M',
+    race: document.getElementById('eRace').value || '6',
+    edu: document.getElementById('eEdu').value || '07',
+    estCiv: document.getElementById('eEstCiv').value || '1',
+    paisNac: document.getElementById('ePaisNac').value || '105',
     pis: document.getElementById('ePis').value.trim(),
+    ctps: isTsv ? '' : document.getElementById('eCtps').value.trim(),
+    codCateg,
+    tpRegTrab: isTsv ? '0' : (document.getElementById('eTpRegTrab').value || '1'),
+    tpRegPrev: isTsv ? (codCateg === '901' ? '0' : '1') : (document.getElementById('eTpRegPrev').value || '1'),
+    tpContr: isTsv ? '0' : (document.getElementById('eTpContr').value || '1'),
+    dtTerm: isTsv ? '' : (document.getElementById('eDtTerm').value || ''),
+    tpAdmissao: isTsv ? '' : (document.getElementById('eTpAdmissao').value || '1'),
+    indAdmissao: isTsv ? '' : (document.getElementById('eIndAdmissao').value || '1'),
+    cadIni: isTsv ? (document.getElementById('eCadIni').value || 'N') : '',
+    natAtividade: isTsv ? (document.getElementById('eNatAtividadeTsv').value || '1') : '1',
+    role: (isTsv ? document.getElementById('eRoleTsv').value.trim() : document.getElementById('eRole').value.trim()) || 'Colaborador',
+    cbo: normalizeDigits(isTsv ? document.getElementById('eCboTsv').value : document.getElementById('eCbo').value) || '252105',
+    dept: (isTsv ? document.getElementById('eDeptTsv').value.trim() : document.getElementById('eDept').value.trim()) || 'Geral',
+    adm: isTsv ? document.getElementById('eDtInicioTsv').value : document.getElementById('eAdm').value,
+    salary: Number(isTsv ? document.getElementById('eSalTsv').value : document.getElementById('eSal').value) || 0,
+    undSal: (isTsv ? document.getElementById('eUndSalTsv').value : document.getElementById('eUndSal').value) || '5',
     deps: Number(document.getElementById('eDeps').value) || 0,
     depsSf: Number(document.getElementById('eDepsSf').value) || 0,
-    addr
+    hours: Number(isTsv ? document.getElementById('eHrsTsv').value : document.getElementById('eHrs').value) || 220,
+    tpJornada: isTsv ? '' : (document.getElementById('eTpJornada').value || '4'),
+    tmpParc: isTsv ? '0' : (document.getElementById('eTmpParc').value || '0'),
+    cnpjSind: isTsv ? '' : document.getElementById('eCnpjSind').value.trim(),
+    dtOpcFgts: isTsv ? (document.getElementById('eDtOpcFgtsTsv').value || '') : (document.getElementById('eDtOpcFgts').value || ''),
+    aposEsp: isTsv ? '1' : (document.getElementById('eAposEsp').value || '1'),
+    addr,
+    estagiario: isTsv && (codCateg === '901' || codCateg === '902') ? {
+      natEstagio: document.getElementById('eNatEstagio').value,
+      nivEstagio: document.getElementById('eNivEstagio').value,
+      areaAtuacao: document.getElementById('eAreaEstagio').value.trim(),
+      nrApol: document.getElementById('eApolEstagio').value.trim(),
+      dtPrevTerm: document.getElementById('eDtPrevTermEstagio').value,
+      cnpjInstEnsino: document.getElementById('eCnpjInstEnsino').value.trim(),
+      cnpjAgntInteg: document.getElementById('eCnpjAgntInteg').value.trim(),
+      cpfSupervisor: document.getElementById('eCpfSupervisor').value.trim()
+    } : null,
+    dirigente: isTsv && (codCateg === '401' || codCateg === '410') ? {
+      cnpjOrigem: document.getElementById('eCnpjOrigem').value.trim(),
+      categOrig: document.getElementById('eCategOrig').value,
+      dtAdmOrig: document.getElementById('eDtAdmOrig').value
+    } : null
   };
 
-  let obj;
-  if (!isTsv) {
-    obj = {
-      ...commonFields,
-      ctps: document.getElementById('eCtps').value.trim(),
-      codCateg: document.getElementById('eCodCategS2200').value,
-      adm: document.getElementById('eAdm').value,
-      tpAdmissao: document.getElementById('eTpAdmissao').value,
-      indAdmissao: document.getElementById('eIndAdmissao').value,
-      tpRegTrab: document.getElementById('eTpRegTrab').value,
-      tpRegPrev: document.getElementById('eTpRegPrev').value,
-      tpContr: document.getElementById('eTpContr').value,
-      dtTerm: document.getElementById('eDtTerm').value,
-      role: document.getElementById('eRole').value.trim(),
-      cbo: normalizeDigits(document.getElementById('eCbo').value),
-      dept: document.getElementById('eDept').value.trim() || 'Geral',
-      salary: Number(document.getElementById('eSal').value) || 0,
-      undSal: document.getElementById('eUndSal').value,
-      hours: Number(document.getElementById('eHrs').value) || 220,
-      tpJornada: document.getElementById('eTpJornada').value,
-      tmpParc: document.getElementById('eTmpParc').value,
-      cnpjSind: document.getElementById('eCnpjSind').value.trim(),
-      dtOpcFgts: document.getElementById('eDtOpcFgts').value,
-      aposEsp: document.getElementById('eAposEsp').value
-    };
+  if (editEmpId) {
+    allEmployees = allEmployees.map(e => e.id === editEmpId ? obj : e);
   } else {
-    const categTsv = document.getElementById('eCodCategS2300').value;
-    obj = {
-      ...commonFields,
-      ctps: '',
-      codCateg: categTsv,
-      adm: document.getElementById('eDtInicioTsv').value,
-      cadIni: document.getElementById('eCadIni').value,
-      natAtividade: document.getElementById('eNatAtividadeTsv').value,
-      role: document.getElementById('eRoleTsv').value.trim(),
-      cbo: normalizeDigits(document.getElementById('eCboTsv').value),
-      dept: document.getElementById('eDeptTsv').value.trim() || 'Sem Vínculo',
-      salary: Number(document.getElementById('eSalTsv').value) || 0,
-      undSal: document.getElementById('eUndSalTsv').value,
-      hours: Number(document.getElementById('eHrsTsv').value) || 220,
-      dtOpcFgts: document.getElementById('eDtOpcFgtsTsv').value,
-      estagiario: {
-        natEstagio: document.getElementById('eNatEstagio').value,
-        nivEstagio: document.getElementById('eNivEstagio').value,
-        areaAtuacao: document.getElementById('eAreaEstagio').value.trim(),
-        nrApol: document.getElementById('eApolEstagio').value.trim(),
-        dtPrevTerm: document.getElementById('eDtPrevTermEstagio').value,
-        cnpjInstEnsino: document.getElementById('eCnpjInstEnsino').value.trim(),
-        cnpjAgntInteg: document.getElementById('eCnpjAgntInteg').value.trim(),
-        cpfSupervisor: document.getElementById('eCpfSupervisor').value.trim()
-      },
-      dirigente: {
-        cnpjOrigem: document.getElementById('eCnpjOrigem').value.trim(),
-        categOrig: document.getElementById('eCategOrig').value,
-        dtAdmOrig: document.getElementById('eDtAdmOrig').value
-      },
-      aposEsp: '1'
-    };
+    allEmployees.push(obj);
   }
-
-  if (editEmpId) allEmployees = allEmployees.map(e => e.id === editEmpId ? { ...e, ...obj } : e);
-  else allEmployees.push({ id: 'e' + Date.now(), ...obj });
-
   allEmployees = deduplicateEmployeesList(allEmployees);
   syncTenantContext();
   saveAll();
+  clearEmployeeForm();
   renderEmployees();
   populateSelects();
   closeEmployeeForm();
 }
 
-function clearEmployeeForm() {
-  editEmpId = null;
-  ['eName', 'eCpf', 'ePis', 'eCtps', 'eAddr', 'eMat', 'eMatTsv', 'eRole', 'eRoleTsv', 'eDept', 'eDeptTsv', 'eCnpjSind', 'eDtTerm', 'eDtOpcFgtsTsv', 'eVacAcqRef', 'eAreaEstagio', 'eApolEstagio', 'eDtPrevTermEstagio', 'eCnpjInstEnsino', 'eCnpjAgntInteg', 'eCpfSupervisor', 'eCnpjOrigem', 'eDtAdmOrig'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  document.getElementById('eStatus').value = 'ATIVO';
-  document.getElementById('eVacPending').value = 0;
-  document.getElementById('eBirth').value = '1992-04-15';
-  document.getElementById('eSex').value = 'M';
-  document.getElementById('eRace').value = '6';
-  document.getElementById('eEdu').value = '07';
-  document.getElementById('eEstCiv').value = '1';
-  document.getElementById('ePaisNac').value = '105';
-  document.getElementById('eDeps').value = 0;
-  document.getElementById('eDepsSf').value = 0;
-
-  document.getElementById('eCodCategS2200').value = '101';
-  document.getElementById('eAdm').value = '2025-01-10';
-  document.getElementById('eTpAdmissao').value = '1';
-  document.getElementById('eIndAdmissao').value = '1';
-  document.getElementById('eTpRegTrab').value = '1';
-  document.getElementById('eTpRegPrev').value = '1';
-  document.getElementById('eTpContr').value = '1';
-  document.getElementById('eCbo').value = '252105';
-  document.getElementById('eSal').value = 3000;
-  document.getElementById('eUndSal').value = '5';
-  document.getElementById('eHrs').value = 220;
-  document.getElementById('eTpJornada').value = '4';
-  document.getElementById('eTmpParc').value = '0';
-  document.getElementById('eDtOpcFgts').value = '2025-01-10';
-  document.getElementById('eAposEsp').value = '1';
-
-  document.getElementById('eCodCategS2300').value = '723';
-  document.getElementById('eDtInicioTsv').value = '2025-01-10';
-  document.getElementById('eCadIni').value = 'N';
-  document.getElementById('eNatAtividadeTsv').value = '1';
-  document.getElementById('eCboTsv').value = '121010';
-  document.getElementById('eSalTsv').value = 3000;
-  document.getElementById('eUndSalTsv').value = '5';
-  document.getElementById('eHrsTsv').value = 220;
-  document.getElementById('eNatEstagio').value = 'N';
-  document.getElementById('eNivEstagio').value = '4';
-  document.getElementById('eCategOrig').value = '101';
-
-  switchEsocialEventMode('S-2200');
-}
+function editEmployee(id) { openEmployeeForm(id); }
 
 function deleteEmployee(id) {
-  if (confirm('Excluir colaborador?')) {
+  if (confirm('Excluir colaborador desta empresa?')) {
     allEmployees = allEmployees.filter(e => e.id !== id);
     allLeaves = allLeaves.filter(lv => lv.empId !== id);
     syncTenantContext();
@@ -4021,6 +4001,37 @@ function deleteEmployee(id) {
     renderEmployees();
     populateSelects();
   }
+}
+
+function clearEmployeeForm() {
+  editEmpId = null;
+  ['eName', 'eCpf', 'eMat', 'eMatTsv', 'ePis', 'eCtps', 'eRole', 'eRoleTsv', 'eDept', 'eDeptTsv', 'eAddr', 'eVacAcqRef', 'eDtTerm', 'eCnpjSind', 'eAreaEstagio', 'eApolEstagio', 'eDtPrevTermEstagio', 'eCnpjInstEnsino', 'eCnpjAgntInteg', 'eCpfSupervisor', 'eCnpjOrigem', 'eDtAdmOrig', 'eDtOpcFgtsTsv'].forEach(i => {
+    const el = document.getElementById(i);
+    if (el) el.value = '';
+  });
+  document.getElementById('eStatus').value = 'ATIVO';
+  document.getElementById('eVacPending').value = 0;
+  document.getElementById('eEstCiv').value = '1';
+  document.getElementById('ePaisNac').value = '105';
+  document.getElementById('eCodCategS2200').value = '101';
+  document.getElementById('eCodCategS2300').value = '723';
+  document.getElementById('eTpAdmissao').value = '1';
+  document.getElementById('eIndAdmissao').value = '1';
+  document.getElementById('eTpRegTrab').value = '1';
+  document.getElementById('eTpRegPrev').value = '1';
+  document.getElementById('eTpContr').value = '1';
+  document.getElementById('eUndSal').value = '5';
+  document.getElementById('eUndSalTsv').value = '5';
+  document.getElementById('eCbo').value = '252105';
+  document.getElementById('eCboTsv').value = '121010';
+  document.getElementById('eAposEsp').value = '1';
+  document.getElementById('eSal').value = 3000;
+  document.getElementById('eSalTsv').value = 3000;
+  document.getElementById('eDeps').value = 0;
+  document.getElementById('eDepsSf').value = 0;
+  document.getElementById('eHrs').value = 220;
+  document.getElementById('eHrsTsv').value = 220;
+  switchEsocialEventMode('S-2200');
 }
 
 function setEmpStatusFilter(filterVal) {
@@ -4036,204 +4047,194 @@ function goToVacationFromEmp() {
   if (btn) btn.click();
 }
 
-function getEmployeeEffectiveStatus(emp) {
-  if (emp.status === 'INATIVO') return 'INATIVO';
-  const hasActiveLeave = leaves.some(lv => lv.empId === emp.id && lv.active);
-  if (hasActiveLeave || emp.status === 'AFASTADO') return 'AFASTADO';
-  return 'ATIVO';
-}
+function renderEmployees() {
+  const activeList = employees.filter(e => (e.status || 'ATIVO') === 'ATIVO');
+  const awayList = employees.filter(e => (e.status || 'ATIVO') === 'AFASTADO');
+  const inactiveList = employees.filter(e => (e.status || 'ATIVO') === 'INATIVO');
+  const nonInactive = employees.filter(e => (e.status || 'ATIVO') !== 'INATIVO');
+  const cltActiveList = nonInactive.filter(e => inferEsocialEventType(e) === 'S-2200');
+  const pendingPeriodsSum = cltActiveList.reduce((acc, e) => acc + (Number(e.vacPendingPeriods) || 0), 0);
+  const pendingEmpsCount = cltActiveList.filter(e => (Number(e.vacPendingPeriods) || 0) > 0).length;
 
-function renderEmployeesDashboard() {
-  const total = employees.length;
-  const activeList = employees.filter(e => getEmployeeEffectiveStatus(e) === 'ATIVO');
-  const inactiveList = employees.filter(e => getEmployeeEffectiveStatus(e) === 'INATIVO');
-  const awayList = employees.filter(e => getEmployeeEffectiveStatus(e) === 'AFASTADO');
-  const vacPendingList = employees.filter(e => Number(e.vacPendingPeriods || 0) > 0 && getEmployeeEffectiveStatus(e) !== 'INATIVO');
+  let cntDoenca = 0, cntFerias = 0, cntMat = 0;
+  awayList.forEach(emp => {
+    const activeLv = leaves.find(lv => lv.empId === emp.id && lv.active);
+    const cat = activeLv?.category || 'DOENCA';
+    if (cat === 'DOENCA') cntDoenca++;
+    else if (cat === 'FERIAS') cntFerias++;
+    else if (cat === 'MATERNIDADE') cntMat++;
+    else cntDoenca++;
+  });
 
-  const activeLeaves = leaves.filter(lv => lv.active);
-  const doencaCount = activeLeaves.filter(lv => lv.category === 'DOENCA').length;
-  const feriasCount = activeLeaves.filter(lv => lv.category === 'FERIAS').length;
-  const matCount = activeLeaves.filter(lv => lv.category === 'MATERNIDADE').length;
-
-  const pctActive = total > 0 ? Math.round((activeList.length / total) * 100) : 0;
-
-  if (document.getElementById('dashEmpActive')) {
-    document.getElementById('dashEmpActive').textContent = String(activeList.length);
-    document.getElementById('dashEmpActiveSub').textContent = `${pctActive}% de ${total} cadastrados`;
+  document.getElementById('topEmpCount').textContent = activeList.length;
+  const dAct = document.getElementById('dashEmpActive');
+  const dInact = document.getElementById('dashEmpInactive');
+  const dPend = document.getElementById('dashVacPending');
+  const dAway = document.getElementById('dashAwayTotal');
+  if (dAct) {
+    const s2200Count = activeList.filter(e => inferEsocialEventType(e) === 'S-2200').length;
+    const s2300Count = activeList.filter(e => inferEsocialEventType(e) === 'S-2300').length;
+    dAct.textContent = activeList.length;
+    document.getElementById('dashEmpActiveSub').textContent = `Vínculo: ${s2200Count} | TSVE: ${s2300Count}`;
   }
-  if (document.getElementById('dashEmpInactive')) {
-    document.getElementById('dashEmpInactive').textContent = String(inactiveList.length);
-    document.getElementById('dashEmpInactiveSub').textContent = 'Desligados (S-2299 / S-2399)';
+  if (dInact) {
+    dInact.textContent = inactiveList.length;
+    document.getElementById('dashEmpInactiveSub').textContent = `${inactiveList.length} desligado(s)`;
   }
-  if (document.getElementById('dashVacPending')) {
-    const totalPeriods = vacPendingList.reduce((acc, e) => acc + Number(e.vacPendingPeriods || 0), 0);
-    document.getElementById('dashVacPending').textContent = String(vacPendingList.length);
-    document.getElementById('dashVacPendingSub').textContent = `${totalPeriods} período(s) a agendar/conceder`;
+  if (dPend) {
+    dPend.textContent = `${pendingPeriodsSum} per.`;
+    document.getElementById('dashVacPendingSub').textContent = `${pendingEmpsCount} vínculo(s) S-2200 pendente(s)`;
   }
-  if (document.getElementById('dashAwayTotal')) {
-    document.getElementById('dashAwayTotal').textContent = String(awayList.length);
-    document.getElementById('dashAwayBreakdown').textContent = `Doença: ${doencaCount} | Férias: ${feriasCount} | Mat.: ${matCount}`;
+  if (dAway) {
+    dAway.textContent = awayList.length;
+    document.getElementById('dashAwayBreakdown').textContent = `Doença: ${cntDoenca} | Férias: ${cntFerias} | Mat.: ${cntMat}`;
   }
 
   const vacTb = document.querySelector('#empVacationAnalysisTable tbody');
   if (vacTb) {
-    if (!vacPendingList.length) {
-      vacTb.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:14px">Nenhum colaborador com férias pendentes nesta empresa.</td></tr>';
-    } else {
-      vacTb.innerHTML = vacPendingList.map(e => {
-        const periods = Number(e.vacPendingPeriods || 0);
-        const st = getEmployeeEffectiveStatus(e);
-        const diag = periods >= 2
-          ? '<span class="badge b-red">Risco Art. 137 CLT (Dobra)</span>'
-          : '<span class="badge b-amber">Apto para programação</span>';
-        return `
-          <tr>
-            <td><b>${esc(e.name)}</b><br><span style="font-size:11px;color:var(--text-muted)">${esc(e.role || '—')}</span></td>
-            <td><span class="badge ${st === 'AFASTADO' ? 'b-amber' : 'b-green'}">${st}</span></td>
-            <td>${esc(e.vacAcqRef || 'Período aquisitivo vigente')}</td>
-            <td><span class="badge b-amber">${periods} período(s)</span></td>
-            <td>${fmtDateBR(e.adm)}</td>
-            <td>${diag}</td>
-          </tr>`;
-      }).join('');
-    }
+    vacTb.innerHTML = cltActiveList.length ? cltActiveList.map(e => {
+      const st = e.status || 'ATIVO';
+      const pend = Number(e.vacPendingPeriods) || 0;
+      const stBadge = st === 'AFASTADO' ? '<span class="badge b-amber">AFASTADO</span>' : '<span class="badge b-green">ATIVO</span>';
+      let diagBadge = '<span class="badge b-green">Em dia</span>';
+      if (pend > 0) diagBadge = '<span class="badge b-red">Férias pendentes / programar</span>';
+      else if (st === 'AFASTADO') diagBadge = '<span class="badge b-amber">Em afastamento (S-2230)</span>';
+
+      return `
+        <tr>
+          <td><b>${esc(e.name)}</b><br><span style="font-size:11.5px;color:var(--text-muted)">${esc(e.role)}</span></td>
+          <td>${stBadge}</td>
+          <td>${esc(e.vacAcqRef || 'Período vigente')}</td>
+          <td><span class="badge ${pend > 0 ? 'b-red' : 'b-slate'}">${pend} período(s)</span></td>
+          <td>${fmtDateBR(e.adm)}</td>
+          <td>${diagBadge}</td>
+        </tr>`;
+    }).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:16px">Nenhum colaborador CLT cadastrado nesta empresa.</td></tr>';
   }
-}
 
-function renderEmployees() {
-  renderEmployeesDashboard();
-  const q = (document.getElementById('empSearch').value || '').toLowerCase();
-  const eventFilter = document.getElementById('empEventFilter')?.value || 'TODOS';
-  const statusFilter = document.getElementById('empStatusFilter')?.value || 'TODOS';
-
+  const q = (document.getElementById('empSearch')?.value || '').toLowerCase();
+  const stFilter = document.getElementById('empStatusFilter')?.value || 'TODOS';
+  const evFilter = document.getElementById('empEventFilter')?.value || 'TODOS';
   const list = employees.filter(e => {
-    const matchText =
-      (e.name || '').toLowerCase().includes(q) ||
+    const st = e.status || 'ATIVO';
+    const evType = inferEsocialEventType(e);
+    const pend = Number(e.vacPendingPeriods) || 0;
+    const matchEv = evFilter === 'TODOS' || evType === evFilter;
+    const matchSt =
+      stFilter === 'TODOS' ||
+      st === stFilter ||
+      (stFilter === 'PENDENTE' && st !== 'INATIVO' && evType === 'S-2200' && pend > 0);
+    const matchQ =
+      e.name.toLowerCase().includes(q) ||
       (e.cpf || '').toLowerCase().includes(q) ||
       (e.mat || '').toLowerCase().includes(q) ||
       (e.role || '').toLowerCase().includes(q);
-    if (!matchText) return false;
-
-    const evType = inferEsocialEventType(e);
-    if (eventFilter !== 'TODOS' && evType !== eventFilter) return false;
-
-    const effStatus = getEmployeeEffectiveStatus(e);
-    const vacPend = Number(e.vacPendingPeriods || 0) > 0 && effStatus !== 'INATIVO';
-    if (statusFilter === 'ATIVO') return effStatus === 'ATIVO';
-    if (statusFilter === 'AFASTADO') return effStatus === 'AFASTADO';
-    if (statusFilter === 'INATIVO') return effStatus === 'INATIVO';
-    if (statusFilter === 'PENDENTE') return vacPend;
-    return true;
+    return matchEv && matchSt && matchQ;
   });
 
-  const tb = document.querySelector('#empTable tbody');
-  tb.innerHTML = list.map(e => {
-    const evType = inferEsocialEventType(e);
-    const effStatus = getEmployeeEffectiveStatus(e);
-    const vacPend = Number(e.vacPendingPeriods || 0);
-    const statusBadge = effStatus === 'INATIVO'
-      ? '<span class="badge b-red">INATIVO</span>'
-      : (effStatus === 'AFASTADO'
-        ? '<span class="badge b-amber">AFASTADO</span>'
-        : '<span class="badge b-green">ATIVO</span>');
-    const evBadge = evType === 'S-2300'
-      ? '<span class="badge b-amber">S-2300 (TSVE)</span>'
-      : '<span class="badge b-indigo">S-2200 (Vínculo)</span>';
-    const vacBadge = vacPend > 0
-      ? `<span class="badge b-amber">${vacPend} per.</span>`
-      : '<span class="badge b-slate">0</span>';
+  const lbl = document.getElementById('empCountLabel');
+  if (lbl) lbl.textContent = `Exibindo ${list.length} de ${employees.length} colaboradores (${company.name})`;
 
+  document.querySelector('#empTable tbody').innerHTML = list.length ? list.map(e => {
+    const st = e.status || 'ATIVO';
+    const evType = inferEsocialEventType(e);
+    const evBadge = evType === 'S-2300'
+      ? '<span class="badge b-amber">Sem Vínculo (S-2300)</span>'
+      : '<span class="badge b-indigo">Com Vínculo (S-2200)</span>';
+    const stBadge = st === 'ATIVO'
+      ? '<span class="badge b-green">ATIVO</span>'
+      : (st === 'AFASTADO' ? '<span class="badge b-amber">AFASTADO</span>' : '<span class="badge b-red">INATIVO</span>');
+    const pend = Number(e.vacPendingPeriods) || 0;
+    const vacCell = evType === 'S-2300'
+      ? '<span class="badge b-slate">N/A (TSVE)</span>'
+      : (pend > 0 ? `<span class="badge b-red">${pend} pend.</span>` : '<span class="badge b-slate">0 pend.</span>');
     return `
       <tr>
-        <td><b>${esc(e.mat || '—')}</b></td>
-        <td><b>${esc(e.name)}</b><br><span style="font-size:11px;color:var(--text-muted)">Adm/Início: ${fmtDateBR(e.adm)}</span></td>
+        <td><b>${esc(e.mat || 'Sem mat.')}</b></td>
+        <td><b>${esc(e.name)}</b></td>
         <td>${evBadge}</td>
-        <td>${statusBadge}</td>
+        <td>${stBadge}</td>
         <td>${esc(e.cpf)}</td>
-        <td><span class="badge b-slate">Categ. ${esc(e.codCateg || (evType === 'S-2300' ? '723' : '101'))}</span></td>
-        <td>${esc(e.role)}<br><span style="font-size:11px;color:var(--text-muted)">CBO ${esc(e.cbo || '')}</span></td>
-        <td>${vacBadge}</td>
-        <td><b>${money(e.salary)}</b></td>
+        <td><span class="badge b-slate">${esc(e.codCateg || '101')}</span></td>
+        <td>${esc(e.role)} (${esc(e.cbo || '—')})</td>
+        <td>${vacCell}</td>
+        <td>${money(e.salary)}</td>
         <td>
           <div class="actions-cell">
-            <button type="button" class="btn btn-ghost btn-sm" onclick="openEmployeeForm('${e.id}')" title="Editar">✏️</button>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="openLeaveHistoryView('${e.id}')" title="Afastamentos S-2230">🏥</button>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="openLeaveHistoryView('${e.id}')" title="Histórico de Afastamento">📋</button>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="editEmployee('${e.id}')" title="Editar">✏️</button>
             <button type="button" class="btn btn-danger-soft btn-sm" onclick="deleteEmployee('${e.id}')" title="Excluir">🗑️</button>
           </div>
         </td>
       </tr>`;
-  }).join('');
-
-  const countLbl = document.getElementById('empCountLabel');
-  if (countLbl) countLbl.textContent = `Exibindo ${list.length} de ${employees.length} colaborador(es) da empresa`;
-
-  const activeCount = employees.filter(e => getEmployeeEffectiveStatus(e) !== 'INATIVO').length;
-  document.getElementById('topEmpCount').textContent = activeCount;
+  }).join('') : '<tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:20px">Nenhum colaborador cadastrado nesta empresa.</td></tr>';
 }
 
-// 8B. EMPRESAS VINCULADAS AO ESCRITÓRIO (eSocial S-1000)
+// 8. GERENCIADOR DE EMPRESAS VINCULADAS AO ESCRITÓRIO
 function renderCompanyList() {
+  const office = getCurrentOffice();
   const allowedComps = getOfficeCompanies();
   const q = (document.getElementById('compSearch')?.value || '').toLowerCase();
-  const list = allowedComps.filter(c =>
-    (c.name || '').toLowerCase().includes(q) ||
-    (c.cnpj || '').toLowerCase().includes(q) ||
-    (c.city || '').toLowerCase().includes(q)
+  const filtered = allowedComps.filter(c =>
+    c.name.toLowerCase().includes(q) || (c.cnpj || '').toLowerCase().includes(q)
   );
 
-  const countEl = document.getElementById('compCountLabel');
-  if (countEl) countEl.textContent = `${list.length} de ${allowedComps.length} empresa(s) vinculada(s)`;
+  const sub = document.getElementById('companyPageSub');
+  if (sub && office) {
+    sub.textContent = `Escritório Logado: ${office.name} — Exibindo exclusivamente as empresas vinculadas a este escritório.`;
+  }
+
+  const lbl = document.getElementById('compCountLabel');
+  if (lbl) lbl.textContent = `${filtered.length} empresa(s) vinculada(s) ao escritório`;
 
   const tb = document.querySelector('#companiesTable tbody');
   if (!tb) return;
 
-  if (!list.length) {
-    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px">Nenhuma empresa vinculada a este escritório. Clique em "Cadastrar Empresa no Escritório".</td></tr>';
-    return;
-  }
-
-  tb.innerHTML = list.map(c => {
+  tb.innerHTML = filtered.length ? filtered.map(c => {
+    const isSelected = c.id === company.id;
     const off = offices.find(o => o.id === c.officeId);
-    const isActive = c.id === company.id;
     return `
       <tr>
-        <td>${isActive ? '<span class="badge b-green">ATIVA</span>' : '<span class="badge b-slate">VINCULADA</span>'}</td>
-        <td><b>${esc(c.name)}</b><br><span style="font-size:11px;color:var(--text-muted)">CNAE ${esc(c.cnae || '—')} • FPAS ${esc(c.fpas || '—')}</span></td>
+        <td>${isSelected ? '<span class="badge b-green">Em Uso</span>' : '<span class="badge b-slate">Vinculada</span>'}</td>
+        <td><b>${esc(c.name)}</b></td>
         <td>${esc(c.cnpj)}</td>
         <td><span class="badge b-indigo">${esc(off ? off.name : '—')}</span></td>
         <td>Cód. ${esc(c.classTrib || '03')}</td>
         <td>${esc(c.city || '—')}/${esc(c.state || '—')}</td>
         <td>
           <div class="actions-cell">
-            ${!isActive ? `<button type="button" class="btn btn-primary btn-sm" onclick="switchActiveCompany('${c.id}')">Selecionar</button>` : ''}
+            ${!isSelected ? `<button type="button" class="btn btn-primary btn-sm" onclick="switchActiveCompany('${c.id}')">Selecionar</button>` : ''}
             <button type="button" class="btn btn-ghost btn-sm" onclick="openCompanyForm('${c.id}')" title="Editar">✏️</button>
             <button type="button" class="btn btn-danger-soft btn-sm" onclick="deleteCompany('${c.id}')" title="Excluir">🗑️</button>
           </div>
         </td>
       </tr>`;
-  }).join('');
+  }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px">Nenhuma empresa vinculada a este escritório ainda. Clique em "Cadastrar Empresa no Escritório".</td></tr>';
 }
 
-function openCompanyForm(compId = null) {
+function openCompanyForm(id = null) {
   document.getElementById('companyListBox').style.display = 'none';
   document.getElementById('companyTopActions').style.display = 'none';
   document.getElementById('companyFormBox').style.display = 'block';
 
   const offSel = document.getElementById('cOfficeId');
-  const currentOffice = getCurrentOffice();
-  offSel.innerHTML = currentOffice
-    ? `<option value="${currentOffice.id}" selected>${esc(currentOffice.name)} (${esc(currentOffice.cnpj)})</option>`
-    : offices.map(o => `<option value="${o.id}">${esc(o.name)}</option>`).join('');
+  const currentOffId = getCurrentOfficeId();
+  if (offSel) {
+    offSel.innerHTML = offices
+      .filter(o => o.id === currentOffId)
+      .map(o => `<option value="${o.id}">${esc(o.name)} (${esc(o.cnpj)})</option>`)
+      .join('');
+    offSel.value = currentOffId;
+  }
 
-  if (compId) {
-    const c = companies.find(x => x.id === compId);
+  if (id) {
+    const c = getOfficeCompanies().find(x => x.id === id);
     if (!c) return;
-    editCompanyId = compId;
-    document.getElementById('companyFormTitle').textContent = `Editar Empresa Vinculada (${c.name})`;
-    offSel.value = c.officeId || getCurrentOfficeId();
+    editCompanyId = id;
+    document.getElementById('companyFormTitle').textContent = `Editar Empresa — ${c.name}`;
     document.getElementById('cTpInsc').value = c.tpInsc || '1';
-    document.getElementById('cCnpj').value = c.cnpj || '';
-    document.getElementById('cName').value = c.name || '';
+    document.getElementById('cName').value = c.name;
+    document.getElementById('cCnpj').value = c.cnpj;
     document.getElementById('cClassTrib').value = c.classTrib || '03';
     document.getElementById('cCnae').value = c.cnae || '';
     document.getElementById('cFpas').value = c.fpas || '515';
@@ -4249,24 +4250,19 @@ function openCompanyForm(compId = null) {
     document.getElementById('cZip').value = c.zip || '';
   } else {
     editCompanyId = null;
-    document.getElementById('companyFormTitle').textContent = 'Cadastrar Nova Empresa no Escritório';
-    offSel.value = getCurrentOfficeId();
+    document.getElementById('companyFormTitle').textContent = 'Nova Empresa Vinculada ao Escritório';
+    ['cName', 'cCnpj', 'cCnae', 'cEnteFed', 'cAddr', 'cCity', 'cState', 'cZip'].forEach(fid => {
+      const el = document.getElementById(fid);
+      if (el) el.value = '';
+    });
     document.getElementById('cTpInsc').value = '1';
-    document.getElementById('cCnpj').value = '';
-    document.getElementById('cName').value = '';
     document.getElementById('cClassTrib').value = '03';
-    document.getElementById('cCnae').value = '';
     document.getElementById('cFpas').value = '515';
     document.getElementById('cTerceiros').value = '0079';
     document.getElementById('cRat').value = 2.0;
     document.getElementById('cFap').value = 1.0;
     document.getElementById('cIndDeson').value = '0';
     document.getElementById('cIndEscr').value = '1';
-    document.getElementById('cEnteFed').value = '';
-    document.getElementById('cAddr').value = '';
-    document.getElementById('cCity').value = '';
-    document.getElementById('cState').value = '';
-    document.getElementById('cZip').value = '';
   }
 }
 
@@ -4278,24 +4274,25 @@ function closeCompanyForm() {
 }
 
 function saveCompany() {
-  const officeId = document.getElementById('cOfficeId').value || getCurrentOfficeId();
+  const officeId = getCurrentOfficeId();
   const name = document.getElementById('cName').value.trim().toUpperCase();
   const cnpj = document.getElementById('cCnpj').value.trim();
-  if (!name || !cnpj) { alert('Informe a Razão Social/Nome e o Nº de Inscrição (CNPJ/CPF).'); return; }
+  if (!name || !cnpj) { alert('Preencha a Razão Social e o CNPJ/CPF da empresa.'); return; }
 
   const payload = {
+    id: editCompanyId || 'comp_' + Date.now(),
     officeId,
-    tpInsc: document.getElementById('cTpInsc').value,
+    tpInsc: document.getElementById('cTpInsc').value || '1',
     name,
     cnpj,
-    classTrib: document.getElementById('cClassTrib').value,
+    classTrib: document.getElementById('cClassTrib').value || '03',
     cnae: document.getElementById('cCnae').value.trim(),
-    fpas: document.getElementById('cFpas').value.trim(),
-    terceiros: document.getElementById('cTerceiros').value.trim(),
+    fpas: document.getElementById('cFpas').value.trim() || '515',
+    terceiros: document.getElementById('cTerceiros').value.trim() || '0079',
     rat: Number(document.getElementById('cRat').value) || 2.0,
     fap: Number(document.getElementById('cFap').value) || 1.0,
-    indDeson: document.getElementById('cIndDeson').value,
-    indEscr: document.getElementById('cIndEscr').value,
+    indDeson: document.getElementById('cIndDeson').value || '0',
+    indEscr: document.getElementById('cIndEscr').value || '1',
     enteFed: document.getElementById('cEnteFed').value.trim(),
     addr: document.getElementById('cAddr').value.trim(),
     city: document.getElementById('cCity').value.trim(),
@@ -4304,345 +4301,348 @@ function saveCompany() {
   };
 
   if (editCompanyId) {
-    companies = companies.map(c => c.id === editCompanyId ? { ...c, ...payload } : c);
-    if (activeCompanyId === editCompanyId) activeCompanyId = editCompanyId;
+    companies = companies.map(c => c.id === editCompanyId ? payload : c);
   } else {
-    const newId = 'comp_' + Date.now();
-    companies.push({ id: newId, ...payload });
-    activeCompanyId = newId;
+    companies.push(payload);
+    activeCompanyId = payload.id;
     localStorage.setItem('erp_dp_active_company', activeCompanyId);
   }
 
-  syncTenantContext();
-  saveAll();
   closeCompanyForm();
+  syncTenantContext();
   boot();
-  alert('Empresa vinculada ao escritório salva com sucesso!');
+  saveAll();
+  alert('Empresa salva e vinculada ao escritório!');
 }
 
-function deleteCompany(compId) {
+function deleteCompany(id) {
   const allowedComps = getOfficeCompanies();
   if (allowedComps.length <= 1) {
-    alert('O escritório deve manter pelo menos 1 empresa vinculada.');
+    alert('Mantenha pelo menos 1 empresa vinculada ao escritório.');
     return;
   }
-  if (!confirm('Remover esta empresa do escritório?')) return;
-  companies = companies.filter(c => c.id !== compId);
-  if (activeCompanyId === compId) activeCompanyId = '';
+  if (!confirm('Excluir esta empresa e todos os colaboradores/recibos vinculados a ela?')) return;
+  companies = companies.filter(c => c.id !== id);
+  allEmployees = allEmployees.filter(e => e.companyId !== id);
+  allSavedReceipts = allSavedReceipts.filter(r => r.companyId !== id);
+  allLeaves = allLeaves.filter(lv => lv.companyId !== id);
   syncTenantContext();
-  saveAll();
   boot();
+  saveAll();
 }
 
-// 9. TABELAS LEGAIS
-function renderBands() {
-  ['inss', 'ir'].forEach(k => {
-    const tb = document.querySelector(`#${k}Table tbody`);
-    tb.innerHTML = tables[k].map((b, i) => `
-      <tr>
-        <td><input type="number" step=".01" value="${b.limit}" onchange="tables['${k}'][${i}].limit=+this.value"></td>
-        <td><input type="number" step=".01" value="${b.value}" onchange="tables['${k}'][${i}].value=+this.value"></td>
-        <td><input type="number" step=".01" value="${b.ded}" onchange="tables['${k}'][${i}].ded=+this.value"></td>
-        <td><button class="btn btn-danger-soft btn-sm" onclick="tables['${k}'].splice(${i},1);renderBands()">✕</button></td>
-      </tr>`).join('');
-  });
+function renderTables() {
+  document.querySelector('#inssTable tbody').innerHTML = tables.inss.map((b, i) => `
+    <tr>
+      <td><input type="number" step=".01" value="${b.limit}" class="ib" data-i="${i}" data-k="limit"></td>
+      <td><input type="number" step=".01" value="${b.value}" class="ib" data-i="${i}" data-k="value"></td>
+      <td><input type="number" step=".01" value="${b.ded}" class="ib" data-i="${i}" data-k="ded"></td>
+      <td><button class="btn btn-danger-soft btn-sm" onclick="tables.inss.splice(${i},1);renderTables()">✕</button></td>
+    </tr>`).join('');
+
+  document.querySelector('#irTable tbody').innerHTML = tables.ir.map((b, i) => `
+    <tr>
+      <td><input type="number" step=".01" value="${b.limit}" class="rb" data-i="${i}" data-k="limit"></td>
+      <td><input type="number" step=".01" value="${b.value}" class="rb" data-i="${i}" data-k="value"></td>
+      <td><input type="number" step=".01" value="${b.ded}" class="rb" data-i="${i}" data-k="ded"></td>
+      <td><button class="btn btn-danger-soft btn-sm" onclick="tables.ir.splice(${i},1);renderTables()">✕</button></td>
+    </tr>`).join('');
+
+  document.getElementById('tInssCeil').value = tables.inssCeiling;
+  document.getElementById('tFgtsRate').value = tables.fgtsRate;
+  document.getElementById('tDepDed').value = tables.depDeduction;
+  document.getElementById('tSimpDed').value = tables.simplified;
 }
 
-function addBand(k) { tables[k].push({ limit: 999999, value: 0, ded: 0 }); renderBands(); }
+function addBand(t) { tables[t].push({ limit: 0, value: 0, ded: 0 }); renderTables(); }
 
 function saveTables() {
-  tables.inssCeiling = Number(document.getElementById('tInssCeil').value) || 8157.41;
-  tables.fgtsRate = Number(document.getElementById('tFgtsRate').value) || 8;
-  tables.depDeduction = Number(document.getElementById('tDepDed').value) || 189.59;
-  tables.simplified = Number(document.getElementById('tSimpDed').value) || 607.20;
+  document.querySelectorAll('.ib').forEach(el => { if (tables.inss[el.dataset.i]) tables.inss[el.dataset.i][el.dataset.k] = Number(el.value); });
+  document.querySelectorAll('.rb').forEach(el => { if (tables.ir[el.dataset.i]) tables.ir[el.dataset.i][el.dataset.k] = Number(el.value); });
+  tables.inssCeiling = Number(document.getElementById('tInssCeil').value) || 0;
+  tables.fgtsRate = Number(document.getElementById('tFgtsRate').value) || 0;
+  tables.depDeduction = Number(document.getElementById('tDepDed').value) || 0;
+  tables.simplified = Number(document.getElementById('tSimpDed').value) || 0;
   saveAll();
   recalculateTaxesAuto();
   alert('Tabelas legais salvas!');
 }
 
-// EXPORTAÇÃO / BACKUP
 function exportAllCSV() {
-  const rows = [['Documento', 'Competencia', 'Colaborador', 'Bruto', 'INSS', 'IRRF', 'Outros_Desc', 'Liquido']];
-  savedReceipts.forEach(r => rows.push([r.kind, r.comp, r.empName, r.gross, r.inss, r.irrf, r.otherDesc, r.net]));
-  downloadFile(rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(';')).join('\n'), `recibos_${company.id || 'empresa'}.csv`, 'text/csv');
+  if (!savedReceipts.length) { alert('Nenhum recibo salvo para esta empresa.'); return; }
+  const rows = [['Empresa', 'Documento', 'Competencia', 'Colaborador', 'CPF', 'Bruto', 'INSS', 'IRRF', 'Outros_Desc', 'Liquido'].join(';')];
+  savedReceipts.forEach(r => rows.push([`"${company.name}"`, r.kind, r.comp, `"${r.empName}"`, r.empCpf, Number(r.gross).toFixed(2), Number(r.inss).toFixed(2), Number(r.irrf).toFixed(2), Number(r.otherDesc).toFixed(2), Number(r.net).toFixed(2)].join(';')));
+  downloadBlob('﻿' + rows.join('
+'), 'relatorio_dp_empresa.csv', 'text/csv;charset=utf-8;');
 }
 
 function exportRubricsCSV() {
-  const rows = [['Codigo', 'Descricao', 'Tipo', 'Modo', 'Valor', 'INSS', 'IRRF', 'FGTS', 'Situacao']];
-  rubrics.forEach(r => rows.push([r.code, r.name, r.type, r.mode, r.val, r.inss, r.irrf, r.fgts, r.status]));
-  downloadFile(rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(';')).join('\n'), 'rubricas_rh.csv', 'text/csv');
+  const rows = [['Codigo', 'Descricao', 'Criacao', 'Tipo', 'Situacao'].join(';')];
+  rubrics.forEach(r => rows.push([r.code, `"${r.name}"`, r.created, r.type, r.status].join(';')));
+  downloadBlob('﻿' + rows.join('
+'), 'rh_rubricas.csv', 'text/csv;charset=utf-8;');
 }
 
 function exportBackup() {
-  downloadFile(JSON.stringify(getCloudSnapshot(), null, 2), `backup_folha_${new Date().toISOString().slice(0, 10)}.json`, 'application/json');
+  downloadBlob(JSON.stringify(getCloudSnapshot(), null, 2), 'backup_pulsedp.json', 'application/json');
 }
 
 function importBackup(ev) {
-  const f = ev.target.files[0];
+  const f = ev.target.files?.[0];
   if (!f) return;
   const rd = new FileReader();
-  rd.onload = () => {
+  rd.onload = async e => {
     try {
-      const d = JSON.parse(rd.result);
-      applyCloudSnapshot(d);
-      saveAll({ notifyCloud: true });
+      const parsed = JSON.parse(e.target.result);
+      const snapshot = parsed && typeof parsed === 'object' && parsed.data ? parsed.data : parsed;
+      if (!snapshot || typeof snapshot !== 'object') throw new Error('Estrutura JSON inválida');
+      applyCloudSnapshot(snapshot);
       boot();
-      alert('Backup restaurado!');
-    } catch { alert('Arquivo inválido.'); }
+      await saveAll({ syncCloud: true, notifyCloud: false });
+      alert('Backup JSON restaurado e sincronizado!');
+    } catch {
+      alert('Arquivo JSON inválido ou corrompido.');
+    } finally {
+      ev.target.value = '';
+    }
   };
   rd.readAsText(f);
 }
 
-function downloadFile(content, filename, mime) {
+function downloadBlob(content, filename, type) {
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([content], { type: mime }));
+  a.href = URL.createObjectURL(new Blob([content], { type }));
   a.download = filename;
   a.click();
 }
 
-// TEMA CLARO / ESCURO & PERSONALIZAÇÃO DE CORES
-const THEME_STORAGE_KEY = 'pulsedp_theme_prefs_v1';
-const defaultThemePrefs = {
+function populateSelects() {
+  const empSelects = ['pEmployee', 'vEmployee', 'tEmployee', 'rEmployee'];
+  const activeEmps = employees.filter(e => (e.status || 'ATIVO') !== 'INATIVO');
+  const poolEmps = activeEmps.length ? activeEmps : employees;
+  const opts = poolEmps.length
+    ? poolEmps.map(e => `<option value="${e.id}">${esc(e.name)} — ${esc(e.role)} (${esc(e.status || 'ATIVO')})</option>`).join('')
+    : '<option value="">Nenhum colaborador nesta empresa</option>';
+  empSelects.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const prev = el.value;
+    el.innerHTML = opts;
+    if (prev && poolEmps.some(x => x.id === prev)) el.value = prev;
+  });
+
+  const activeRubrics = rubrics.filter(r => r.status === 'ATIVA');
+  document.getElementById('pAddRubricSelect').innerHTML = activeRubrics.map(r => `<option value="${r.code}">${esc(r.code)} - ${esc(r.name)} (${r.type})</option>`).join('');
+}
+
+document.querySelectorAll('aside button[data-panel]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('aside button[data-panel]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const target = btn.dataset.panel;
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === target));
+    document.getElementById('headerSectionTitle').textContent = btn.textContent.trim();
+    if (target === 'employees') closeEmployeeForm();
+    if (target === 'company') closeCompanyForm();
+    if (target === 'offices') renderOfficesAndUsers();
+  });
+});
+
+function boot() {
+  syncTenantContext();
+  renderOfficesAndUsers();
+  renderCompanyList();
+  renderEmployees();
+  renderLeaveHistory();
+  renderRubrics();
+  renderTables();
+  populateSelects();
+  loadOrInitPayroll();
+  fillVacationEmp();
+  fill13thEmp();
+  fillTermEmp();
+  renderHistory();
+}
+
+// =========================================================================
+// AUTENTICAÇÃO VINCULADA AO ESCRITÓRIO
+// =========================================================================
+const AUTH_SESSION_KEY = 'pulsedp_auth_session_v2';
+
+function checkLoginState() {
+  const screen = document.getElementById('loginScreen');
+  if (!screen) return;
+  try {
+    const raw = sessionStorage.getItem(AUTH_SESSION_KEY) || localStorage.getItem(AUTH_SESSION_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.loggedIn && parsed.user && parsed.officeId) {
+        currentSession = parsed;
+        syncTenantContext();
+        boot();
+        screen.classList.add('hidden');
+        return;
+      }
+    }
+  } catch {}
+  currentSession = null;
+  screen.classList.remove('hidden');
+}
+
+function handleLogin(event) {
+  event.preventDefault();
+  const u = (document.getElementById('loginUser')?.value || '').trim().toLowerCase();
+  const p = (document.getElementById('loginPass')?.value || '').trim();
+  const errEl = document.getElementById('loginError');
+
+  const found = accessUsers.find(acc => acc.user.toLowerCase() === u && acc.pass === p);
+  const linkedOffice = found ? offices.find(o => o.id === found.officeId) : null;
+
+  if (!found || !linkedOffice) {
+    if (errEl) {
+      errEl.textContent = !found
+        ? 'Usuário ou senha inválidos. Verifique suas credenciais.'
+        : 'Este usuário não possui um escritório válido vinculado.';
+      errEl.classList.add('show');
+    }
+    return;
+  }
+
+  if (errEl) errEl.classList.remove('show');
+  const sessionData = {
+    loggedIn: true,
+    user: found.user,
+    fullName: found.fullName || found.user,
+    role: found.role || 'Analista',
+    officeId: linkedOffice.id,
+    at: Date.now()
+  };
+  currentSession = sessionData;
+  try {
+    sessionStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(sessionData));
+    localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(sessionData));
+  } catch {}
+
+  activeCompanyId = '';
+  syncTenantContext();
+  boot();
+  document.getElementById('loginScreen')?.classList.add('hidden');
+  pullFromVercel(false);
+}
+
+function logoutSystem() {
+  currentSession = null;
+  try {
+    sessionStorage.removeItem(AUTH_SESSION_KEY);
+    localStorage.removeItem(AUTH_SESSION_KEY);
+  } catch {}
+  const uInput = document.getElementById('loginUser');
+  const pInput = document.getElementById('loginPass');
+  if (uInput) uInput.value = '';
+  if (pInput) pInput.value = '';
+  document.getElementById('loginError')?.classList.remove('show');
+  document.getElementById('loginScreen')?.classList.remove('hidden');
+}
+
+// =========================================================================
+// PERSONALIZADOR DE TEMA CLARO / ESCURO & CORES DO SISTEMA
+// =========================================================================
+const THEME_STORAGE_KEY = 'pulsedp_theme_config_v1';
+
+const defaultThemeConfig = {
   mode: 'light',
   primary: '#4f46e5',
   sidebar: '#0f172a',
   success: '#10b981',
   bg: '#f8fafc'
 };
-let themePrefs = Object.assign({}, defaultThemePrefs, safeParse(THEME_STORAGE_KEY, defaultThemePrefs));
+
+function darkenHex(hex, amt = 16) {
+  const clean = (hex || '').replace('#', '');
+  if (clean.length !== 6) return hex;
+  const num = parseInt(clean, 16);
+  const r = Math.max(0, Math.min(255, ((num >> 16) & 255) - amt));
+  const g = Math.max(0, Math.min(255, ((num >> 8) & 255) - amt));
+  const b = Math.max(0, Math.min(255, (num & 255) - amt));
+  return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+}
 
 function hexToRgba(hex, alpha) {
-  const clean = String(hex || '').replace('#', '');
+  const clean = (hex || '').replace('#', '');
   if (clean.length !== 6) return `rgba(79,70,229,${alpha})`;
-  const r = parseInt(clean.slice(0, 2), 16);
-  const g = parseInt(clean.slice(2, 4), 16);
-  const b = parseInt(clean.slice(4, 6), 16);
+  const num = parseInt(clean, 16);
+  const r = (num >> 16) & 255;
+  const g = (num >> 8) & 255;
+  const b = num & 255;
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-function applyThemePrefs() {
-  const isDark = themePrefs.mode === 'dark';
-  if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
-  else document.documentElement.removeAttribute('data-theme');
+let themeConfig = Object.assign({}, defaultThemeConfig, safeParse(THEME_STORAGE_KEY, defaultThemeConfig));
 
+function applyThemeConfig() {
   const root = document.documentElement;
-  root.style.setProperty('--primary', themePrefs.primary);
-  root.style.setProperty('--primary-hover', themePrefs.primary);
-  root.style.setProperty('--primary-soft', hexToRgba(themePrefs.primary, isDark ? 0.22 : 0.11));
-  root.style.setProperty('--primary-border', hexToRgba(themePrefs.primary, isDark ? 0.45 : 0.32));
-  root.style.setProperty('--sidebar', isDark ? '#070b14' : themePrefs.sidebar);
-  root.style.setProperty('--success', themePrefs.success);
-  if (!isDark && themePrefs.bg) root.style.setProperty('--bg', themePrefs.bg);
-  else if (isDark) root.style.setProperty('--bg', '#0b1120');
+  if (themeConfig.mode === 'dark') root.setAttribute('data-theme', 'dark');
+  else root.removeAttribute('data-theme');
 
-  const toggleBtn = document.getElementById('btnThemeToggle');
-  if (toggleBtn) toggleBtn.textContent = isDark ? '☀️ Claro' : '🌙 Escuro';
-  const bLight = document.getElementById('btnModeLight');
-  const bDark = document.getElementById('btnModeDark');
-  if (bLight && bDark) {
-    bLight.className = !isDark ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm';
-    bDark.className = isDark ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm';
-  }
+  root.style.setProperty('--primary', themeConfig.primary);
+  root.style.setProperty('--primary-hover', darkenHex(themeConfig.primary, 18));
+  root.style.setProperty('--primary-soft', hexToRgba(themeConfig.primary, themeConfig.mode === 'dark' ? 0.20 : 0.10));
+  root.style.setProperty('--primary-border', hexToRgba(themeConfig.primary, 0.35));
+  root.style.setProperty('--sidebar', themeConfig.sidebar);
+  root.style.setProperty('--sidebar-hover', darkenHex(themeConfig.sidebar, -14));
+  root.style.setProperty('--success', themeConfig.success);
+  if (themeConfig.bg && themeConfig.bg !== defaultThemeConfig.bg) root.style.setProperty('--bg', themeConfig.bg);
+  else root.style.removeProperty('--bg');
+
   const p1 = document.getElementById('pickPrimary');
   const p2 = document.getElementById('pickSidebar');
   const p3 = document.getElementById('pickSuccess');
   const p4 = document.getElementById('pickBg');
-  if (p1) p1.value = themePrefs.primary;
-  if (p2) p2.value = themePrefs.sidebar;
-  if (p3) p3.value = themePrefs.success;
-  if (p4) p4.value = themePrefs.bg;
+  if (p1) p1.value = themeConfig.primary;
+  if (p2) p2.value = themeConfig.sidebar;
+  if (p3) p3.value = themeConfig.success;
+  if (p4) p4.value = themeConfig.bg || (themeConfig.mode === 'dark' ? '#0b1120' : '#f8fafc');
+
+  const btnLight = document.getElementById('btnModeLight');
+  const btnDark = document.getElementById('btnModeDark');
+  if (btnLight && btnDark) {
+    btnLight.className = themeConfig.mode === 'light' ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm';
+    btnDark.className = themeConfig.mode === 'dark' ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm';
+  }
+
+  const btnToggle = document.getElementById('btnThemeToggle');
+  if (btnToggle) btnToggle.textContent = themeConfig.mode === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+
+  try { localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(themeConfig)); } catch {}
 }
 
-function saveThemePrefs() {
-  localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(themePrefs));
-  applyThemePrefs();
+function toggleThemeMode() { setThemeMode(themeConfig.mode === 'dark' ? 'light' : 'dark'); }
+function toggleThemePanel() { document.getElementById('themePopover')?.classList.toggle('open'); }
+function setThemeMode(mode) {
+  themeConfig.mode = mode === 'dark' ? 'dark' : 'light';
+  if (mode === 'dark' && themeConfig.bg === '#f8fafc') themeConfig.bg = '#0b1120';
+  else if (mode === 'light' && themeConfig.bg === '#0b1120') themeConfig.bg = '#f8fafc';
+  applyThemeConfig();
 }
-
-function setThemeMode(mode) { themePrefs.mode = mode === 'dark' ? 'dark' : 'light'; saveThemePrefs(); }
-function toggleThemeMode() { setThemeMode(themePrefs.mode === 'dark' ? 'light' : 'dark'); }
-function toggleThemePanel() { const pop = document.getElementById('themePopover'); if (pop) pop.classList.toggle('open'); }
 function applyColorPreset(primary, sidebar, success) {
-  themePrefs.primary = primary;
-  themePrefs.sidebar = sidebar;
-  themePrefs.success = success;
-  saveThemePrefs();
+  themeConfig.primary = primary;
+  themeConfig.sidebar = sidebar;
+  themeConfig.success = success;
+  applyThemeConfig();
 }
-function updateCustomColor(key, val) { themePrefs[key] = val; saveThemePrefs(); }
-function resetThemeCustomization() { themePrefs = structuredClone(defaultThemePrefs); saveThemePrefs(); }
-
-// CONTROLE DE ACESSO VINCULADO AO ESCRITÓRIO
-const AUTH_SESSION_KEY = 'pulsedp_auth_session_v1';
-
-function getStoredSession() {
-  try {
-    const raw = sessionStorage.getItem(AUTH_SESSION_KEY) || localStorage.getItem(AUTH_SESSION_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
+function updateCustomColor(key, value) {
+  themeConfig[key] = value;
+  applyThemeConfig();
+}
+function resetThemeCustomization() {
+  themeConfig = Object.assign({}, defaultThemeConfig);
+  applyThemeConfig();
 }
 
-function setStoredSession(sess) {
-  try {
-    if (sess) {
-      sessionStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(sess));
-      localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(sess));
-    } else {
-      sessionStorage.removeItem(AUTH_SESSION_KEY);
-      localStorage.removeItem(AUTH_SESSION_KEY);
-    }
-  } catch {}
-}
-
-function ensureSingleActivePanel(panelId) {
-  const targetId = panelId || document.querySelector('aside button.active')?.dataset.panel || 'payroll';
-  document.querySelectorAll('.panel').forEach(p => {
-    if (p.id === targetId) p.classList.add('active');
-    else p.classList.remove('active');
-  });
-}
-
-function showLoginScreen(prefillUser = '') {
-  document.body.classList.add('auth-locked');
-  const screen = document.getElementById('loginScreen');
-  const err = document.getElementById('loginError');
-  const uInput = document.getElementById('loginUser');
-  const pInput = document.getElementById('loginPass');
-  if (err) err.classList.remove('show');
-  if (uInput) uInput.value = prefillUser || '';
-  if (pInput) pInput.value = '';
-  if (screen) screen.classList.remove('hidden');
-  setTimeout(() => { if (uInput) uInput.focus(); }, 50);
-}
-
-function hideLoginScreen() {
-  document.body.classList.remove('auth-locked');
-  const screen = document.getElementById('loginScreen');
-  if (screen) screen.classList.add('hidden');
-  ensureSingleActivePanel();
-}
-
-function handleLogin(ev) {
-  if (ev) ev.preventDefault();
-  const uInput = document.getElementById('loginUser');
-  const pInput = document.getElementById('loginPass');
-  const err = document.getElementById('loginError');
-  const userVal = (uInput?.value || '').trim().toLowerCase();
-  const passVal = (pInput?.value || '').trim();
-
-  const matched = accessUsers.find(u =>
-    String(u.user || '').toLowerCase() === userVal &&
-    String(u.pass || '') === passVal &&
-    offices.some(o => o.id === u.officeId)
-  );
-
-  if (matched) {
-    currentSession = {
-      user: matched.user,
-      fullName: matched.fullName || matched.user,
-      role: matched.role || 'Administrador Escritório',
-      officeId: matched.officeId,
-      loginAt: Date.now()
-    };
-    setStoredSession(currentSession);
-    if (err) err.classList.remove('show');
-    syncTenantContext();
-    hideLoginScreen();
-    boot();
-    pullFromVercel(false, false);
-  } else {
-    if (err) {
-      err.textContent = 'Usuário, senha ou vínculo de escritório inválidos.';
-      err.classList.add('show');
-    }
-    if (pInput) { pInput.value = ''; pInput.focus(); }
-  }
-}
-
-function logoutSystem() {
-  const prevUser = currentSession?.user || '';
-  currentSession = null;
-  setStoredSession(null);
-  showLoginScreen(prevUser);
-}
-
-function checkAuthSession() {
-  const sess = getStoredSession();
-  const validUser = sess && sess.user && sess.officeId &&
-    accessUsers.some(u => String(u.user || '').toLowerCase() === String(sess.user).toLowerCase() && u.officeId === sess.officeId) &&
-    offices.some(o => o.id === sess.officeId);
-
-  if (validUser) {
-    currentSession = sess;
-    syncTenantContext();
-    hideLoginScreen();
-    return true;
-  }
-  currentSession = null;
-  setStoredSession(null);
-  showLoginScreen('');
-  return false;
-}
-
-// NAVEGAÇÃO
-document.querySelectorAll('aside button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('aside button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    ensureSingleActivePanel(btn.dataset.panel);
-    document.getElementById('headerSectionTitle').textContent = btn.textContent.trim();
-    if (btn.dataset.panel === 'employees') closeEmployeeForm();
-    if (btn.dataset.panel === 'rubrics') closeRubricForm();
-    if (btn.dataset.panel === 'company') closeCompanyForm();
-    if (btn.dataset.panel === 'offices') { resetOfficeForm(); resetUserForm(); renderOfficesAndUsers(); }
-  });
-});
-
-function populateSelects() {
-  const empOpts = employees.length
-    ? employees.map(e => `<option value="${e.id}">${esc(e.name)} (${esc(e.status || 'ATIVO')} — ${money(e.salary)})</option>`).join('')
-    : '<option value="">Nenhum colaborador nesta empresa</option>';
-  ['pEmployee', 'vEmployee', 'tEmployee', 'rEmployee'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const prev = el.value;
-    el.innerHTML = empOpts;
-    if (prev && employees.some(e => e.id === prev)) el.value = prev;
-  });
-
-  const activeRubs = rubrics.filter(r => r.status === 'ATIVA');
-  const addSel = document.getElementById('pAddRubricSelect');
-  if (addSel) {
-    const prevRub = addSel.value;
-    addSel.innerHTML = activeRubs.map(r => `<option value="${r.code}">${r.code} — ${esc(r.name)} (${r.type})</option>`).join('');
-    if (prevRub && activeRubs.some(r => r.code === prevRub)) addSel.value = prevRub;
-  }
-}
-
-function boot() {
-  syncTenantContext();
-  populateSelects();
-  renderOfficesAndUsers();
-  renderCompanyList();
-  renderEmployees();
-  renderLeaveHistory();
-  renderRubrics();
-  document.getElementById('tInssCeil').value = tables.inssCeiling;
-  document.getElementById('tFgtsRate').value = tables.fgtsRate;
-  document.getElementById('tDepDed').value = tables.depDeduction;
-  document.getElementById('tSimpDed').value = tables.simplified;
-  renderBands();
-  loadOrInitPayroll();
-  fillVacationEmp();
-  fill13thEmp();
-  fillTermEmp();
-  renderHistory();
-  ensureSingleActivePanel();
-}
-
-applyThemePrefs();
-if (checkAuthSession()) {
-  boot();
-  pullFromVercel(false, false);
-}
+applyThemeConfig();
+boot();
+checkLoginState();
+pullFromVercel(false);
 startAutoSyncLoop();
 </script>
 </body>
