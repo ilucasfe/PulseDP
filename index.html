@@ -427,9 +427,9 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
       <div class="header-pills">
         <div class="pill"><span class="dot-live"></span> Competência: <b id="topComp">11/2026</b></div>
         <div class="pill">Equipe: <b id="topEmpCount">0</b> ativos</div>
-        <div class="pill" onclick="showCloudDiagnostics()" style="cursor:pointer" title="Clique para ver detalhes da conexão MongoDB">MongoDB: <b id="topCloudStatus">Local</b></div>
-        <button class="btn btn-ghost btn-sm" type="button" onclick="pullFromVercel(true)" title="Sincronizar com MongoDB Atlas">☁️ Sync</button>
-        <button class="btn btn-ghost btn-sm" type="button" onclick="configureCloudEndpoint()" title="Configurar URL da API MongoDB">⚙️ API</button>
+        <div class="pill" onclick="showCloudDiagnostics()" style="cursor:pointer" title="Clique para ver detalhes da conexão PostgreSQL">Postgres: <b id="topCloudStatus">Local</b></div>
+        <button class="btn btn-ghost btn-sm" type="button" onclick="pullFromVercel(true)" title="Sincronizar com PostgreSQL">☁️ Sync</button>
+        <button class="btn btn-ghost btn-sm" type="button" onclick="configureCloudEndpoint()" title="Configurar URL da API PostgreSQL">⚙️ API</button>
         <button class="btn btn-ghost btn-sm" type="button" id="btnThemeToggle" onclick="toggleThemeMode()" title="Alternar modo claro/escuro">🌙 Escuro</button>
         <button class="btn btn-ghost btn-sm" type="button" onclick="toggleThemePanel()" title="Personalizar cores do sistema">🎨 Cores</button>
         <button class="btn btn-ghost btn-sm" type="button" onclick="logoutSystem()" title="Sair do sistema">Sair</button>
@@ -1833,12 +1833,12 @@ function showCloudDiagnostics() {
   const ep = resolveCloudEndpoint();
   const status = document.getElementById('topCloudStatus')?.textContent || 'Local';
   alert(
-    `Diagnóstico de Conexão MongoDB Atlas:\n` +
+    `Diagnóstico de Conexão PostgreSQL:\n` +
     `• Status atual: ${status}\n` +
     `• Endpoint API configurado: ${ep.url || '(não configurado)'}\n` +
     `• Workspace ID: ${WORKSPACE_ID}\n` +
     (lastCloudError ? `• Último erro: ${lastCloudError}\n` : `• Último erro: Nenhum\n`) +
-    `\nLembrete: A MONGODB_URI deve estar salva em Settings > Environment Variables na Vercel, com a rota /api/state publicada.`
+    `\nLembrete: A DATABASE_URL (ou POSTGRES_URL) deve estar salva em Settings > Environment Variables na Vercel, com a rota /api/state publicada.`
   );
 }
 
@@ -1848,15 +1848,15 @@ function configureCloudEndpoint() {
     ? window.location.origin + '/api/state'
     : 'https://seu-projeto.vercel.app/api/state';
   const typed = prompt(
-    'Informe a URL da rota da API no servidor/Vercel (NÃO cole a string mongodb+srv:// aqui; a MONGODB_URI fica nas variáveis de ambiente da Vercel):\n\nExemplo: ' + originHint,
+    'Informe a URL da rota da API no servidor/Vercel (NÃO cole a string postgres:// ou postgresql:// aqui; a DATABASE_URL fica nas variáveis de ambiente da Vercel):\n\nExemplo: ' + originHint,
     current
   );
   if (typed === null) return;
   const clean = typed.trim() || DEFAULT_CLOUD_API_URL;
-  if (clean.startsWith('mongodb://') || clean.startsWith('mongodb+srv://')) {
+  if (clean.startsWith('postgres://') || clean.startsWith('postgresql://') || clean.startsWith('mongodb://') || clean.startsWith('mongodb+srv://')) {
     alert(
-      'A string mongodb+srv:// não pode ser usada direto no navegador.\n\n' +
-      '1) Cadastre a variável MONGODB_URI nas Environment Variables da Vercel.\n' +
+      'A string de conexão do banco (postgresql://) não pode ser usada direto no navegador.\n\n' +
+      '1) Cadastre a variável DATABASE_URL nas Environment Variables da Vercel.\n' +
       '2) Aqui no botão ⚙️ API, mantenha /api/state (ou https://seu-projeto.vercel.app/api/state).'
     );
     return;
@@ -1906,17 +1906,17 @@ async function pullFromVercel(notify = false) {
       fillTermEmp();
       renderHistory();
       setCloudStatus('Conectado', 'ok');
-      if (notify) alert('Dados sincronizados com o MongoDB Atlas!');
+      if (notify) alert('Dados sincronizados com o PostgreSQL!');
     } else {
       await pushToVercel(notify);
     }
   } catch (err) {
     lastCloudError = err && err.message ? err.message : String(err);
-    setCloudStatus('Erro Mongo', 'warn');
+    setCloudStatus('Erro Postgres', 'warn');
     if (notify) {
       alert(
-        `Falha ao conectar no MongoDB (${ep.url}):\n${lastCloudError}\n\n` +
-        `Verifique se a rota /api/state existe no seu servidor/Vercel e se a variável MONGODB_URI está configurada no ambiente.`
+        `Falha ao conectar no PostgreSQL (${ep.url}):\n${lastCloudError}\n\n` +
+        `Verifique se a rota /api/state existe no seu servidor/Vercel e se a variável DATABASE_URL (ou POSTGRES_URL) está configurada no ambiente.`
       );
     }
   }
@@ -1953,12 +1953,12 @@ async function pushToVercel(notify = false) {
     }
     lastCloudError = '';
     setCloudStatus('Conectado', 'ok');
-    if (notify) alert('Dados salvos no MongoDB Atlas!');
+    if (notify) alert('Dados salvos no PostgreSQL!');
   } catch (err) {
     lastCloudError = err && err.message ? err.message : String(err);
     setCloudStatus('Erro ao salvar', 'warn');
     if (notify) {
-      alert(`Não foi possível salvar no MongoDB (${ep.url}):\n${lastCloudError}`);
+      alert(`Não foi possível salvar no PostgreSQL (${ep.url}):\n${lastCloudError}`);
     }
   }
 }
@@ -3853,7 +3853,7 @@ function importBackup(ev) {
       applyCloudSnapshot(snapshot);
       boot();
       await saveAll({ syncCloud: true, notifyCloud: false });
-      alert('Backup JSON restaurado e sincronizado com o MongoDB!');
+      alert('Backup JSON restaurado e sincronizado com o PostgreSQL!');
     } catch {
       alert('Arquivo JSON inválido ou corrompido.');
     } finally {
