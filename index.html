@@ -354,6 +354,184 @@ body:not(.auth-locked) .app{display:grid}
 .login-btn{width:100%;height:42px;font-size:14px;margin-top:6px}
 .login-foot{margin-top:18px;text-align:center;font-size:11.5px;color:#64748b}
 @media print{#loginScreen{display:none!important}}
+
+.company-switcher {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.company-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 220px;
+  max-width: 295px;
+  height: 38px;
+  padding: 4px 10px 4px 6px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+.company-trigger:hover {
+  border-color: var(--primary);
+  background: var(--surface-2, var(--surface));
+}
+.company-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+.company-trigger-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  line-height: 1.15;
+}
+.company-trigger-meta strong {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.company-trigger-meta small {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.company-chev {
+  font-size: 13px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.company-popover {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 295px;
+  max-width: calc(100vw - 24px);
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+  z-index: 1200;
+}
+.company-popover.open {
+  display: block;
+}
+.company-popover-title {
+  padding: 4px 8px 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.company-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+.company-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease;
+}
+.company-option:hover,
+.company-option.is-selected {
+  background: var(--primary-soft);
+}
+.company-option-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  line-height: 1.2;
+}
+.company-option-meta strong {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.company-option-meta small {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.company-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--primary);
+  color: #ffffff;
+}
+.company-popover-divider {
+  height: 1px;
+  margin: 6px 4px;
+  background: var(--border);
+}
+.company-action-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease;
+}
+.company-action-item:hover {
+  background: var(--primary-soft);
+}
+.company-action-ico {
+  width: 18px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
 </style>
 </head>
 <body class="auth-locked">
@@ -428,9 +606,36 @@ body:not(.auth-locked) .app{display:grid}
         <div class="pill" style="background:var(--primary-soft);border-color:var(--primary-border)">
           🏢 Escritório: <b id="topOfficeName">—</b>
         </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <span style="font-size:12px;font-weight:600;color:var(--text-muted)">Empresa Ativa:</span>
-          <select id="activeCompanySelect" onchange="switchActiveCompany(this.value)" style="height:31px;padding:3px 8px;font-size:12.5px;font-weight:600;min-width:210px;max-width:290px"></select>
+        <div class="company-switcher" id="companySwitcher">
+          <button
+            type="button"
+            class="company-trigger"
+            id="companySwitcherBtn"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            onclick="toggleCompanyMenu(event)"
+          >
+            <span class="company-avatar" id="companyTriggerAvatar">EP</span>
+            <span class="company-trigger-meta">
+              <strong id="companyTriggerName">Selecione a empresa</strong>
+              <small id="companyTriggerCnpj">—</small>
+            </span>
+            <span class="company-chev" aria-hidden="true">⌄</span>
+          </button>
+
+          <div class="company-popover" id="companyPopover" role="menu" aria-label="Empresas da conta">
+            <div class="company-popover-title">Empresas da conta</div>
+            <div class="company-list" id="companySwitcherList"></div>
+            <div class="company-popover-divider"></div>
+            <button type="button" class="company-action-item" onclick="handleAddCompanyFromMenu()">
+              <span class="company-action-ico">+</span>
+              <span>Adicionar empresa</span>
+            </button>
+            <button type="button" class="company-action-item" onclick="handleManageCompaniesFromMenu()">
+              <span class="company-action-ico">⚙</span>
+              <span>Gerenciar empresas</span>
+            </button>
+          </div>
         </div>
       </div>
       <div class="header-pills">
@@ -2004,16 +2209,7 @@ function syncTenantContext() {
     cnpj: '—'
   };
 
-  const sel = document.getElementById('activeCompanySelect');
-  if (sel) {
-    if (allowedComps.length) {
-      sel.innerHTML = allowedComps.map(c =>
-        `<option value="${c.id}" ${c.id === company.id ? 'selected' : ''}>${esc(c.name)} (${esc(c.cnpj)})</option>`
-      ).join('');
-    } else {
-      sel.innerHTML = '<option value="">Nenhuma empresa vinculada</option>';
-    }
-  }
+  renderCompanySwitcher(allowedComps);
 
   const cid = company.id;
   employees = cid ? allEmployees.filter(e => e.companyId === cid) : [];
@@ -4644,6 +4840,115 @@ if (checkAuthSession()) {
   pullFromVercel(false, false);
 }
 startAutoSyncLoop();
+
+function getCompanyInitials(name) {
+  const clean = String(name || '')
+    .replace(/\b(ltda|s\/a|sa|me|epp|eireli| LTDA| S\/A| ME| EPP)\b/gi, '')
+    .trim();
+  const parts = clean.split(/\s+/).filter(Boolean);
+  if (!parts.length) return 'EM';
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function closeCompanyMenu() {
+  const pop = document.getElementById('companyPopover');
+  const btn = document.getElementById('companySwitcherBtn');
+  if (pop) pop.classList.remove('open');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+
+function toggleCompanyMenu(event) {
+  if (event) event.stopPropagation();
+  const pop = document.getElementById('companyPopover');
+  const btn = document.getElementById('companySwitcherBtn');
+  if (!pop || !btn) return;
+  const willOpen = !pop.classList.contains('open');
+  closeCompanyMenu();
+  if (willOpen) {
+    pop.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  }
+}
+
+document.addEventListener('click', (e) => {
+  const box = document.getElementById('companySwitcher');
+  if (box && !box.contains(e.target)) {
+    closeCompanyMenu();
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeCompanyMenu();
+});
+
+function renderCompanySwitcher(allowedComps = []) {
+  const triggerAvatar = document.getElementById('companyTriggerAvatar');
+  const triggerName = document.getElementById('companyTriggerName');
+  const triggerCnpj = document.getElementById('companyTriggerCnpj');
+  const listEl = document.getElementById('companySwitcherList');
+  if (!triggerAvatar || !triggerName || !triggerCnpj || !listEl) return;
+
+  const currentComp =
+    allowedComps.find((c) => c.id === activeCompanyId) || allowedComps[0] || company || {};
+  const currentName = currentComp.name || 'Nenhuma empresa vinculada';
+  const currentCnpj = currentComp.cnpj || '—';
+
+  triggerAvatar.textContent = getCompanyInitials(currentName);
+  triggerName.textContent = currentName;
+  triggerCnpj.textContent = currentCnpj;
+
+  if (!allowedComps.length) {
+    listEl.innerHTML = `<div class="company-popover-title">Nenhuma empresa vinculada</div>`;
+    return;
+  }
+
+  listEl.innerHTML = allowedComps
+    .map((c) => {
+      const selected = c.id === currentComp.id;
+      const initials = getCompanyInitials(c.name);
+      return `
+        <button
+          type="button"
+          class="company-option ${selected ? 'is-selected' : ''}"
+          role="menuitemradio"
+          aria-checked="${selected}"
+          onclick="selectCompanyFromMenu('${esc(String(c.id))}')"
+        >
+          <span class="company-avatar">${esc(initials)}</span>
+          <span class="company-option-meta">
+            <strong>${esc(c.name || 'Empresa sem nome')}</strong>
+            <small>${esc(c.cnpj || '—')}</small>
+          </span>
+          ${selected ? '<span class="company-check" aria-hidden="true">✓</span>' : ''}
+        </button>
+      `;
+    })
+    .join('');
+}
+
+function selectCompanyFromMenu(compId) {
+  closeCompanyMenu();
+  switchActiveCompany(compId);
+}
+
+function handleAddCompanyFromMenu() {
+  closeCompanyMenu();
+  if (typeof openNewCompanyForm === 'function') {
+    openNewCompanyForm();
+    return;
+  }
+  const panelBtn = document.querySelector('button[data-panel="company"]');
+  if (panelBtn) panelBtn.click();
+  if (typeof showCompanyForm === 'function') showCompanyForm(null);
+}
+
+function handleManageCompaniesFromMenu() {
+  closeCompanyMenu();
+  const panelBtn = document.querySelector('button[data-panel="company"]');
+  if (panelBtn) panelBtn.click();
+}
+
 </script>
 </body>
 </html>
