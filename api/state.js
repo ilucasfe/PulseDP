@@ -10,7 +10,6 @@ const rawConnectionString =
   process.env.POSTGRES_PRISMA_URL ||
   process.env.POSTGRES_URL_POSTGRES_PRISMA_URL;
 
-// Remove parâmetros específicos do pgbouncer/supa da query string para o node-postgres (pg) funcionar sem erro
 function sanitizeConnectionString(connStr) {
   if (!connStr) return '';
   try {
@@ -25,8 +24,8 @@ function sanitizeConnectionString(connStr) {
 
 const connectionString = sanitizeConnectionString(rawConnectionString);
 
-let pool = null;
-let tableReady = false;
+const globalForPg = globalThis;
+let tableReady = Boolean(globalForPg.__pulsedpTableReady);
 
 function getPool() {
   if (!connectionString) {
@@ -34,16 +33,18 @@ function getPool() {
       'Variável de ambiente de conexão PostgreSQL não encontrada (DATABASE_URL, POSTGRES_URL ou POSTGRES_URL_POSTGRES_URL).'
     );
   }
-  if (!pool) {
-    pool = new Pool({
+  if (!globalForPg.__pulsedpPgPool) {
+    const isLocal =
+      connectionString.includes('localhost') || connectionString.includes('127.0.0.1');
+    globalForPg.__pulsedpPgPool = new Pool({
       connectionString,
-      ssl:
-        connectionString.includes('localhost') || connectionString.includes('127.0.0.1')
-          ? false
-          : { rejectUnauthorized: false }
+      max: 5,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 10000,
+      ssl: isLocal ? false : { rejectUnauthorized: false }
     });
   }
-  return pool;
+  return globalForPg.__pulsedpPgPool;
 }
 
 async function ensureTable(db) {
@@ -56,6 +57,7 @@ async function ensureTable(db) {
     );
   `);
   tableReady = true;
+  globalForPg.__pulsedpTableReady = true;
 }
 
 export default async function handler(req, res) {
@@ -67,7 +69,10 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const workspace = String(req.query.workspace || req.headers['x-workspace-id'] || 'default').trim();
+  const rawWorkspace = String(
+    req.query?.workspace || req.headers['x-workspace-id'] || 'default'
+  ).trim();
+  const workspace = rawWorkspace.slice(0, 120) || 'default';
 
   try {
     const db = getPool();
@@ -87,11 +92,19 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-      const data = body && body.data ? body.data : null;
-      if (!data) {
-        return res.status(400).json({ ok: false, error: 'Payload "data" ausente.' });
+      let body = req.body;
+      if (typeof body === 'string') {
+        try {
+          body = JSON.parse(body);
+        } catch {
+          return res.status(400).json({ ok: false, error: 'JSON inválido no corpo da requisição.' });
+        }
       }
+      const data = body && typeof body === 'object' ? (body.data ?? null) : null;
+      if (!data || typeof data !== 'object') {
+        return res.status(400).json({ ok: false, error: 'Payload "data" ausente ou inválido.' });
+      }
+
       await db.query(
         `INSERT INTO pulsedp_workspaces (workspace, data, updated_at)
          VALUES ($1, $2::jsonb, NOW())
