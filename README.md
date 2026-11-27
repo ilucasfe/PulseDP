@@ -1,14 +1,12 @@
-# PulseDP — Front-end HTML + Back-end JS (Node/Vercel) + PostgreSQL
+# PulseDP — Front-end HTML + Back-end JS (Vercel) + Supabase PostgreSQL
 
-## Estrutura do Projeto
+## Arquivos do Projeto
 - `index.html`: Front-end completo em HTML/CSS/JS puro.
-- `api/state.js`: Back-end Serverless em JavaScript (Node.js) conectado ao PostgreSQL (`pg`). Cria automaticamente a tabela `pulsedp_workspaces` (`JSONB`) no primeiro acesso.
-- `package.json`: Dependência `pg` para conexão com PostgreSQL.
+- `api/state.js`: Back-end Serverless em Node.js (`pg`) já compatível com as variáveis geradas pela integração **Supabase + Vercel** (`POSTGRES_URL_POSTGRES_URL`, `POSTGRES_URL_NON_POOLING`, `POSTGRES_URL` ou `DATABASE_URL`).
+- `package.json`: Dependência `pg`.
+- `vercel.json`: Configuração de rotas limpas na Vercel.
 
-## Como publicar na Vercel com PostgreSQL (Neon, Supabase, Vercel Postgres, Railway, etc.)
-1. Extraia este ZIP e envie todos os arquivos para a raiz do seu repositório GitHub (`index.html`, `api/state.js`, `package.json`).
-2. Na Vercel, vá em **Settings -> Environment Variables** e adicione:
-   - **Key:** `DATABASE_URL` (ou `POSTGRES_URL`)
-   - **Value:** `postgresql://usuario:senha@host:5432/banco?sslmode=require`
-3. Faça um **Redeploy** na Vercel.
-4. Ao abrir o sistema, deixe o botão **⚙️ API** como `/api/state` (padrão) e clique em **☁️ Sync**.
+## Como publicar
+1. Extraia este ZIP e envie os arquivos (`index.html`, `api/state.js`, `package.json`, `vercel.json`) para a raiz do repositório GitHub `ilucasfe/PulseDP`.
+2. Como as variáveis `POSTGRES_URL_*` do Supabase já estão cadastradas na sua Vercel, basta aguardar o deploy automático (ou clicar em **Redeploy**).
+3. Abra `https://pulsedp-g2yp.vercel.app/` e clique em **☁️ Sync** (o botão **⚙️ API** deve ficar como `/api/state`).
