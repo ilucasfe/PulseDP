@@ -10,13 +10,13 @@ const rawConnectionString =
   process.env.POSTGRES_PRISMA_URL ||
   process.env.POSTGRES_URL_POSTGRES_PRISMA_URL;
 
+// Remove parâmetros específicos do pgbouncer/supa da query string para o node-postgres (pg) funcionar sem erro
 function sanitizeConnectionString(connStr) {
   if (!connStr) return '';
   try {
     const url = new URL(connStr);
     url.searchParams.delete('pgbouncer');
     url.searchParams.delete('supa');
-    url.searchParams.delete('sslmode');
     return url.toString();
   } catch {
     return connStr;
