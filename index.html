@@ -372,26 +372,26 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
 </head>
 <body>
 
-<!-- TELA DE LOGIN -->
+<!-- TELA DE LOGIN & CRIAÇÃO DE CONTA / LOCAÇÃO DE ESCRITÓRIO -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-brand">
       <div class="brand-logo">P</div>
       <div>
         <h2>PulseDP</h2>
-        <span>Acesso Vinculado ao Escritório Contábil</span>
+        <span>Locação de Escritório &amp; Acesso Contábil</span>
       </div>
     </div>
 
     <div class="login-tabs" role="tablist">
-      <button type="button" id="loginTabBtn" class="login-tab active" onclick="switchLoginMode('login')">Entrar</button>
-      <button type="button" id="registerTabBtn" class="login-tab" onclick="switchLoginMode('register')">Criar Escritório &amp; Usuário</button>
+      <button type="button" id="loginTabBtn" class="login-tab active" onclick="window.switchLoginMode('login')">Entrar</button>
+      <button type="button" id="registerTabBtn" class="login-tab" onclick="window.switchLoginMode('register')">Criar Conta / Escritório</button>
     </div>
 
     <div id="loginError" class="login-error">Usuário, senha ou vínculo de escritório inválidos.</div>
-    <div id="loginSuccess" class="login-success">Cadastro concluído!</div>
+    <div id="loginSuccess" class="login-success">Conta e escritório criados com sucesso!</div>
 
-    <form id="loginForm" onsubmit="handleLogin(event)">
+    <form id="loginForm" onsubmit="window.handleLogin(event)">
       <div class="login-field">
         <label for="loginUser">Usuário de Acesso</label>
         <input id="loginUser" type="text" autocomplete="username" placeholder="Digite seu login (ex.: admin)" required>
@@ -403,25 +403,31 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
       </div>
 
       <button id="loginSubmitBtn" class="btn btn-primary login-btn" type="submit">Entrar no Escritório</button>
+
+      <div style="margin-top:12px;text-align:center">
+        <button type="button" class="btn btn-ghost btn-sm" style="width:100%" onclick="window.switchLoginMode('register')">
+          + Ainda não tem conta? Criar conta e informar CPF/CNPJ do escritório
+        </button>
+      </div>
     </form>
 
-    <form id="registerOfficeUserForm" style="display:none" onsubmit="handleQuickRegisterOfficeUser(event)">
+    <form id="registerOfficeUserForm" style="display:none" onsubmit="window.handleQuickRegisterOfficeUser(event)">
       <div class="login-field">
-        <label for="regOfficeMode">Escritório</label>
-        <select id="regOfficeMode" onchange="toggleRegOfficeMode()">
-          <option value="new">Criar novo escritório</option>
-          <option value="existing">Usar escritório já cadastrado</option>
+        <label for="regOfficeMode">Tipo de Vinculação do Escritório</label>
+        <select id="regOfficeMode" onchange="window.toggleRegOfficeMode()">
+          <option value="new">Locar / Criar novo escritório (CPF ou CNPJ)</option>
+          <option value="existing">Vincular a escritório já existente</option>
         </select>
       </div>
 
       <div id="regNewOfficeBox">
         <div class="login-field">
-          <label for="regOfficeName">Nome / Razão Social do Escritório</label>
-          <input id="regOfficeName" type="text" placeholder="Ex.: ESCRITÓRIO CONTÁBIL EXEMPLO LTDA">
+          <label for="regOfficeDoc">CPF ou CNPJ do Escritório <span class="req">*</span></label>
+          <input id="regOfficeDoc" type="text" placeholder="Digite o CPF (11 dígitos) ou CNPJ (14 dígitos)" required>
         </div>
         <div class="login-field">
-          <label for="regOfficeCnpj">CNPJ / CRC</label>
-          <input id="regOfficeCnpj" type="text" placeholder="00.000.000/0001-00">
+          <label for="regOfficeName">Nome / Razão Social do Escritório <span class="req">*</span></label>
+          <input id="regOfficeName" type="text" placeholder="Ex.: ESCRITÓRIO CONTÁBIL EXEMPLO LTDA" required>
         </div>
         <div class="login-field">
           <label for="regOfficeCity">Cidade / UF (opcional)</label>
@@ -437,27 +443,32 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
       </div>
 
       <div class="login-field">
-        <label for="regFullName">Nome Completo do Usuário</label>
-        <input id="regFullName" type="text" placeholder="Ex.: Lucas Santos">
+        <label for="regFullName">Seu Nome Completo <span class="req">*</span></label>
+        <input id="regFullName" type="text" placeholder="Ex.: Lucas Santos" required>
       </div>
 
       <div class="login-field">
-        <label for="regUser">Login de Acesso</label>
+        <label for="regUser">Login de Acesso <span class="req">*</span></label>
         <input id="regUser" type="text" autocomplete="username" placeholder="Ex.: lucas.dp" required>
       </div>
 
       <div class="login-field">
-        <label for="regPass">Senha de Acesso</label>
+        <label for="regPass">Senha de Acesso <span class="req">*</span></label>
         <input id="regPass" type="password" autocomplete="new-password" placeholder="Crie uma senha" required>
       </div>
 
-      <button id="regSubmitBtn" class="btn btn-primary login-btn" type="submit">Criar e Entrar</button>
+      <button id="regSubmitBtn" class="btn btn-primary login-btn" type="submit">Criar Conta e Entrar</button>
+
+      <div style="margin-top:10px;text-align:center">
+        <button type="button" class="btn btn-ghost btn-sm" style="width:100%" onclick="window.switchLoginMode('login')">
+          ← Voltar para Entrar
+        </button>
+      </div>
     </form>
 
-    <div class="login-foot">Acesso isolado por Escritório • Sincronizado com o banco</div>
+    <div class="login-foot">Isolamento por Escritório (CPF/CNPJ) • Sincronizado com o banco</div>
   </div>
 </div>
-
 
 <div class="app">
   <!-- SIDEBAR MODERNA -->
@@ -4560,6 +4571,17 @@ function checkLoginState() {
   screen.classList.remove('hidden');
 }
 
+function formatCpfCnpj(raw) {
+  const digits = String(raw || '').replace(/\D/g, '');
+  if (digits.length === 11) {
+    return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+  }
+  if (digits.length === 14) {
+    return digits.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+  }
+  return String(raw || '').trim();
+}
+
 function populateLoginOfficeSelect() {
   const sel = document.getElementById('regExistingOfficeId');
   if (!sel) return;
@@ -4574,40 +4596,59 @@ function populateLoginOfficeSelect() {
 
 function toggleRegOfficeMode() {
   const mode = document.getElementById('regOfficeMode')?.value || 'new';
+  const isNew = mode === 'new';
   const newBox = document.getElementById('regNewOfficeBox');
   const exBox = document.getElementById('regExistingOfficeBox');
-  if (newBox) newBox.style.display = mode === 'new' ? 'block' : 'none';
-  if (exBox) exBox.style.display = mode === 'existing' ? 'block' : 'none';
-  if (mode === 'existing') populateLoginOfficeSelect();
+  if (newBox) newBox.style.display = isNew ? 'block' : 'none';
+  if (exBox) exBox.style.display = isNew ? 'none' : 'block';
+
+  const docInput = document.getElementById('regOfficeDoc');
+  const nameInput = document.getElementById('regOfficeName');
+  if (docInput) docInput.required = isNew;
+  if (nameInput) nameInput.required = isNew;
+
+  if (!isNew) populateLoginOfficeSelect();
 }
 
 function switchLoginMode(mode) {
+  const screen = document.getElementById('loginScreen');
+  if (screen && screen.classList.contains('hidden')) {
+    screen.classList.remove('hidden');
+  }
   const isReg = mode === 'register';
-  document.getElementById('loginTabBtn')?.classList.toggle('active', !isReg);
-  document.getElementById('registerTabBtn')?.classList.toggle('active', isReg);
+  const tLogin = document.getElementById('loginTabBtn');
+  const tReg = document.getElementById('registerTabBtn');
+  if (tLogin) tLogin.classList.toggle('active', !isReg);
+  if (tReg) tReg.classList.toggle('active', isReg);
+
   const lf = document.getElementById('loginForm');
   const rf = document.getElementById('registerOfficeUserForm');
   if (lf) lf.style.display = isReg ? 'none' : 'block';
   if (rf) rf.style.display = isReg ? 'block' : 'none';
-  document.getElementById('loginError')?.classList.remove('show');
-  document.getElementById('loginSuccess')?.classList.remove('show');
+
+  const errEl = document.getElementById('loginError');
+  const okEl = document.getElementById('loginSuccess');
+  if (errEl) { errEl.classList.remove('show'); errEl.textContent = ''; }
+  if (okEl) { okEl.classList.remove('show'); okEl.textContent = ''; }
+
   if (isReg) {
-    pullFromVercel(false).finally(() => {
+    populateLoginOfficeSelect();
+    toggleRegOfficeMode();
+    pullFromVercel(false).catch(() => {}).finally(() => {
       populateLoginOfficeSelect();
-      toggleRegOfficeMode();
     });
   }
 }
 
 async function handleQuickRegisterOfficeUser(event) {
-  event.preventDefault();
+  if (event && typeof event.preventDefault === 'function') event.preventDefault();
   const errEl = document.getElementById('loginError');
   const okEl = document.getElementById('loginSuccess');
   const btn = document.getElementById('regSubmitBtn');
   if (errEl) errEl.classList.remove('show');
   if (okEl) okEl.classList.remove('show');
 
-  await pullFromVercel(false);
+  try { await pullFromVercel(false); } catch {}
 
   const mode = document.getElementById('regOfficeMode')?.value || 'new';
   const fullName = (document.getElementById('regFullName')?.value || '').trim();
@@ -4642,20 +4683,32 @@ async function handleQuickRegisterOfficeUser(event) {
       return;
     }
   } else {
+    const rawDoc = (document.getElementById('regOfficeDoc')?.value || '').trim();
+    const digitsDoc = rawDoc.replace(/\D/g, '');
     const officeName = (document.getElementById('regOfficeName')?.value || '').trim().toUpperCase();
-    const officeCnpj = (document.getElementById('regOfficeCnpj')?.value || '').trim();
     const officeCity = (document.getElementById('regOfficeCity')?.value || '').trim();
-    if (!officeName || !officeCnpj) {
+
+    if (digitsDoc.length !== 11 && digitsDoc.length !== 14) {
       if (errEl) {
-        errEl.textContent = 'Informe o Nome/Razão Social e o CNPJ/CRC do novo escritório.';
+        errEl.textContent = 'Informe um CPF válido (11 dígitos) ou CNPJ válido (14 dígitos) para o escritório.';
         errEl.classList.add('show');
       }
       return;
     }
+    if (!officeName) {
+      if (errEl) {
+        errEl.textContent = 'Informe o Nome / Razão Social do escritório.';
+        errEl.classList.add('show');
+      }
+      return;
+    }
+
+    const formattedDoc = formatCpfCnpj(digitsDoc);
     linkedOffice = {
       id: 'esc_' + Date.now(),
       name: officeName,
-      cnpj: officeCnpj,
+      cnpj: formattedDoc,
+      docType: digitsDoc.length === 11 ? 'CPF' : 'CNPJ',
       city: officeCity,
       resp: fullName || user
     };
@@ -4672,18 +4725,12 @@ async function handleQuickRegisterOfficeUser(event) {
   };
   accessUsers.push(newUserObj);
 
+  saveLocalOnly();
   if (btn) btn.disabled = true;
   try {
-    await saveAll({ syncCloud: true, notifyCloud: false });
+    await pushToVercel(false);
   } finally {
     if (btn) btn.disabled = false;
-  }
-
-  if (lastCloudError) {
-    if (errEl) {
-      errEl.textContent = `Salvo localmente, mas houve aviso ao sincronizar com o banco: ${lastCloudError}`;
-      errEl.classList.add('show');
-    }
   }
 
   const sessionData = {
@@ -4701,7 +4748,6 @@ async function handleQuickRegisterOfficeUser(event) {
   } catch {}
 
   document.getElementById('registerOfficeUserForm')?.reset();
-  switchLoginMode('login');
   activeCompanyId = '';
   syncTenantContext();
   boot();
@@ -4709,7 +4755,7 @@ async function handleQuickRegisterOfficeUser(event) {
 }
 
 async function handleLogin(event) {
-  event.preventDefault();
+  if (event && typeof event.preventDefault === 'function') event.preventDefault();
   const u = (document.getElementById('loginUser')?.value || '').trim().toLowerCase();
   const p = (document.getElementById('loginPass')?.value || '').trim();
   const errEl = document.getElementById('loginError');
@@ -4719,7 +4765,7 @@ async function handleLogin(event) {
   if (btn) btn.disabled = true;
   try {
     await pullFromVercel(false);
-  } finally {
+  } catch {} finally {
     if (btn) btn.disabled = false;
   }
 
@@ -4729,7 +4775,7 @@ async function handleLogin(event) {
   if (!found || !linkedOffice) {
     if (errEl) {
       errEl.textContent = !found
-        ? 'Usuário ou senha inválidos. Verifique suas credenciais.'
+        ? 'Usuário ou senha inválidos. Verifique suas credenciais ou crie uma conta.'
         : 'Este usuário não possui um escritório válido vinculado.';
       errEl.classList.add('show');
     }
@@ -4767,9 +4813,15 @@ function logoutSystem() {
   const pInput = document.getElementById('loginPass');
   if (uInput) uInput.value = '';
   if (pInput) pInput.value = '';
-  document.getElementById('loginError')?.classList.remove('show');
+  switchLoginMode('login');
   document.getElementById('loginScreen')?.classList.remove('hidden');
 }
+
+window.switchLoginMode = switchLoginMode;
+window.toggleRegOfficeMode = toggleRegOfficeMode;
+window.handleQuickRegisterOfficeUser = handleQuickRegisterOfficeUser;
+window.handleLogin = handleLogin;
+window.logoutSystem = logoutSystem;
 
 // =========================================================================
 // PERSONALIZADOR DE TEMA CLARO / ESCURO & CORES DO SISTEMA
