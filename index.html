@@ -336,10 +336,24 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
 }
 #loginScreen.hidden{display:none}
 .login-card{
-  width:100%;max-width:400px;background:#ffffff;color:var(--text);
-  border-radius:16px;padding:32px 28px;box-shadow:0 24px 48px rgba(0,0,0,.35);
+  width:100%;max-width:430px;max-height:92vh;overflow-y:auto;background:#ffffff;color:var(--text);
+  border-radius:16px;padding:28px 26px;box-shadow:0 24px 48px rgba(0,0,0,.35);
   border:1px solid #e2e8f0
 }
+.login-tabs{
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;
+  background:#f1f5f9;padding:4px;border-radius:10px;margin-bottom:16px
+}
+.login-tab{
+  border:0;background:transparent;color:#475569;font-size:12.5px;font-weight:600;
+  padding:8px 10px;border-radius:8px;cursor:pointer;transition:all .15s
+}
+.login-tab.active{background:#ffffff;color:#0f172a;box-shadow:0 1px 3px rgba(15,23,42,.12)}
+.login-success{
+  display:none;background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;
+  padding:9px 12px;border-radius:8px;font-size:12.5px;font-weight:500;margin-bottom:14px
+}
+.login-success.show{display:block}
 .login-brand{display:flex;align-items:center;gap:12px;margin-bottom:22px}
 .login-brand .brand-logo{width:42px;height:42px;font-size:20px}
 .login-brand h2{margin:0;font-size:20px;font-weight:700;color:#0f172a;letter-spacing:-.02em}
@@ -360,7 +374,7 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
 
 <!-- TELA DE LOGIN -->
 <div id="loginScreen">
-  <form class="login-card" onsubmit="handleLogin(event)">
+  <div class="login-card">
     <div class="login-brand">
       <div class="brand-logo">P</div>
       <div>
@@ -369,22 +383,79 @@ td input{height:32px;padding:4px 8px;font-size:13px;font-variant-numeric:tabular
       </div>
     </div>
 
+    <div class="login-tabs" role="tablist">
+      <button type="button" id="loginTabBtn" class="login-tab active" onclick="switchLoginMode('login')">Entrar</button>
+      <button type="button" id="registerTabBtn" class="login-tab" onclick="switchLoginMode('register')">Criar Escritório &amp; Usuário</button>
+    </div>
+
     <div id="loginError" class="login-error">Usuário, senha ou vínculo de escritório inválidos.</div>
+    <div id="loginSuccess" class="login-success">Cadastro concluído!</div>
 
-    <div class="login-field">
-      <label for="loginUser">Usuário de Acesso</label>
-      <input id="loginUser" type="text" autocomplete="username" placeholder="Digite seu login (ex.: admin)" required>
-    </div>
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="login-field">
+        <label for="loginUser">Usuário de Acesso</label>
+        <input id="loginUser" type="text" autocomplete="username" placeholder="Digite seu login (ex.: admin)" required>
+      </div>
 
-    <div class="login-field">
-      <label for="loginPass">Senha</label>
-      <input id="loginPass" type="password" autocomplete="current-password" placeholder="••••••••" required>
-    </div>
+      <div class="login-field">
+        <label for="loginPass">Senha</label>
+        <input id="loginPass" type="password" autocomplete="current-password" placeholder="••••••••" required>
+      </div>
 
-    <button class="btn btn-primary login-btn" type="submit">Entrar no Escritório</button>
+      <button id="loginSubmitBtn" class="btn btn-primary login-btn" type="submit">Entrar no Escritório</button>
+    </form>
 
-    <div class="login-foot">Acesso isolado por Escritório • Apenas empresas vinculadas</div>
-  </form>
+    <form id="registerOfficeUserForm" style="display:none" onsubmit="handleQuickRegisterOfficeUser(event)">
+      <div class="login-field">
+        <label for="regOfficeMode">Escritório</label>
+        <select id="regOfficeMode" onchange="toggleRegOfficeMode()">
+          <option value="new">Criar novo escritório</option>
+          <option value="existing">Usar escritório já cadastrado</option>
+        </select>
+      </div>
+
+      <div id="regNewOfficeBox">
+        <div class="login-field">
+          <label for="regOfficeName">Nome / Razão Social do Escritório</label>
+          <input id="regOfficeName" type="text" placeholder="Ex.: ESCRITÓRIO CONTÁBIL EXEMPLO LTDA">
+        </div>
+        <div class="login-field">
+          <label for="regOfficeCnpj">CNPJ / CRC</label>
+          <input id="regOfficeCnpj" type="text" placeholder="00.000.000/0001-00">
+        </div>
+        <div class="login-field">
+          <label for="regOfficeCity">Cidade / UF (opcional)</label>
+          <input id="regOfficeCity" type="text" placeholder="Londrina - PR">
+        </div>
+      </div>
+
+      <div id="regExistingOfficeBox" style="display:none">
+        <div class="login-field">
+          <label for="regExistingOfficeId">Selecionar Escritório Existente</label>
+          <select id="regExistingOfficeId"></select>
+        </div>
+      </div>
+
+      <div class="login-field">
+        <label for="regFullName">Nome Completo do Usuário</label>
+        <input id="regFullName" type="text" placeholder="Ex.: Lucas Santos">
+      </div>
+
+      <div class="login-field">
+        <label for="regUser">Login de Acesso</label>
+        <input id="regUser" type="text" autocomplete="username" placeholder="Ex.: lucas.dp" required>
+      </div>
+
+      <div class="login-field">
+        <label for="regPass">Senha de Acesso</label>
+        <input id="regPass" type="password" autocomplete="new-password" placeholder="Crie uma senha" required>
+      </div>
+
+      <button id="regSubmitBtn" class="btn btn-primary login-btn" type="submit">Criar e Entrar</button>
+    </form>
+
+    <div class="login-foot">Acesso isolado por Escritório • Sincronizado com o banco</div>
+  </div>
 </div>
 
 
@@ -4489,13 +4560,170 @@ function checkLoginState() {
   screen.classList.remove('hidden');
 }
 
-function handleLogin(event) {
+function populateLoginOfficeSelect() {
+  const sel = document.getElementById('regExistingOfficeId');
+  if (!sel) return;
+  if (!Array.isArray(offices) || !offices.length) {
+    sel.innerHTML = '<option value="">Nenhum escritório cadastrado</option>';
+    return;
+  }
+  sel.innerHTML = offices.map(o =>
+    `<option value="${esc(o.id)}">${esc(o.name)}${o.cnpj ? ' (' + esc(o.cnpj) + ')' : ''}</option>`
+  ).join('');
+}
+
+function toggleRegOfficeMode() {
+  const mode = document.getElementById('regOfficeMode')?.value || 'new';
+  const newBox = document.getElementById('regNewOfficeBox');
+  const exBox = document.getElementById('regExistingOfficeBox');
+  if (newBox) newBox.style.display = mode === 'new' ? 'block' : 'none';
+  if (exBox) exBox.style.display = mode === 'existing' ? 'block' : 'none';
+  if (mode === 'existing') populateLoginOfficeSelect();
+}
+
+function switchLoginMode(mode) {
+  const isReg = mode === 'register';
+  document.getElementById('loginTabBtn')?.classList.toggle('active', !isReg);
+  document.getElementById('registerTabBtn')?.classList.toggle('active', isReg);
+  const lf = document.getElementById('loginForm');
+  const rf = document.getElementById('registerOfficeUserForm');
+  if (lf) lf.style.display = isReg ? 'none' : 'block';
+  if (rf) rf.style.display = isReg ? 'block' : 'none';
+  document.getElementById('loginError')?.classList.remove('show');
+  document.getElementById('loginSuccess')?.classList.remove('show');
+  if (isReg) {
+    pullFromVercel(false).finally(() => {
+      populateLoginOfficeSelect();
+      toggleRegOfficeMode();
+    });
+  }
+}
+
+async function handleQuickRegisterOfficeUser(event) {
+  event.preventDefault();
+  const errEl = document.getElementById('loginError');
+  const okEl = document.getElementById('loginSuccess');
+  const btn = document.getElementById('regSubmitBtn');
+  if (errEl) errEl.classList.remove('show');
+  if (okEl) okEl.classList.remove('show');
+
+  await pullFromVercel(false);
+
+  const mode = document.getElementById('regOfficeMode')?.value || 'new';
+  const fullName = (document.getElementById('regFullName')?.value || '').trim();
+  const user = (document.getElementById('regUser')?.value || '').trim().toLowerCase();
+  const pass = (document.getElementById('regPass')?.value || '').trim();
+
+  if (!user || !pass) {
+    if (errEl) {
+      errEl.textContent = 'Informe o login e a senha de acesso.';
+      errEl.classList.add('show');
+    }
+    return;
+  }
+
+  if (accessUsers.some(acc => String(acc.user || '').toLowerCase() === user)) {
+    if (errEl) {
+      errEl.textContent = `Já existe um usuário com o login "${user}". Escolha outro login.`;
+      errEl.classList.add('show');
+    }
+    return;
+  }
+
+  let linkedOffice = null;
+  if (mode === 'existing') {
+    const selectedId = document.getElementById('regExistingOfficeId')?.value || '';
+    linkedOffice = offices.find(o => o.id === selectedId) || null;
+    if (!linkedOffice) {
+      if (errEl) {
+        errEl.textContent = 'Selecione um escritório existente válido.';
+        errEl.classList.add('show');
+      }
+      return;
+    }
+  } else {
+    const officeName = (document.getElementById('regOfficeName')?.value || '').trim().toUpperCase();
+    const officeCnpj = (document.getElementById('regOfficeCnpj')?.value || '').trim();
+    const officeCity = (document.getElementById('regOfficeCity')?.value || '').trim();
+    if (!officeName || !officeCnpj) {
+      if (errEl) {
+        errEl.textContent = 'Informe o Nome/Razão Social e o CNPJ/CRC do novo escritório.';
+        errEl.classList.add('show');
+      }
+      return;
+    }
+    linkedOffice = {
+      id: 'esc_' + Date.now(),
+      name: officeName,
+      cnpj: officeCnpj,
+      city: officeCity,
+      resp: fullName || user
+    };
+    offices.push(linkedOffice);
+  }
+
+  const newUserObj = {
+    id: 'usr_' + Date.now(),
+    user,
+    pass,
+    fullName: fullName || user,
+    role: 'Administrador Escritório',
+    officeId: linkedOffice.id
+  };
+  accessUsers.push(newUserObj);
+
+  if (btn) btn.disabled = true;
+  try {
+    await saveAll({ syncCloud: true, notifyCloud: false });
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+
+  if (lastCloudError) {
+    if (errEl) {
+      errEl.textContent = `Salvo localmente, mas houve aviso ao sincronizar com o banco: ${lastCloudError}`;
+      errEl.classList.add('show');
+    }
+  }
+
+  const sessionData = {
+    loggedIn: true,
+    user: newUserObj.user,
+    fullName: newUserObj.fullName,
+    role: newUserObj.role,
+    officeId: linkedOffice.id,
+    at: Date.now()
+  };
+  currentSession = sessionData;
+  try {
+    sessionStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(sessionData));
+    localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(sessionData));
+  } catch {}
+
+  document.getElementById('registerOfficeUserForm')?.reset();
+  switchLoginMode('login');
+  activeCompanyId = '';
+  syncTenantContext();
+  boot();
+  document.getElementById('loginScreen')?.classList.add('hidden');
+}
+
+async function handleLogin(event) {
   event.preventDefault();
   const u = (document.getElementById('loginUser')?.value || '').trim().toLowerCase();
   const p = (document.getElementById('loginPass')?.value || '').trim();
   const errEl = document.getElementById('loginError');
+  const btn = document.getElementById('loginSubmitBtn');
 
-  const found = accessUsers.find(acc => acc.user.toLowerCase() === u && acc.pass === p);
+  if (errEl) errEl.classList.remove('show');
+  if (btn) btn.disabled = true;
+  try {
+    await pullFromVercel(false);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+
+  const found = accessUsers.find(acc => String(acc.user || '').toLowerCase() === u && String(acc.pass || '') === p);
   const linkedOffice = found ? offices.find(o => o.id === found.officeId) : null;
 
   if (!found || !linkedOffice) {
@@ -4527,7 +4755,6 @@ function handleLogin(event) {
   syncTenantContext();
   boot();
   document.getElementById('loginScreen')?.classList.add('hidden');
-  pullFromVercel(false);
 }
 
 function logoutSystem() {
