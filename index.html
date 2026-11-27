@@ -355,34 +355,45 @@ body:not(.auth-locked) .app{display:grid}
 .login-foot{margin-top:18px;text-align:center;font-size:11.5px;color:#64748b}
 @media print{#loginScreen{display:none!important}}
 
-.company-switcher {
-  position: relative;
-  display: inline-flex;
+/* Seletor de empresas na barra lateral + cabeçalho na mesma linha */
+.header-left-inline {
+  display: flex;
   align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  min-width: 0;
 }
-.company-trigger {
-  display: inline-flex;
+.header-office-pill {
+  white-space: nowrap;
+  max-width: 440px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-company-box {
+  position: relative;
+  margin: 2px 0 6px;
+}
+.sidebar-company-trigger {
+  width: 100%;
+  display: flex;
   align-items: center;
-  gap: 10px;
-  min-width: 220px;
-  max-width: 295px;
-  height: 38px;
-  padding: 4px 10px 4px 6px;
+  gap: 9px;
+  padding: 7px 9px;
   border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
   cursor: pointer;
   text-align: left;
-  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
-.company-trigger:hover {
-  border-color: var(--primary);
-  background: var(--surface-2, var(--surface));
+.sidebar-company-trigger:hover {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(255, 255, 255, 0.26);
 }
-.company-avatar {
-  width: 26px;
-  height: 26px;
+.sidebar-company-avatar {
+  width: 28px;
+  height: 28px;
   border-radius: 7px;
   flex-shrink: 0;
   display: inline-flex;
@@ -391,70 +402,71 @@ body:not(.auth-locked) .app{display:grid}
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.03em;
-  background: var(--primary-soft);
-  color: var(--primary);
+  background: var(--primary);
+  color: #ffffff;
 }
-.company-trigger-meta {
+.sidebar-company-meta {
   display: flex;
   flex-direction: column;
   min-width: 0;
   flex: 1;
   line-height: 1.15;
 }
-.company-trigger-meta strong {
-  font-size: 12.5px;
+.sidebar-company-meta strong {
+  font-size: 12px;
   font-weight: 600;
-  color: var(--text);
+  color: #ffffff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.company-trigger-meta small {
-  font-size: 11px;
-  color: var(--text-muted);
+.sidebar-company-meta small {
+  font-size: 10.5px;
+  color: #94a3b8;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.company-chev {
+.sidebar-company-chev {
   font-size: 13px;
-  color: var(--text-muted);
+  color: #94a3b8;
   flex-shrink: 0;
 }
-.company-popover {
+.sidebar-company-popover {
   display: none;
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  width: 295px;
+  position: fixed;
+  top: 112px;
+  left: 232px;
+  width: 290px;
   max-width: calc(100vw - 24px);
   padding: 8px;
   border-radius: 12px;
   border: 1px solid var(--border);
   background: var(--surface);
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
-  z-index: 1200;
+  color: var(--text);
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.22);
+  z-index: 1500;
 }
-.company-popover.open {
+.sidebar-company-popover.open {
   display: block;
 }
-.company-popover-title {
+.sidebar-company-popover-title {
   padding: 4px 8px 6px;
   font-size: 11.5px;
   font-weight: 600;
   color: var(--text-muted);
 }
-.company-list {
+.sidebar-company-list {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  max-height: 240px;
+  max-height: 230px;
   overflow-y: auto;
 }
-.company-option {
+.sidebar-company-option {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
   width: 100%;
   padding: 7px 8px;
   border: 0;
@@ -465,30 +477,43 @@ body:not(.auth-locked) .app{display:grid}
   text-align: left;
   transition: background-color 0.15s ease;
 }
-.company-option:hover,
-.company-option.is-selected {
+.sidebar-company-option:hover,
+.sidebar-company-option.is-selected {
   background: var(--primary-soft);
 }
-.company-option-meta {
+.sidebar-company-option-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+.sidebar-company-option-meta {
   display: flex;
   flex-direction: column;
   min-width: 0;
   flex: 1;
   line-height: 1.2;
 }
-.company-option-meta strong {
-  font-size: 12.5px;
+.sidebar-company-option-meta strong {
+  font-size: 12px;
   font-weight: 600;
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.company-option-meta small {
-  font-size: 11px;
+.sidebar-company-option-meta small {
+  font-size: 10.5px;
   color: var(--text-muted);
 }
-.company-check {
+.sidebar-company-check {
   width: 18px;
   height: 18px;
   border-radius: 999px;
@@ -501,35 +526,43 @@ body:not(.auth-locked) .app{display:grid}
   background: var(--primary);
   color: #ffffff;
 }
-.company-popover-divider {
+.sidebar-company-divider {
   height: 1px;
   margin: 6px 4px;
   background: var(--border);
 }
-.company-action-item {
+.sidebar-company-action {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
   width: 100%;
-  padding: 8px 10px;
+  padding: 7px 10px;
   border: 0;
   border-radius: 8px;
   background: transparent;
   color: var(--text);
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   text-align: left;
   transition: background-color 0.15s ease;
 }
-.company-action-item:hover {
+.sidebar-company-action:hover {
   background: var(--primary-soft);
 }
-.company-action-ico {
-  width: 18px;
+.sidebar-company-action-ico {
+  width: 16px;
   text-align: center;
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 13px;
+}
+@media (max-width: 980px) {
+  .sidebar-company-box {
+    display: none;
+  }
+  .header-left-inline {
+    flex-wrap: wrap;
+  }
 }
 
 </style>
@@ -572,7 +605,38 @@ body:not(.auth-locked) .app{display:grid}
       <div class="brand-logo">P</div>
       <div class="brand-text">
         <strong>PulseDP</strong>
-        <span>Folha & Gestão de RH</span>
+      </div>
+    </div>
+
+    <div class="sidebar-company-box" id="companySwitcher">
+      <button
+        type="button"
+        class="sidebar-company-trigger"
+        id="companySwitcherBtn"
+        aria-haspopup="listbox"
+        aria-expanded="false"
+        onclick="toggleCompanyMenu(event)"
+      >
+        <span class="sidebar-company-avatar" id="companyTriggerAvatar">EP</span>
+        <span class="sidebar-company-meta">
+          <strong id="companyTriggerName">Selecione a empresa</strong>
+          <small id="companyTriggerCnpj">—</small>
+        </span>
+        <span class="sidebar-company-chev" aria-hidden="true">⌄</span>
+      </button>
+
+      <div class="sidebar-company-popover" id="companyPopover" role="menu" aria-label="Empresas da conta">
+        <div class="sidebar-company-popover-title">Empresas da conta</div>
+        <div class="sidebar-company-list" id="companySwitcherList"></div>
+        <div class="sidebar-company-divider"></div>
+        <button type="button" class="sidebar-company-action" onclick="handleAddCompanyFromMenu()">
+          <span class="sidebar-company-action-ico">+</span>
+          <span>Adicionar empresa</span>
+        </button>
+        <button type="button" class="sidebar-company-action" onclick="handleManageCompaniesFromMenu()">
+          <span class="sidebar-company-action-ico">⚙</span>
+          <span>Gerenciar empresas</span>
+        </button>
       </div>
     </div>
 
@@ -601,41 +665,9 @@ body:not(.auth-locked) .app{display:grid}
 
   <div class="main-wrap">
     <header>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <div class="header-title" id="headerSectionTitle">Folha de Pagamento</div>
-        <div class="pill" style="background:var(--primary-soft);border-color:var(--primary-border)">
+      <div class="header-left-inline">
+        <div class="pill header-office-pill" style="background:var(--primary-soft);border-color:var(--primary-border)">
           🏢 Escritório: <b id="topOfficeName">—</b>
-        </div>
-        <div class="company-switcher" id="companySwitcher">
-          <button
-            type="button"
-            class="company-trigger"
-            id="companySwitcherBtn"
-            aria-haspopup="listbox"
-            aria-expanded="false"
-            onclick="toggleCompanyMenu(event)"
-          >
-            <span class="company-avatar" id="companyTriggerAvatar">EP</span>
-            <span class="company-trigger-meta">
-              <strong id="companyTriggerName">Selecione a empresa</strong>
-              <small id="companyTriggerCnpj">—</small>
-            </span>
-            <span class="company-chev" aria-hidden="true">⌄</span>
-          </button>
-
-          <div class="company-popover" id="companyPopover" role="menu" aria-label="Empresas da conta">
-            <div class="company-popover-title">Empresas da conta</div>
-            <div class="company-list" id="companySwitcherList"></div>
-            <div class="company-popover-divider"></div>
-            <button type="button" class="company-action-item" onclick="handleAddCompanyFromMenu()">
-              <span class="company-action-ico">+</span>
-              <span>Adicionar empresa</span>
-            </button>
-            <button type="button" class="company-action-item" onclick="handleManageCompaniesFromMenu()">
-              <span class="company-action-ico">⚙</span>
-              <span>Gerenciar empresas</span>
-            </button>
-          </div>
         </div>
       </div>
       <div class="header-pills">
@@ -4784,7 +4816,7 @@ document.querySelectorAll('aside button').forEach(btn => {
     document.querySelectorAll('aside button').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     ensureSingleActivePanel(btn.dataset.panel);
-    document.getElementById('headerSectionTitle').textContent = btn.textContent.trim();
+    const _hst = document.getElementById('headerSectionTitle'); if (_hst) _hst.textContent = btn.textContent.trim();
     if (btn.dataset.panel === 'employees') closeEmployeeForm();
     if (btn.dataset.panel === 'rubrics') closeRubricForm();
     if (btn.dataset.panel === 'company') closeCompanyForm();
@@ -4851,6 +4883,22 @@ function getCompanyInitials(name) {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
+function positionCompanyPopover() {
+  const btn = document.getElementById('companySwitcherBtn');
+  const pop = document.getElementById('companyPopover');
+  if (!btn || !pop) return;
+  const rect = btn.getBoundingClientRect();
+  const popWidth = Math.min(290, window.innerWidth - 24);
+  let left = rect.right + 10;
+  if (left + popWidth > window.innerWidth - 12) {
+    left = Math.max(12, rect.left);
+  }
+  const top = Math.min(window.innerHeight - 280, Math.max(12, rect.top));
+  pop.style.width = popWidth + 'px';
+  pop.style.left = left + 'px';
+  pop.style.top = top + 'px';
+}
+
 function closeCompanyMenu() {
   const pop = document.getElementById('companyPopover');
   const btn = document.getElementById('companySwitcherBtn');
@@ -4866,10 +4914,16 @@ function toggleCompanyMenu(event) {
   const willOpen = !pop.classList.contains('open');
   closeCompanyMenu();
   if (willOpen) {
+    positionCompanyPopover();
     pop.classList.add('open');
     btn.setAttribute('aria-expanded', 'true');
   }
 }
+
+window.addEventListener('resize', () => {
+  const pop = document.getElementById('companyPopover');
+  if (pop && pop.classList.contains('open')) positionCompanyPopover();
+});
 
 document.addEventListener('click', (e) => {
   const box = document.getElementById('companySwitcher');
@@ -4899,7 +4953,7 @@ function renderCompanySwitcher(allowedComps = []) {
   triggerCnpj.textContent = currentCnpj;
 
   if (!allowedComps.length) {
-    listEl.innerHTML = `<div class="company-popover-title">Nenhuma empresa vinculada</div>`;
+    listEl.innerHTML = `<div class="sidebar-company-popover-title">Nenhuma empresa vinculada</div>`;
     return;
   }
 
@@ -4910,17 +4964,17 @@ function renderCompanySwitcher(allowedComps = []) {
       return `
         <button
           type="button"
-          class="company-option ${selected ? 'is-selected' : ''}"
+          class="sidebar-company-option ${selected ? 'is-selected' : ''}"
           role="menuitemradio"
           aria-checked="${selected}"
           onclick="selectCompanyFromMenu('${esc(String(c.id))}')"
         >
-          <span class="company-avatar">${esc(initials)}</span>
-          <span class="company-option-meta">
+          <span class="sidebar-company-option-avatar">${esc(initials)}</span>
+          <span class="sidebar-company-option-meta">
             <strong>${esc(c.name || 'Empresa sem nome')}</strong>
             <small>${esc(c.cnpj || '—')}</small>
           </span>
-          ${selected ? '<span class="company-check" aria-hidden="true">✓</span>' : ''}
+          ${selected ? '<span class="sidebar-company-check" aria-hidden="true">✓</span>' : ''}
         </button>
       `;
     })
