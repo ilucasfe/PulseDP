@@ -1,12 +1,11 @@
-# PulseDP — Front-end HTML + Back-end JS (Vercel) + Supabase PostgreSQL
+# PulseDP — Folha de Pagamento & eSocial v1.3 (Demo + Produção)
 
-## Arquivos do Projeto
-- `index.html`: Front-end completo em HTML/CSS/JS puro.
-- `api/state.js`: Back-end Serverless em Node.js (`pg`) já compatível com as variáveis geradas pela integração **Supabase + Vercel** (`POSTGRES_URL_POSTGRES_URL`, `POSTGRES_URL_NON_POOLING`, `POSTGRES_URL` ou `DATABASE_URL`).
-- `package.json`: Dependência `pg`.
-- `vercel.json`: Configuração de rotas limpas na Vercel.
+Frontend na raiz (`index.html`, `styles.css`, `app.js`) + backend em `server.js` e rota serverless em `api/index.js` para a Vercel.
 
-## Como publicar
-1. Extraia este ZIP e envie os arquivos (`index.html`, `api/state.js`, `package.json`, `vercel.json`) para a raiz do repositório GitHub `ilucasfe/PulseDP`.
-2. Como as variáveis `POSTGRES_URL_*` do Supabase já estão cadastradas na sua Vercel, basta aguardar o deploy automático (ou clicar em **Redeploy**).
-3. Abra `https://pulsedp-g2yp.vercel.app/` e clique em **☁️ Sync** (o botão **⚙️ API** deve ficar como `/api/state`).
+## Como rodar localmente
+```bash
+npm install
+cp .env.example .env
+npm start
+```
+Abra `http://localhost:3000`.
